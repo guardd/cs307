@@ -1,14 +1,14 @@
 class User:
     def __init__(self, id, username, password, email, dateofbirth, genderID):
-        self.id = id
-        self.username = username
-        self.password = password
-        self.email = email
-        self.dateofbirth = dateofbirth
-        self.genderID = genderID
-        self.userPortfolios = []
-        self.notifications = []
-        self.predictions = []
+        self.id = id #INTEGER PRIMARY KEY
+        self.username = username #TEXT
+        self.password = password #TEXT
+        self.email = email #TEXT
+        self.dateofbirth = dateofbirth #INTEGER
+        self.genderID = genderID #TEXT
+#        self.userPortfolios = userPortfolios #INTEGER in id
+#        self.notifications = #INTEGER in id
+#        self.predictions = #INTEGER in id
 
 
     def get_id(self):
@@ -47,11 +47,11 @@ class User:
     def set_genderID(self, genderID):
         self.genderID = genderID
 
-    def get_userPortfolios(self):
-        return self.userPortfolios
+    #def get_userPortfolios(self):
+    #    return self.userPortfolios
 
-    def get_notifications(self):
-        return self.notifications
+    #def get_notifications(self):
+    #    return self.notifications
 
-    def get_predictions(self):
-        return self.predictions
+    #def get_predictions(self):
+    #    return self.predictions
