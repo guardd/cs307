@@ -22,3 +22,4 @@ def send_password_recovery_email(user): #note : gmail doesnt work with this shit
         opts.body = "This is a password recovery email from the crystal ball.\nIf you didn't request password recovery, please ignore.\n The code for password recovery is " + code  + "\nFrom The Crystal Ball"
         opts.is_html = False
         inbox_controller.send_email(inbox_1.id, send_email_options=opts)
+    return code
