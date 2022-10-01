@@ -47,6 +47,6 @@ class Transmission:
             return -1 #user nonexistant
         else:
             if user.password == password:
-                return user
+                return 1 #in current commit return user
             else:
                 return -2 # password different
