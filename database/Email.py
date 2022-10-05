@@ -27,3 +27,19 @@ class Email():
         opts.is_html = False
         self.inbox_controller.send_email(self.inbox_1.id, send_email_options=opts)
         return code
+
+    def send_email_verify_email(self, email):
+        firstdigit = random.randint(1, 9)
+        code = "" + str(firstdigit)
+        for x in range(5):
+            code = code + str(random.randint(0, 9))
+
+        opts = mailslurp_client.SendEmailOptions()
+        opts.to = [email]
+        opts.subject = "Email verification from The Crystal Ball"
+        opts.body = "This is an email verification from the crystal ball.\nIf you didn't request an email verification, please ignore.\n The code for email verification is " + code  + "\nFrom The Crystal Ball"
+        opts.is_html = False
+        self.inbox_controller.send_email(self.inbox_1.id, send_email_options=opts)
+        return code
+
+    
