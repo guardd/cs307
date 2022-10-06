@@ -1,4 +1,5 @@
 from User import User
+from notifications import Notifications
 import sqlite3
 
 class Transmission:
@@ -20,6 +21,18 @@ class Transmission:
         self.cur.execute("INSERT INTO 'User' VALUES(?,?,?,?,?,?)", (user.id, user.username, user.password, user.email, user.dateofbirth, user.genderID))
         self.connect.commit()
 
+    def insert_notification(self, notification):
+        self.cur.execute("Insert Into 'Notifications' VALUES(?, ?, ?, ?, ?)", (notification.id, notification.userid, notification.code, notification.name, notification.text))
+        self.connect.commit()
+
+    def retrieve_notification_by_user(self, user):
+        self.cur.execute("SELECT * FROM 'Notifications' WHERE userid=?", (user.id,))
+        notifications = self.cur.fetchall()
+        notificationlist = []
+        for notification in notifications:
+            notificationlist.append(Notification(notification[0], notification[1], notification[2], notification[3], notification[4]))
+        return notificationlist
+
     def search_by_username(self, username):#searches a user by username and returns the user
         self.cur.execute("SELECT * FROM 'User' WHERE username=?", (username,))
         user = self.cur.fetchone()
@@ -38,7 +51,7 @@ class Transmission:
     def save(self): #saves the database
         self.connect.commit()
 
-    def close(): #closes the connection to database
+    def close(self): #closes the connection to database
         self.connect.close()
 
     def login_sequence(self, username, password): #returns user when correct, error code when not
