@@ -13,46 +13,46 @@ class Commodity:
 
 
 
-    def get_name(self):
+   def get_name(self):
         return self.name 
 
-    def set_name(self, name):
+   def set_name(self, name):
         self.name = name
     
-    def get_type(self):
+   def get_type(self):
         return self.type 
 
-    def set_type(self, type):
+   def set_type(self, type):
         self.type = type
 
-    def get_id(self):
+   def get_id(self):
         return self.id
 
-    def set_id(self, id):
+   def set_id(self, id):
         self.id = id
     
-    def get_protfolioID(self):
+   def get_protfolioID(self):
         return self.userID
 
-    def set_porfolioID(self, portfolioID):
+   def set_porfolioID(self, portfolioID):
         self.portfolioID = porfolioID
 
-    def get_userID(self):
+   def get_userID(self):
         return self.userID
 
-    def set_userID(self, userID):
+   def set_userID(self, userID):
         self.userID = userID
     
-    def get_amount(self):
-        return self.userID
+   def get_amount(self):
+        return self.amount
 
-    def set_amount(self, amount):
-        self.userID = userID
+   def set_amount(self, amount):
+        self.amount = amount
     
-    def get_avgUnitPrice(self):
+   def get_avgUnitPrice(self):
         return self.avgUnitPrice
 
-    def set_avgUnitPrice(self, amount):
+   def set_avgUnitPrice(self, amount):
         self.avgUnitPrice = avgUnitPrice
     
     
