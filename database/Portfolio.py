@@ -1,14 +1,14 @@
 class Portfolio:
-    def __init__(self, name, id, userID, funds):
+    def __init__(self, name, id, userID, funds, stocks, commodities, properties):
     
-        self.portfolioName = portfolioName #TEXT
-        self.portfolioID = porfolioID #INTEGER
+        self.name = name #TEXT
+        self.id = id #INTEGER
         self.userID = userID #INTEGER
-        self.portfolioFunds = portfolioFunds #INTEGER
+        self.funds = funds #INTEGER
 
-        self.stocks = [] #LIST OF INTEGERS
-        self.commodities = [] #LIST OF INTEGERS
-        self.properties = [] #LIST OF INTEGERS
+        self.stocks = stocks
+        self.commodities = commodities
+        self.properties = properties
 
 
 
