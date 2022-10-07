@@ -16,7 +16,7 @@ class Transmission:
     def insert_user(self, user): #inserts a user into the database and saves database
         self.cur.execute("INSERT INTO 'User' VALUES(?,?,?,?,?,?,?)", (user.id, user.username, user.password, user.email, user.dateofbirth, user.genderID, json.dumps((user.userPortfolios))))
         self.connect.commit()
-    
+
     def insert_porfolio(self, portfolio): #inserts a user into the database and saves database
         self.cur.execute("INSERT INTO 'Portfolios' VALUES(?,?,?,?,?,?,?)", (portfolio.name, portfolio.id, portfolio.userID, portfolio.funds, json.dumps(portfolio.stocks),  json.dumps(portfolio.commodities), json.dumps((portfolio.properties))))
         self.connect.commit()
@@ -24,15 +24,33 @@ class Transmission:
     def insert_stock(self, stock): #inserts a user into the database and saves database
         self.cur.execute("INSERT INTO 'Stock' VALUES(?,?,?,?,?,?,?,?)", (stock.name, stock.nameABV, stock.url, stock.id, stock.portfolioID, stock.userID, stock.avgSharePrice, stock.Shares))
         self.connect.commit()
-    
+
     def insert_property(self, property): #inserts a user into the database and saves database
         self.cur.execute("INSERT INTO 'Property' VALUES(?,?,?,?,?,?,?)", (property.name, property.type, property.url, property.id, property.portfolioID, property.userID , property.unitPrice))
         self.connect.commit()
-    
+
     def insert_commodity(self, commodity): #inserts a user into the database and saves database
         self.cur.execute("INSERT INTO 'Commodity' VALUES(?,?,?,?,?,?,?)", (commodity.name, commodity.type, commodity.id, commodity.portfolioID, commodity.userID, commodity.amount, commodity.avgUnitPrice))
         self.connect.commit()
-    
+
+    def delete_user(self, user): # deletes a user and its associated portfolio, stock, property, commodity
+        try:
+            user_id_to_search = user.get_id()
+
+            self.cur.execute("DELETE from 'Portfolios' WHERE userID=?", (user_id_to_search,))
+            self.cur.execute("DELETE from 'Stock' WHERE userID=?", (user_id_to_search,))
+            self.cur.execute("DELETE from 'Property' WHERE userID=?", (user_id_to_search,))
+            self.cur.execute("DELETE from 'Commodity' WHERE userID=?", (user_id_to_search,))
+            try:
+                self.cur.execute("DELETE * from 'User' WHERE userID=?", (user_id_to_search,))
+            except sqlite3.Error as error:
+                print("Failed to delete User object")
+                return -1
+        except sqlite3.Error as error:
+            print("Failed to delete User portfolio info")
+            return -1
+        return 0
+
     def search_portfolio_by_id(self, id): #searches a portfolio by its unique id and returns it
         self.cur.execute("SELECT * FROM 'Portfolios' WHERE id=?", (id,))
         portfolio = self.cur.fetchone()
@@ -41,7 +59,8 @@ class Transmission:
             return portfolioobject
         except TypeError:
             return -1 #couldn't find
-    
+
+
     def search_stock_by_id(self, id): #searches a stock by its unique id and returns it
         self.cur.execute("SELECT * FROM 'Stock' WHERE id=?", (id,))
         stock = self.cur.fetchone()
@@ -50,7 +69,7 @@ class Transmission:
             return stockobject
         except TypeError:
             return -1 #couldn't find
-    
+
     def search_property_by_id(self, id): #searches a property by its unique id and returns it
         self.cur.execute("SELECT * FROM 'Property' WHERE id=?", (id,))
         property = self.cur.fetchone()
@@ -91,7 +110,7 @@ class Transmission:
         user = self.cur.fetchone()
         userobject = User(user[0], user[1], user[2], user[3], user[4], user[5], json.loads(user[6]))
         return userobject
-    
+
     def insert_notification(self, notification):
         self.cur.execute("Insert Into 'Notifications' VALUES(?, ?, ?, ?, ?)", (notification.id, notification.userid, notification.code, notification.name, notification.text))
         self.connect.commit()

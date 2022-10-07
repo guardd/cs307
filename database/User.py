@@ -6,7 +6,7 @@ class User:
         self.email = email #TEXT
         self.dateofbirth = dateofbirth #INTEGER
         self.genderID = genderID #TEXT
-        self.userPortfolios = userPortfolios #INTEGER in id
+        self.userPortfolios = userPortfolios #list
 #        self.notifications = #INTEGER in id
 #        self.predictions = #INTEGER in id
 
@@ -46,13 +46,13 @@ class User:
 
     def set_genderID(self, genderID):
         self.genderID = genderID
-    
+
     def get_userPortfolios(self):
         return self.userPortfolios
-    
+
     def add_portfolio(self, portfolio):
         self.userPortfolios.append(portfolio)
-    
+
     def remove_portfolio(self, portfolio):
         self.userPortfolios.remove(portfolio)
 
