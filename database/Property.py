@@ -38,7 +38,7 @@ class Property:
         self.id = id
     
     def get_protfolioID(self):
-        return self.userID
+        return self.portfolioID
 
     def set_porfolioID(self, portfolioID):
         self.portfolioID = portfolioID

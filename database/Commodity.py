@@ -35,7 +35,7 @@ class Commodity:
         return self.userID
 
    def set_porfolioID(self, portfolioID):
-        self.portfolioID = porfolioID
+        self.portfolioID = portfolioID
 
    def get_userID(self):
         return self.userID
@@ -52,7 +52,7 @@ class Commodity:
    def get_avgUnitPrice(self):
         return self.avgUnitPrice
 
-   def set_avgUnitPrice(self, amount):
+   def set_avgUnitPrice(self, avgUnitPrice):
         self.avgUnitPrice = avgUnitPrice
     
     
