@@ -3,6 +3,11 @@ import React, {useEffect, useState} from "react";
 const SignUp = () => {
   const [username, pushUsername]=useState(null)
   const [password, pushPassword]=useState(null)
+  const [email, pushEmail]=useState(null)
+  //TODO STEPS : When pressing submit button, check duplicate username / email, return email in use / username in use
+  //Then, password check (can omit for now)
+  //Then, send email to user, send user to code checking screen
+  //Then, if code succeeds, send user data to server, log user in
   return (  
     <div className="signUp-container">
        
@@ -18,6 +23,11 @@ const SignUp = () => {
               <label>Password</label>
               <input type="text" onChange={pushPassword} 
               className="signUp-password-input" placeholder="Enter Password"/>
+            </div>
+            <div className="signUp-Email">
+              <label>Email</label>
+              <input type="text" onChange={pushEmail} 
+              className="signUp-password-input" placeholder="Enter Email"/>
             </div>
             <div className="signUp-button">
               <button type="submit" className="signUp-button-button"> 
