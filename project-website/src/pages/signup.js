@@ -3,17 +3,9 @@ import React, {useEffect, useState} from "react";
 const SignUp = () => {
   const [username, pushUsername]=useState(null)
   const [password, pushPassword]=useState(null)
-  function pushUsername(val)
-  {
-    pushUsername(val.target.value)
-  }
-  function pushPassword(val)
-  {
-    pushPassword(val.target.value)
-  }
-  
   return (  
     <div className="signUp-container">
+       
         <form className="signUp-Form">
           <div className="signUp-content">
             <h1 className="signUp-title">Sign Up</h1>
