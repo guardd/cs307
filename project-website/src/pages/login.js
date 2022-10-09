@@ -38,26 +38,40 @@ const Login = () => {
     });
   }
   return (
-    <div>
-      {
-        loggedIn?
+      <div className="logIn-container">
+        {
+          loggedIn?
+          <h1>
+            {userId}
+          </h1>
+          :null
+        }
+        <form className="logIn-Form">
+          <div className="logIn-content">
+            <h1 className="logIn-title">Log In</h1>
+            <div className="logIn-username">
+              <label>Username</label>
+              <input type="text" onChange={getUsername} 
+              className="logIn-username-input" placeholder="Enter Username"/>
+            </div>
+            <div className="logIn-password">
+              <label>Password</label>
+              <input type="text" onChange={getPassword} 
+              className="logIn-password-input" placeholder="Enter Password"/>
+            </div>
+            <div className="logIn-button">
+              <button type="submit" className="logIn-button-button"
+              onClick={()=>getUserid(username, password)}> 
+              Log In
+              </button>
+            </div>
+          </div>
+        </form>
+        
         <h1>
-          {userId}
+          
         </h1>
-        :null
-      }
-      <h1>
-        username:
-        <input type="text" onChange={getUsername} />
-      </h1>
-      <h1>
-        password:
-        <input type="text" onChange={getPassword} />
-      </h1>
-      <h1>
-        <button onClick={()=>getUserid(username, password)}> Login</button>
-      </h1>
-    </div>
+      </div>
   );
 };
   
