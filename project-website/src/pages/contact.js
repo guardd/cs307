@@ -8,7 +8,7 @@ const Contact = () => {
     <div className="contact-container">
         <form className="contact-Form">
           <div className="contact-content">
-            <h1 className="contact-title">Sign Up</h1>
+            <h1 className="contact-title">Contact Us</h1>
             <div className="contact-Name">
               <label>Name</label>
               <input type="text" onChange={pushName} 
