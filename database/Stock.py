@@ -1,9 +1,8 @@
 class Stock:
-    def __init__(self, name, nameABV, url, id, portfolioID, userID, avgSharePrice, shares):
+    def __init__(self, name, nameABV, id, portfolioID, userID, avgSharePrice, shares):
     
         self.name = name #TEXT
         self.nameABV = nameABV #TEXT
-        self.url = url #TEXT
         self.id = id #INTEGER
         self.portfolioID = portfolioID #INTEGER
         self.userID = userID #INTEGER
@@ -25,12 +24,6 @@ class Stock:
 
     def set_nameABV(self, nameABV):
         self.nameABV = nameABV
-    
-    def get_url(self):
-        return self.url
-
-    def set_url(self, url):
-        self.id = url
 
     def get_id(self):
         return self.id
