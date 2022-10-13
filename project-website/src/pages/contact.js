@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from "react";
+import './contact.css'
 const Contact = () => {
   const [name, pushName]=useState(null)
   const [contact, pushContact]=useState(null)
@@ -6,7 +7,7 @@ const Contact = () => {
   
   return (  
     <div className="contact-container">
-        <form className="contact-Form">
+        <div className="contact-Form">
           <div className="contact-content">
             <h1 className="contact-title">Contact Us</h1>
             <div className="contact-Name">
@@ -19,10 +20,10 @@ const Contact = () => {
               <input type="text" onChange={pushContact} 
               className="contact-contact-input" placeholder="Enter Your Email"/>
             </div>
-            <div className="contact-password">
+            <div className="contact-problem">
               <label>Problem</label>
               <textarea 
-              className="contact-password-input" placeholder="Enter Password" rows="4" cols="50"/>
+              className="contact-problem-input" placeholder="Enter Problem" rows="4" cols="35"/>
             </div>
             <div className="contact-button">
               <button type="submit" className="contact-button-button"> 
@@ -30,7 +31,7 @@ const Contact = () => {
               </button>
             </div>
           </div>
-        </form>
+        </div>
         
         <h1>
           
