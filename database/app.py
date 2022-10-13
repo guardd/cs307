@@ -19,9 +19,15 @@ def get_login_test():
     username = requestJson['username']
     password = requestJson['password']
     user = db.login_sequence(username, password)
-
     print(user.get_id())
     data = {
         "id": user.get_id()
     }
     return data
+
+
+
+@app.route('/userSignup', methods=['POST'])
+def user_signup_check():
+    #todo : check username, then send email
+    print()
