@@ -10,7 +10,7 @@ import json
 class Transmission:
 
     def __init__(self): #connects to db and makes a cursor
-        self.connect = sqlite3.connect("mydb.db")
+        self.connect = sqlite3.connect("mydb.db", check_same_thread=False)
         self.cur = self.connect.cursor()
 
     def insert_user(self, user): #inserts a user into the database and saves database
@@ -90,7 +90,10 @@ class Transmission:
         self.cur.execute("SELECT * FROM 'User' WHERE username=?", (username,))
         user = self.cur.fetchone()
         try:
-            userobject = User(user[0], user[1], user[2], user[3], user[4], user[5], json.loads(user[6]))
+            if (user[6] == None):
+                userobject = User(user[0], user[1], user[2], user[3], user[4], user[5], {})
+            else:
+                userobject = User(user[0], user[1], user[2], user[3], user[4], user[5], json.loads(user[6]))
             return userobject
         except TypeError:
             return -1 #couldn't find
@@ -121,11 +124,11 @@ class Transmission:
         self.connect.close()
 
     def login_sequence(self, username, password): #returns user when correct, error code when not
-        user = self.search_by_username(username)
+        user = self.search_user_by_username(username)
         if user == -1:
             return -1 #user nonexistant
         else:
             if user.password == password:
-                return 1 #in current commit return user
+                return user #in current commit return user
             else:
                 return -2 # password different

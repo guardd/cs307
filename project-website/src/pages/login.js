@@ -1,5 +1,7 @@
-import React, {useEffect, useState} from "react";
-  
+import React from "react";
+import {useEffect, useState} from "react";
+import Home from ".";
+
 const Login = () => {
   const [username, setUsername]=useState(null)
   const [password, setPassword]=useState(null)
@@ -15,8 +17,9 @@ const Login = () => {
     setPassword(val.target.value)
     console.warn(val.target.value)
   }
-  
-  
+
+
+
   function getUserid(username, password) {
     let loginInfo = {
       "username": username,
@@ -38,41 +41,65 @@ const Login = () => {
     });
   }
   return (
-      <div className="logIn-container">
-        {
-          loggedIn?
-          <h1>
-            {userId}
-          </h1>
-          :null
-        }
-        <form className="logIn-Form">
-          <div className="logIn-content">
-            <h1 className="logIn-title">Log In</h1>
-            <div className="logIn-username">
-              <label>Username</label>
-              <input type="text" onChange={getUsername} 
-              className="logIn-username-input" placeholder="Enter Username"/>
-            </div>
-            <div className="logIn-password">
-              <label>Password</label>
-              <input type="text" onChange={getPassword} 
-              className="logIn-password-input" placeholder="Enter Password"/>
-            </div>
-            <div className="logIn-button">
-              <button type="submit" className="logIn-button-button"
-              onClick={()=>getUserid(username, password)}> 
-              Log In
-              </button>
-            </div>
-          </div>
-        </form>
-        
+    <div className="logIn-container">
+      {
+        loggedIn?
         <h1>
-          
+          {userId}
         </h1>
-      </div>
-  );
+        :null
+      }
+
+        <div className="logIn-content">
+          <h1 className="logIn-title">Log In</h1>
+          <div className="logIn-username">
+            <label>Username</label>
+            <input type="text" onChange={getUsername} 
+            className="logIn-username-input" placeholder="Enter Username"/>
+          </div>
+          <div className="logIn-password">
+            <label>Password</label>
+            <input type="text" onChange={getPassword} 
+            className="logIn-password-input" placeholder="Enter Password"/>
+          </div>
+          <div className="logIn-button">
+            <button type="submit" className="logIn-button-button"
+            onClick={()=>getUserid(username, password)}> 
+            Log In
+            </button>
+          </div>
+        </div>
+
+      
+      <h1>
+        
+      </h1>
+    </div>
+);
 };
-  
+
+/*
+with form : 
+<form className="logIn-Form">
+        <div className="logIn-content">
+          <h1 className="logIn-title">Log In</h1>
+          <div className="logIn-username">
+            <label>Username</label>
+            <input type="text" onChange={getUsername} 
+            className="logIn-username-input" placeholder="Enter Username"/>
+          </div>
+          <div className="logIn-password">
+            <label>Password</label>
+            <input type="text" onChange={getPassword} 
+            className="logIn-password-input" placeholder="Enter Password"/>
+          </div>
+          <div className="logIn-button">
+            <button type="submit" className="logIn-button-button"
+            onClick={()=>getUserid(username, password)}> 
+            Log In
+            </button>
+          </div>
+        </div>
+      </form>
+*/
 export default Login;
