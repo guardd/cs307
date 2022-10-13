@@ -8,6 +8,7 @@ const SignUp = () => {
   const [verified, pushVerified]=useState(false)
   const [verifyFailed, pushVerifyFailed]=useState(false)
   const [verifyFailMessage, pushVerifyFailMessage] = useState("verify")
+  const [show, setShow] = useState(false);
 
   function send_verify_email(username, password, email) {
     let verifyInfo = {
@@ -87,17 +88,24 @@ const SignUp = () => {
             <div className="signUp-email">
               <input type="text" onChange={pushEmail} 
               className="signUp-email-input" placeholder="Enter email"/>
-            </div>
-            <div classname="signUp-verify">
-            <input type="text" onChange={pushVerifyCode} 
-            className="signUp-verify-input" placeholder="Enter code"/>
-            </div>
             <div className="signUp-button">
-              <button type="submit" className="signUp-button-button"
-              onClick={()=>send_verify_email(username, password, email)}> 
-              send email
+              <button id="button" type="submit" className="signUp-button-button" onClick={()=>setShow(true)} onClick={()=>send_verify_email(username, password, email)}> 
+              Sign Up
               </button>
             </div>
+            {
+              show && <div id = "verification" className="signUp-verification">
+              <div className="signUp-verify">
+                <input type="text" onChange={pushVerifyCode} 
+                className="signUp-verify-input" placeholder="Enter Verification"/>
+              </div>
+              <div className="signUp-verify-button">
+                <button id='button-verify' type="submit" className="signUp-verify-verify"> 
+                Verify
+                </button>
+              </div>
+              </div>
+            }
 
           </div>
         </div>
