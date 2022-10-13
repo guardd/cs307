@@ -14,7 +14,10 @@ class Transmission:
         self.cur = self.connect.cursor()
 
     def insert_user(self, user): #inserts a user into the database and saves database
-        self.cur.execute("INSERT INTO 'User' VALUES(?,?,?,?,?,?,?)", (user.id, user.username, user.password, user.email, user.dateofbirth, user.genderID, json.dumps((user.userPortfolios))))
+        if (user.userPortfolios == {}):
+            self.cur.execute("INSERT INTO 'User' VALUES(?,?,?,?,?,?,?)", (user.id, user.username, user.password, user.email, user.dateofbirth, user.genderID, None))
+        else:
+            self.cur.execute("INSERT INTO 'User' VALUES(?,?,?,?,?,?,?)", (user.id, user.username, user.password, user.email, user.dateofbirth, user.genderID, json.dumps((user.userPortfolios))))
         self.connect.commit()
     
     def insert_porfolio(self, portfolio): #inserts a user into the database and saves database
@@ -105,6 +108,18 @@ class Transmission:
 
     def search_user_by_username(self, username):#searches a user by username and returns the user
         self.cur.execute("SELECT * FROM 'User' WHERE username=?", (username,))
+        user = self.cur.fetchone()
+        try:
+            if (user[6] == None):
+                userobject = User(user[0], user[1], user[2], user[3], user[4], user[5], {})
+            else:
+                userobject = User(user[0], user[1], user[2], user[3], user[4], user[5], json.loads(user[6]))
+            return userobject
+        except TypeError:
+            return -1 #couldn't find
+
+    def search_user_by_email(self, email):#searches a user by username and returns the user
+        self.cur.execute("SELECT * FROM 'User' WHERE email=?", (email,))
         user = self.cur.fetchone()
         try:
             if (user[6] == None):
