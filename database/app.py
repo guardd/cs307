@@ -7,7 +7,7 @@ from flask import Flask, request, jsonify
 from Email import Email
 from notifications import Notifications
 from Commodity import Commodity
-import IDCreation
+from IDCreation import IDCreation
 import json
 import uuid 
 app = Flask(__name__)
@@ -60,10 +60,11 @@ def user_signup_check():
 @app.route('/emailVerification', methods=['POST'])
 def user_signup_complete():
     requestJson = request.get_json()
+    print(userSignupDict)
     code = requestJson['code']
     if code in userSignupDict:
         #sign up user
-        user = User(IDCreation.generate_ID(), userSignupDict[code][0], userSignupDict[code][1], userSignupDict[code][2], 1, "TODO", {})
+        user = User(str(uuid.uuid4()), userSignupDict[code][0], userSignupDict[code][1], userSignupDict[code][2], 1, "TODO", {})
         db.insert_user(user)
         data = {
             "returncode": 1
@@ -73,4 +74,5 @@ def user_signup_complete():
         data = {
             "returncode": -1
         }
+    db.save() 
     return data
