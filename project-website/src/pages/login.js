@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-  
+import './login.css'
 const Login = () => {
   const [username, setUsername]=useState(null)
   const [password, setPassword]=useState(null)
@@ -46,16 +46,14 @@ const Login = () => {
           </h1>
           :null
         }
-        <form className="logIn-Form">
+        <div className="logIn-Form">
           <div className="logIn-content">
             <h1 className="logIn-title">Log In</h1>
             <div className="logIn-username">
-              <label>Username</label>
               <input type="text" onChange={getUsername} 
               className="logIn-username-input" placeholder="Enter Username"/>
             </div>
             <div className="logIn-password">
-              <label>Password</label>
               <input type="text" onChange={getPassword} 
               className="logIn-password-input" placeholder="Enter Password"/>
             </div>
@@ -66,7 +64,7 @@ const Login = () => {
               </button>
             </div>
           </div>
-        </form>
+        </div>
         
         <h1>
           
