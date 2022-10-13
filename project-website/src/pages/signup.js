@@ -1,41 +1,28 @@
 import React, {useEffect, useState} from "react";
-  
+import './signup.css'
 const SignUp = () => {
   const [username, pushUsername]=useState(null)
   const [password, pushPassword]=useState(null)
-  const [email, pushEmail]=useState(null)
-  //TODO STEPS : When pressing submit button, check duplicate username / email, return email in use / username in use
-  //Then, password check (can omit for now)
-  //Then, send email to user, send user to code checking screen
-  //Then, if code succeeds, send user data to server, log user in
   return (  
     <div className="signUp-container">
-       
-        <form className="signUp-Form">
+        <div className="signUp-Form">
           <div className="signUp-content">
             <h1 className="signUp-title">Sign Up</h1>
             <div className="signUp-username">
-              <label>Username</label>
               <input type="text" onChange={pushUsername} 
               className="signUp-username-input" placeholder="Enter Username"/>
             </div>
             <div className="signUp-password">
-              <label>Password</label>
               <input type="text" onChange={pushPassword} 
               className="signUp-password-input" placeholder="Enter Password"/>
             </div>
-            <div className="signUp-Email">
-              <label>Email</label>
-              <input type="text" onChange={pushEmail} 
-              className="signUp-password-input" placeholder="Enter Email"/>
-            </div>
             <div className="signUp-button">
               <button type="submit" className="signUp-button-button"> 
-              SignUp
+              Sign Up
               </button>
             </div>
           </div>
-        </form>
+        </div>
         
         <h1>
           
