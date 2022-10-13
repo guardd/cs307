@@ -42,6 +42,10 @@ class Transmission:
         except TypeError:
             return -1 #couldn't find
     
+    def remove_portfolio(self, id): #searches for stock with matching id and removes it
+         self.cur.execute("DELETE * FROM 'Portfolios' WHERE id=?", (id,))
+         self.connect.commit()
+    
     def search_stock_by_id(self, id): #searches a stock by its unique id and returns it
         self.cur.execute("SELECT * FROM 'Stock' WHERE id=?", (id,))
         stock = self.cur.fetchone()
@@ -51,14 +55,18 @@ class Transmission:
         except TypeError:
             return -1 #couldn't find
     
-    def search_stock_by_nameABV(self, nameABV): #searches a stock by its unique id and returns it
-        self.cur.execute("SELECT * FROM 'Stock' WHERE nameABV=?", (nameABV,))
+    def search_stock_by_nameABV(self, nameABV, portfolioID): #used to find stocks that already exist in a given protfolio
+        self.cur.execute("SELECT * FROM 'Stock' WHERE nameABV=? AND portfolioID=?", (nameABV,portfolioID))
         stock = self.cur.fetchone()
         try:
             stockobject = Stock(stock[0],stock[1],stock[2],stock[3],stock[4],stock[5],stock[6])
             return stockobject
         except TypeError:
             return -1 #couldn't find
+    
+    def remove_stock(self, id): #searches for stock with matching id and removes it
+         self.cur.execute("DELETE * FROM 'Stock' WHERE id=?", (id,))
+         self.connect.commit()
     
     def search_property_by_id(self, id): #searches a property by its unique id and returns it
         self.cur.execute("SELECT * FROM 'Property' WHERE id=?", (id,))
@@ -68,6 +76,11 @@ class Transmission:
             return propertyobject
         except TypeError:
             return -1 #couldn't find
+    
+    def remove_property(self, id): #searches for stock with matching id and removes it
+         self.cur.execute("DELETE * FROM 'Property' WHERE id=?", (id,))
+         self.connect.commit()
+    
     def search_commodity_by_id(self, id): #searches a commodity by its unique id and returns it
         self.cur.execute("SELECT * FROM 'Commodity' WHERE id=?", (id,))
         commodity = self.cur.fetchone()
@@ -76,7 +89,11 @@ class Transmission:
             return commodityobject
         except TypeError:
             return -1 #couldn't find
-
+    
+    def remove_property(self, id): #searches for stock with matching id and removes it
+         self.cur.execute("DELETE * FROM 'Commodity' WHERE id=?", (id,))
+         self.connect.commit()
+    
     def search_user_by_id(self, id): #searches a user by id and returns the user
         self.cur.execute("SELECT * FROM 'User' WHERE id=?", (id,))
         user = self.cur.fetchone()
@@ -100,6 +117,10 @@ class Transmission:
         user = self.cur.fetchone()
         userobject = User(user[0], user[1], user[2], user[3], user[4], user[5], json.loads(user[6]))
         return userobject
+    
+    def remove_user(self, id): #searches for stock with matching id and removes it
+         self.cur.execute("DELETE * FROM 'User' WHERE id=?", (id,))
+         self.connect.commit()
     
     def insert_notification(self, notification):
         self.cur.execute("Insert Into 'Notifications' VALUES(?, ?, ?, ?, ?)", (notification.id, notification.userid, notification.code, notification.name, notification.text))

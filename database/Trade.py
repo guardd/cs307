@@ -5,6 +5,7 @@ import Portfolio
 import Property
 import Commodity
 import User
+from IDCreation import IDCreation
 class Trade:
     def __init__(self, id):
         self.user = Transmission.search_user_by_id(id)
@@ -21,22 +22,22 @@ class Trade:
     
     def buy_stock(self, nameABV, portfolioID, shares):
 
-     stock =Transmission.search_stock_by_nameABV(nameABV)
+     stock =Transmission.search_stock_by_nameABV(nameABV, portfolioID)
      price = shares * StockData.get_price()
      if self.user.get_funds < price:
          return "User cannot afford this many shares"
      elif stock==-1:
-            stock = Stock(StockData.get_company_name(), nameABV, 102020, portfolioID, self.user.get_id(), StockData.get_price(), shares)
+            stock = Stock(StockData.get_company_name(), nameABV, IDCreation.generate_ID(), portfolioID, self.user.get_id(), StockData.get_price(), shares)
             Transmission.insert_stock(stock)
             self.user.add_Stock(stock.get_id())
      elif stock.get_portfolioID != portfolioID:
             
-      stock = Stock(StockData.get_company_name(), nameABV, 102020, portfolioID, self.user.get_id(), StockData.get_price(), shares)
+      stock = Stock(StockData.get_company_name(), nameABV, IDCreation.generate_ID(), portfolioID, self.user.get_id(), StockData.get_price(), shares)
       Transmission.insert_stock(stock)
       self.user.add_Stock(stock.get_id())
 
      else:
-            ##Transmission.remove_stock(stock) remove stock from database
+            Transmission.remove_stock(stock.get_id()) ##remove stock from database
             currentShares = stock.get_shares()
             stock.set_shares(currentShares + shares)
             newAvgSharePrice = ((currentShares * stock.get_avgSharePrice) + (shares * StockData.get_price()))/(shares+currentShares)
@@ -52,16 +53,16 @@ class Trade:
         else:
             if shares >= stock.get_shares():
              self.user.set_funds(self.user.get_funds()+(stock.get_shares()*StockData.get_price()))
-             ##Transmission.remove_stock(stockID)
+             Transmission.remove_stock(stockID)
              portfolio = Transmission.search_portfolio_by_id(stock.get_portfolioID())
-             ## Transmission.remove_portfolio(stock.get_portfolioID())
+             Transmission.remove_portfolio(stock.get_portfolioID())
              portfolio.remove_stock(stockID)
              Transmission.insert_porfolio(portfolio)
 
             else:
                 self.user.set_funds(self.user.get_funds()+(stock.get_shares()*StockData.get_price()))
                 stock.set_shares(stock.get_shares()-shares)
-                ##Transmission.remove_stock(stockID)
+                Transmission.remove_stock(stockID)
                 Transmission.insert_stock(stock)
             
           
