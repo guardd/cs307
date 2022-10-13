@@ -1,6 +1,6 @@
 import React from "react";
 import {useEffect, useState} from "react";
-import Home from ".";
+import './login.css'
 
 const Login = () => {
   const [username, setUsername]=useState(null)
@@ -49,7 +49,7 @@ const Login = () => {
         </h1>
         :null
       }
-
+      <div className="login-Form">
         <div className="logIn-content">
           <h1 className="logIn-title">Log In</h1>
           <div className="logIn-username">
@@ -69,7 +69,7 @@ const Login = () => {
             </button>
           </div>
         </div>
-
+        </div>
       
       <h1>
         
