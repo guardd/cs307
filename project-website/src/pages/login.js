@@ -1,4 +1,6 @@
 import React from "react";
+import ReactDOM from "react-dom";
+import { BrowserRouter as Router, Route, Navigate } from "react-router-dom";
 import {useEffect, useState} from "react";
 import './login.css'
 
@@ -35,6 +37,8 @@ const Login = () => {
         console.log(data)
         console.log("login success?" + userId + ", " + data.id)
         setLoggedIn(true)
+        sessionStorage.setItem("loggedIn", true);
+        sessionStorage.setItem("id", data.id)
       }
     ).catch(error => {
       console.error('login error!', error);
@@ -44,9 +48,7 @@ const Login = () => {
     <div className="logIn-container">
       {
         loggedIn?
-        <h1>
-          {userId}
-        </h1>
+        <Navigate to="/profile" />
         :null
       }
       <div className="login-Form">
