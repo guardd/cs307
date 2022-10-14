@@ -160,3 +160,15 @@ def password_change():
         "returncode": "0"
     }
     return data
+
+@app.route('/bugReport', methods=['POST'])
+def bug_report():
+    requestJson = request.get_json()
+    name = requestJson['name']
+    email = requestJson['email']
+    problem = requestJson['problem']
+    db.insert_bug_report(name, email, problem)
+    data = {
+        "returncode": 0
+    }
+    return data
