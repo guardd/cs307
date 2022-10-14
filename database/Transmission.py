@@ -1,3 +1,4 @@
+from msilib.schema import Error
 from User import User
 from notifications import Notifications
 from Portfolio import Portfolio
@@ -101,7 +102,10 @@ class Transmission:
         self.cur.execute("SELECT * FROM 'User' WHERE id=?", (id,))
         user = self.cur.fetchone()
         try:
-            userobject = User(user[0], user[1], user[2], user[3], user[4], user[5], json.loads(user[6]))
+            if (user[6] == None):
+                userobject = User(user[0], user[1], user[2], user[3], user[4], user[5], {})
+            else:
+                userobject = User(user[0], user[1], user[2], user[3], user[4], user[5], json.loads(user[6]))
             return userobject
         except TypeError:
             return -1 #couldn't find
@@ -137,8 +141,12 @@ class Transmission:
         return userobject
     
     def remove_user(self, id): #searches for stock with matching id and removes it
-         self.cur.execute("DELETE * FROM 'User' WHERE id=?", (id,))
-         self.connect.commit()
+        try:
+            self.cur.execute("DELETE FROM 'User' WHERE id=?", (id,))
+            self.connect.commit()
+            return 1
+        except TypeError:
+            return -1
     
     def insert_notification(self, notification):
         self.cur.execute("Insert Into 'Notifications' VALUES(?, ?, ?, ?, ?)", (notification.id, notification.userid, notification.code, notification.name, notification.text))

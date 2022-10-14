@@ -76,3 +76,38 @@ def user_signup_complete():
         }
     db.save() 
     return data
+
+
+@app.route('/userDataRequest', methods=['POST'])
+def user_data_request():
+    requestJson = request.get_json()
+    id = requestJson['id']
+    if (db.search_user_by_id(id) != -1):
+        user = db.search_user_by_id(id)
+        data = {
+            "username": user.username,
+            "password": user.password,
+            "email": user.email,
+            "dateofbirth": user.dateofbirth,
+            "genderID": user.genderID,
+            "returncode": 1
+        }
+    else:
+        data = {
+            "returncode": -1
+        }
+    return data
+@app.route('/deleteProfile', methods=['POST'])
+def user_delete():
+    requestJson = request.get_json()
+    id = requestJson['id']
+    if (db.remove_user(id) != -1):
+        data = {
+            "returncode": 1
+        }
+    else:
+        data = {
+            "returncode": 0
+        }
+    return data
+    
