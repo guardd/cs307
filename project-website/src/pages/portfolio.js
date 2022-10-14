@@ -90,7 +90,7 @@ const Portfolio = () => {
     <div class="main">
       <div class="one">
       <h1 className="current-title">Current Porfolio</h1>
-      <PieChart width={400} height={300}>
+      <PieChart className= 'pie1'width={400} height={300}>
       <Legend layout="vertical" verticalAlign="middle" align="right" />
       <Pie data={data01} dataKey="amount" nameKey="name" cx="50%" cy="50%" outerRadius={50} fill="#fff">
       </Pie>
@@ -117,7 +117,8 @@ const Portfolio = () => {
         <Legend />
         <Line type="monotone" dataKey="close" stroke="#8884d8" />
       </LineChart>
-      <LineChart width={400} height={250} data={projectedData}
+      <h1 className="project-title">Projected Stock</h1>
+      <LineChart className= 'graph' width={400} height={250} data={projectedData}
         margin={{ top: 70, right: 10, left: 0, bottom: 5 }}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />
@@ -127,8 +128,6 @@ const Portfolio = () => {
         <Line type="monotone" dataKey="close" stroke="#8884d8" />
       </LineChart>
       </div>
-
-      
 
       <div class="three">
         <div className="prediction-container"></div>
@@ -156,7 +155,15 @@ const Portfolio = () => {
         </div>
       </div>
 
+
+
+
+
+
     </div>
+
+    
+
   )
 };
 export default Portfolio;
