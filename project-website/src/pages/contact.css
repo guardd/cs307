@@ -1,4 +1,4 @@
-.logIn-container {
+.contact-container {
     background: #e8b0e2;
    font-weight: 400;
    justify-content: center;
@@ -9,7 +9,7 @@
    height: 87.5vh;
    gap: 20px;
  }
- .logIn-Form {
+ .contact-Form {
      width: 420px;
      box-shadow: rgb(0 0 0 / 16%) 1px 1px 10px;
      padding-top: 30px;
@@ -17,12 +17,12 @@
      border-radius: 8px;
      background: #fafafa;
  }
- .logIn-content {
+ .contact-content {
    padding-left: 12%;
    padding-right: 12%;
  }
 
- .logIn-title {
+ .contact-title {
      text-align: center;
      margin-bottom: 1em;
      font-size: 24px;
@@ -38,11 +38,11 @@
    justify-content: center;
    display: flex;
 }
- .logIn-button, .logIn-username, .logIn-password {
+ .contact-button, .contact-username, .contact-password {
    display: flex;
    justify-content: center;
  }
- .logIn-button-button {
+ .contact-button-button {
    display: flex;
    justify-content: center;
    margin-top: 10px;
