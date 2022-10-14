@@ -6,7 +6,7 @@ from Property import Property
 from Commodity import Commodity
 import sqlite3
 import json
-from Trade import Trade
+
 
 class Transmission:
 
@@ -120,14 +120,29 @@ class Transmission:
         return userobject
     
     def remove_user(self, id): #searches for stock with matching id and removes it
-         t = Trade(id)
+        
          self.cur.execute("SELECT * FROM 'User' WHERE id=?", (id,))
          user = self.cur.fetchone()
 
          portfoliolist = json.dumps(user[6])
 
          for x in portfoliolist:
-             t.delete_portfolio(x)
+              portfolio = self.search_portfolio_by_id(x)
+
+              stocklist = portfolio.get_stocks()
+              propertylist = portfolio.get_properties()
+              commoditylist =  portfolio.get_commodities()
+
+              for x in stocklist:
+                self.remove_stock(x)
+        
+              for x in propertylist:
+                self.remove_property(x)
+        
+              for x in commoditylist:
+                self.remove_commodity(x)
+        
+              self.remove_portfolio(portfolio)
 
          self.cur.execute("DELETE FROM 'User' WHERE id=?", (id,))
          self.connect.commit()
