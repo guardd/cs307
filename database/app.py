@@ -130,3 +130,33 @@ def password_recovery():
             "returncode": -1
         }
     return data    
+
+@app.route('/usernameChange', methods=['POST'])
+def username_change():
+    requestJson = request.get_json()
+    id = requestJson['id']
+    changeUsername = requestJson['changeUsername']
+    if (db.search_user_by_username(changeUsername) == -1):
+        user = db.search_user_by_id(id)
+        user.change_username(changeUsername, id)
+        data = {
+            "returncode": "0"
+        }
+    else:
+        data = {
+            "returncode": "-1"
+        }
+    return data
+
+
+@app.route('/passwordChange', methods=['POST'])
+def password_change():
+    requestJson = request.get_json()
+    id = requestJson['id']
+    changePassword = requestJson['changePassword']
+    user = db.search_user_by_id(id)
+    user.change_password(changePassword, id)
+    data = {
+        "returncode": "0"
+    }
+    return data

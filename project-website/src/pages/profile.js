@@ -10,13 +10,61 @@ const Profile = () => {
     const [email, setEmail]=useState(null)
     const [dob, setDob]=useState(null)
     const [genderID, setGenderID]=useState(null)
-    const [profileSuccess, setprofileSuccess]=useState(false) 
+    const [profileSuccess, setprofileSuccess]=useState(false)
+    const [editUsername, setEditUsername]=useState(false)  
+    const [editPassword, setEditPassword]=useState(false)
+    const [changeUsername, setChangeUsername]=useState(null)
+    const [changeUsernameDuplicate, setChangeUsernameDuplicate]=useState(false)
+    const [changePassword, setChangePassword]=useState(null)
+    function getChangeUsername(val) {
+        setChangeUsername(val.target.value)
+    }
+    function getChangePassword(val) {
+        setChangePassword(val.target.value)
+    }
     function getSessionStorage() {
         setUserid(sessionStorage.getItem("id"))
         console.log(userId)
         setLoggedIn(sessionStorage.getItem("loggedIn"))
         console.log(loggedIn)
         getUserData(userId)
+    }
+    function usernameChange(){
+        let usernameChangeInfo = {
+            "id": sessionStorage.getItem("id"),
+            "changeUsername": changeUsername
+        };
+        fetch('/usernameChange', {
+            "method": "POST",
+            "headers": {"Content-Type": "application/json"},
+            "body": JSON.stringify(usernameChangeInfo)
+        }).then(res => res.json()).then(
+            data => {
+                if (data.returncode === "0") {
+                    setUsername(changeUsername)
+                    setEditUsername(false)
+                    setChangeUsernameDuplicate(false)
+                } else {
+                    setChangeUsernameDuplicate(true)
+                }
+            }
+        )
+    }
+    function passwordChange(){
+        let passwordChangeInfo = {
+            "id": sessionStorage.getItem("id"),
+            "changePassword": changePassword
+        };
+        fetch('/passwordChange', {
+            "method": "POST",
+            "headers": {"Content-Type": "application/json"},
+            "body": JSON.stringify(passwordChangeInfo)
+        }).then(res => res.json()).then(
+            data => {
+                setPassword(changePassword)
+                setEditPassword(false)
+            }
+        )
     }
     function getUserData(gotUserId) {
         let idInfo = {
@@ -84,6 +132,32 @@ const Profile = () => {
         <h2>
         <button onClick={()=>deleteProfile()}> 
         delete profile</button>
+        <button onClick={()=>setEditUsername(true)}> 
+        edit username</button>
+        <button onClick={()=>setEditPassword(true)}> 
+        edit password</button>
+        </h2>:null
+      }
+      {
+        editUsername?
+        <h2>
+            New Username:<input type="text" onChange={getChangeUsername} 
+             placeholder="Enter New Username"/>
+            <button onClick={()=>usernameChange(changeUsername)}> Change Username complete </button>
+            {
+                changeUsernameDuplicate?
+                <h3>
+                    duplicate username, change another
+                </h3>:null
+            }
+        </h2>:null
+      }
+      {
+        editPassword?
+        <h2>
+            New Password:<input type="text" onChange={getChangePassword} 
+             placeholder="Enter New Password"/>
+            <button onClick={()=>passwordChange(changeUsername)}> Change Password complete</button>
         </h2>:null
       }
       </h1>
