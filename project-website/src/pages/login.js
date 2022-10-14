@@ -3,7 +3,6 @@ import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Route, Navigate } from "react-router-dom";
 import {useEffect, useState} from "react";
 import './login.css'
-
 const Login = () => {
   const [username, setUsername]=useState(null)
   const [password, setPassword]=useState(null)
@@ -37,7 +36,7 @@ const Login = () => {
     })
     setEmailMessage("Email sent")
   }
-
+  const [show, setShow] = useState(false);
   function getUserid(username, password) {
     let loginInfo = {
       "username": username,
@@ -66,29 +65,14 @@ const Login = () => {
   }
   return (
     <div className="logIn-container">
-      {
-        loggedIn?
-        <Navigate to="/profile" />
-        :
-        <div>
-        <h1>
-          Forgot Password? Email:<input type="text" onChange={getEmail} 
-          className="logIn-email-input" placeholder="Enter Email"/>
-          <button onClick={()=>sendRecoveryEmail(email)}> Send Recovery Email </button>
-          {emailMessage}
-        </h1>
-        </div>
-      }
-      <div className="login-Form">
+      <div className="logIn-Form">
         <div className="logIn-content">
           <h1 className="logIn-title">Log In</h1>
           <div className="logIn-username">
-            <label>Username</label>
             <input type="text" onChange={getUsername} 
             className="logIn-username-input" placeholder="Enter Username"/>
           </div>
           <div className="logIn-password">
-            <label>Password</label>
             <input type="text" onChange={getPassword} 
             className="logIn-password-input" placeholder="Enter Password"/>
           </div>
@@ -98,6 +82,24 @@ const Login = () => {
             Log In
             </button>
           </div>
+          <p className="forgot-password">
+            Forgot <a href="#" onClick={()=>setShow(true)}>password?</a>
+          </p>
+          {
+        loggedIn?
+        <Navigate to="/profile" />
+        :
+        <div>
+          {
+            show && <h1 className="login-forgot">
+            <input type="text" onChange={getEmail} 
+            className="logIn-email-input" placeholder="Enter Email"/>
+            <button className="recovery-button" onClick={()=>sendRecoveryEmail(email)}> Send Recovery Email </button>
+            {emailMessage}
+          </h1>
+          }
+        </div>
+      }
         </div>
         </div>
       
@@ -107,29 +109,4 @@ const Login = () => {
     </div>
 );
 };
-
-/*
-with form : 
-<form className="logIn-Form">
-        <div className="logIn-content">
-          <h1 className="logIn-title">Log In</h1>
-          <div className="logIn-username">
-            <label>Username</label>
-            <input type="text" onChange={getUsername} 
-            className="logIn-username-input" placeholder="Enter Username"/>
-          </div>
-          <div className="logIn-password">
-            <label>Password</label>
-            <input type="text" onChange={getPassword} 
-            className="logIn-password-input" placeholder="Enter Password"/>
-          </div>
-          <div className="logIn-button">
-            <button type="submit" className="logIn-button-button"
-            onClick={()=>getUserid(username, password)}> 
-            Log In
-            </button>
-          </div>
-        </div>
-      </form>
-*/
 export default Login;
