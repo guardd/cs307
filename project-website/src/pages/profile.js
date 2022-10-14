@@ -62,35 +62,34 @@ const Profile = () => {
     }
   return (
     <div>
+      
       <h1>
-      <h1>
-      {username}
+      username: {username}
       </h1>
       <h1>
-      {password}
+      password: {password}
       </h1>
       <h1>
-      {email}
+      email: {email}
       </h1>
       <h1>
-      {dob}
+      DOB: {dob}
       </h1>
       <h1>
-      {genderID}
+      gender: {genderID}
       </h1>
       <h1>
       {
         profileSuccess?
-        <h1>
+        <h2>
         <button onClick={()=>deleteProfile()}> 
         delete profile</button>
-        </h1>:null
+        </h2>:null
       }
       </h1>
-        {userId}
         <button onClick={()=>getSessionStorage()}> 
         see profile</button>
-      </h1>
+      
       
     </div>
   );

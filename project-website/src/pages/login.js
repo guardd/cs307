@@ -9,6 +9,8 @@ const Login = () => {
   const [password, setPassword]=useState(null)
   const [userId, setUserid]=useState(null)
   const [loggedIn, setLoggedIn]=useState(false)
+  const [email, setEmail]=useState(null)
+  const [emailMessage, setEmailMessage]=useState(null)
   function getUsername(val)
   {
     setUsername(val.target.value)
@@ -19,8 +21,22 @@ const Login = () => {
     setPassword(val.target.value)
     console.warn(val.target.value)
   }
-
-
+  function getEmail(val)
+  {
+    setEmail(val.target.value)
+  }
+  function sendRecoveryEmail()
+  {
+    let emailInfo = {
+      "email": email
+    };
+    fetch('/passwordRecovery', {
+      "method": "POST",
+      "headers": {"Content-Type": "application/json"},
+      "body": JSON.stringify(emailInfo)
+    })
+    setEmailMessage("Email sent")
+  }
 
   function getUserid(username, password) {
     let loginInfo = {
@@ -33,12 +49,16 @@ const Login = () => {
       "body": JSON.stringify(loginInfo)
     }).then(res => res.json()).then(
       data => {
+        if(data.returncode === "-1") {
+          return;
+        }
         setUserid(data.id);
         console.log(data)
         console.log("login success?" + userId + ", " + data.id)
-        setLoggedIn(true)
-        sessionStorage.setItem("loggedIn", true);
+        sessionStorage.setItem("loggedIn", "true")
         sessionStorage.setItem("id", data.id)
+        console.log(sessionStorage.getItem("loggedIn"))
+        setLoggedIn(true)
       }
     ).catch(error => {
       console.error('login error!', error);
@@ -49,7 +69,15 @@ const Login = () => {
       {
         loggedIn?
         <Navigate to="/profile" />
-        :null
+        :
+        <div>
+        <h1>
+          Forgot Password? Email:<input type="text" onChange={getEmail} 
+          className="logIn-email-input" placeholder="Enter Email"/>
+          <button onClick={()=>sendRecoveryEmail(email)}> Send Recovery Email </button>
+          {emailMessage}
+        </h1>
+        </div>
       }
       <div className="login-Form">
         <div className="logIn-content">

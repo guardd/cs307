@@ -15,18 +15,13 @@ class Email():
 
     def send_password_recovery_email(self, user): #note : gmail doesnt work with this shit
                                                 #returns : the code generated for the email
-        firstdigit = random.randint(1, 9)
-        code = "" + str(firstdigit)
-        for x in range(5):
-            code = code + str(random.randint(0, 9))
-
         opts = mailslurp_client.SendEmailOptions()
         opts.to = [user.get_email()]
         opts.subject = "Password Recovery from The Crystal Ball"
-        opts.body = "This is a password recovery email from the crystal ball.\nIf you didn't request password recovery, please ignore.\n The code for password recovery is " + code  + "\nFrom The Crystal Ball"
+        opts.body = "This is a password recovery email from the crystal ball.\nIf you didn't request password recovery, please ignore.\n Your password is: " + user.password  + "\nAfter logging in again, please reset your password.\nFrom The Crystal Ball"
         opts.is_html = False
         self.inbox_controller.send_email(self.inbox_1.id, send_email_options=opts)
-        return code
+        print("password recovery email sent")
 
     def send_email_verify_email(self, email):
         firstdigit = random.randint(1, 9)

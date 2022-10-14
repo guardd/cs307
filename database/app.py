@@ -24,10 +24,15 @@ def get_login_test():
     username = requestJson['username']
     password = requestJson['password']
     user = db.login_sequence(username, password)
-    print(user.get_id())
-    data = {
-        "id": user.get_id()
-    }
+    try:
+        data = {
+            "returncode": "1",
+            "id": user.get_id()
+        }
+    except AttributeError:
+        data = {
+            "returncode": "-1"
+        }
     return data
 
 
@@ -111,3 +116,17 @@ def user_delete():
         }
     return data
     
+@app.route('/passwordRecovery', methods=['POST'])
+def password_recovery():
+    requestJson = request.get_json()
+    email = requestJson['email']
+    if (db.search_user_by_email(email) != -1):
+        hostEmail.send_password_recovery_email(db.search_user_by_email(email))
+        data = {
+            "returncode": 0
+        }
+    else:
+        data = {
+            "returncode": -1
+        }
+    return data    
