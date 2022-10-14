@@ -1,3 +1,4 @@
+import sqlite3
 class User:
     def __init__(self, id, username, password, email, dateofbirth, genderID, userPortfolios):
         self.id = id #INTEGER PRIMARY KEY
@@ -6,7 +7,10 @@ class User:
         self.email = email #TEXT
         self.dateofbirth = dateofbirth #INTEGER
         self.genderID = genderID #TEXT
-        self.userPortfolios = userPortfolios #list
+        self.userPortfolios = userPortfolios #INTEGER in id
+        
+        self.connect = sqlite3.connect("mydb.db") ##connects to database
+        self.cur = self.connect.cursor()
 #        self.notifications = #INTEGER in id
 #        self.predictions = #INTEGER in id
 
@@ -46,15 +50,24 @@ class User:
 
     def set_genderID(self, genderID):
         self.genderID = genderID
-
+    
     def get_userPortfolios(self):
         return self.userPortfolios
-
+    
     def add_portfolio(self, portfolio):
         self.userPortfolios.append(portfolio)
-
+    
     def remove_portfolio(self, portfolio):
         self.userPortfolios.remove(portfolio)
+
+    def change_username(self, username, id):
+         self.cur.execute("UPDATE 'User' SET username=? WHERE id=?", (username,id,))
+         self.connect.commit()
+    
+    def change_password(self, password, id):
+         self.cur.execute("UPDATE 'User' SET password=? WHERE id=?", (password,id,))
+         self.connect.commit()
+    
 
     #def get_notifications(self):
     #    return self.notifications
