@@ -154,7 +154,7 @@ class Transmission:
 
     def insert_bug_report(self, name, email, problem):
         self.cur.execute("Insert Into 'BugReports' VALUES(?, ?, ?)", (name, email, problem))
-        self.connect.commit
+        self.connect.commit()
 
     def retrieve_notification_by_user(self, user):
         self.cur.execute("SELECT * FROM 'Notifications' WHERE userid=?", (user.id,))
