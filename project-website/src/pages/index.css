@@ -1,0 +1,18 @@
+img {
+	width: 1500px;
+	height: 550px;
+}
+.about {
+	justify-content: center;
+	display: inline;
+	position: absolute;
+	left: 100px;
+	top: 625px;
+}
+.mission {
+	justify-content: center;
+	display: inline;
+	position: absolute;
+	right: 150px;
+	top: 625px;
+}
