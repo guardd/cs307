@@ -10,18 +10,26 @@
     width: 33.3%;
     height: 100%;
 }
-.three {
+.two {
     justify-content: left;
-    display: inline-flex;
-    width: 66.6%;
+    display: flex;
+    width: 33.3%;
     height: 100%;
 }
+.two {
+  justify-content: left;
+  display: flex;
+  width: 50%;
+  height: 100%;
+}
+
 .current-title {
     height: auto;
     margin-left: auto;
-    position: fixed;
-    left: 12%;
-    top: 15%;
+    position: relative;
+    display: inline-flex;
+    left: 100px;
+    top: 25px;
     text-align: center;
     margin-bottom: 1em;
     font-size: 15px;
@@ -31,16 +39,28 @@
 .projected-title {
     height: auto;
     margin-left: auto;
-    position: fixed;
-    left: 45%;
-    top: 15%;
+    position: relative;
+    left: 100px;
+    top: 25px;
     text-align: center;
     margin-bottom: 1em;
     font-size: 15px;
     color: rgb(34, 34. 34);
     font-weight: 800;
 }
-
+.stock-title, .project-title {
+    height: auto;
+    margin-left: auto;
+    position: relative;
+    left: 100px;
+    top: 25px;
+    text-align: center;
+    margin-bottom: 1em;
+    font-size: 15px;
+    color: rgb(34, 34. 34);
+    font-weight: 800;
+ }
+ 
 
 .prediction-container {
     background: #e8b0e2;
@@ -73,7 +93,7 @@
      color: rgb(34, 34. 34);
      font-weight: 800;
  }
- 
+
  input[type=text]{
    width: 100%;
    padding: 12px;
