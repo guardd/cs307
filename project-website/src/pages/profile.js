@@ -1,7 +1,39 @@
 import React from "react";
 import {useEffect, useState} from "react";
 import { BrowserRouter as Router, Route, Navigate, useNavigate } from "react-router-dom";
+import Select from 'react-select';
+import './profile.css';
 const Profile = () => {
+    var colors = [
+        {
+            value: 1,
+            label: "coral"
+        },
+        {
+            value: 2,
+            label: "yellow"
+        },
+        {
+            value: 3,
+            label: "teal"
+        },
+        {
+            value: 4,
+            label: "pink"
+        },
+        {
+            value: 4,
+            label: "purple"
+        },
+        {
+            value: 4,
+            label: "green"
+        },
+    ];
+    var [setbgColor, colorValue] = useState(colors.label);
+    var colorHandle = e => {
+        colorValue(e.label);
+    }
     const navigate = useNavigate();
     const [userId, setUserid]=useState(null)
     const [loggedIn, setLoggedIn]=useState("false")
@@ -109,32 +141,33 @@ const Profile = () => {
         )
     }
   return (
-    <div>
-      
-      <h1>
+    <div className= 'container'>
+      <div className='profile-box'>
+          <div className='profile-content'>
+      <h1 className= 'username'>
       username: {username}
       </h1>
-      <h1>
+      <h1 className= 'password'>
       password: {password}
       </h1>
-      <h1>
+      <h1 className= 'email'>
       email: {email}
       </h1>
-      <h1>
+      <h1 className= 'dob'>
       DOB: {dob}
       </h1>
-      <h1>
+      <h1 className= 'gender'>
       gender: {genderID}
       </h1>
       <h1>
       {
         profileSuccess?
         <h2>
-        <button onClick={()=>deleteProfile()}> 
+        <button className='delete' onClick={()=>deleteProfile()}> 
         delete profile</button>
-        <button onClick={()=>setEditUsername(true)}> 
+        <button className = 'editUser' onClick={()=>setEditUsername(true)}> 
         edit username</button>
-        <button onClick={()=>setEditPassword(true)}> 
+        <button className = 'editPass' onClick={()=>setEditPassword(true)}> 
         edit password</button>
         </h2>:null
       }
@@ -163,8 +196,10 @@ const Profile = () => {
       </h1>
         <button onClick={()=>getSessionStorage()}> 
         see profile</button>
-      
-      
+        <style>{'body {background-color:'+setbgColor+';}'}</style>
+        <Select options={colors} onChange={colorHandle}/>
+        </div>
+    </div>
     </div>
   );
 };
