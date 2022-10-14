@@ -1,6 +1,66 @@
 import React from "react";
 import './portfolio.css';
-import { PieChart, Pie, Legend} from 'recharts';
+import { PieChart, Pie, Legend, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line} from 'recharts';
+const stockData = [
+  {
+    "date": "2022-06-10",
+    "close": 235.1566619873047
+  },
+  {
+    "date": "2022-06-13",
+    "close": 223.1666717529297
+  },
+  {
+    "date": "2022-06-14",
+    "close": 218.2866668701172
+  },
+  {
+    "date": "2022-06-15",
+    "close": 220.9166717529297
+  },
+  {
+    "date": "2022-06-16",
+    "close": 222.73666381835938
+  },
+  {
+    "date": "2022-06-17",
+    "close": 213.43333435058594
+  },
+  {
+    "date": "2022-06-21",
+    "close": 224.60333251953125
+  }
+]
+const projectedData = [
+  {
+    "date": "2022-06-10",
+    "close": 245.1566619873047
+  },
+  {
+    "date": "2022-06-13",
+    "close": 215.1666717529297 - 15
+  },
+  {
+    "date": "2022-06-14",
+    "close": 210.2866668701172
+  },
+  {
+    "date": "2022-06-15",
+    "close": 226.9166717529297
+  },
+  {
+    "date": "2022-06-16",
+    "close": 242.73666381835938
+  },
+  {
+    "date": "2022-06-17",
+    "close": 223.43333435058594
+  },
+  {
+    "date": "2022-06-21",
+    "close": 234.60333251953125
+  }
+]
 const data01 = [
   {name: 'AAPL', amount: 400, fill: '#57c0e8'},
   {name: 'GOOG', amount: 700, fill: "#FF6565"},
@@ -48,6 +108,24 @@ const Portfolio = () => {
 
       <div class="two">
       <h1 className="stock-title">Current Stock</h1>
+      <LineChart width={400} height={250} data={stockData}
+        margin={{ top: 70, right: 10, left: 0, bottom: 5 }}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name" />
+        <YAxis />
+        <Tooltip />
+        <Legend />
+        <Line type="monotone" dataKey="close" stroke="#8884d8" />
+      </LineChart>
+      <LineChart width={400} height={250} data={projectedData}
+        margin={{ top: 70, right: 10, left: 0, bottom: 5 }}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name" />
+        <YAxis />
+        <Tooltip />
+        <Legend />
+        <Line type="monotone" dataKey="close" stroke="#8884d8" />
+      </LineChart>
       </div>
 
       
