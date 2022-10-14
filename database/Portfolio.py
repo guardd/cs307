@@ -35,21 +35,30 @@ class Portfolio:
 
     def set_funds(self, funds):
         self.funds = funds
+    
+    def get_stocks(self):
+       return self.stocks
+   
+    def get_properties(self):
+       return self.property
+   
+    def get_commodities(self):
+       return self.commodities
 
     def add_stock(self, stock):
-        self.stocks.append(stock)
+        self.stocks.append(stock.get_id())
 
     def add_commodity(self, commodity):
-        self.commodities.append(commodity)
+        self.commodities.append(commodity.get_id())
     
     def add_property(self, property):
-        self.properties.append(property)
+        self.properties.append(property.get_id())
 
     def remove_stock(self, stock):
-        self.stocks.remove(stock)
+        self.stocks.remove(stock.get_id())
 
     def remove_commodity(self, commodity):
-        self.commodities.remove(commodity)
+        self.commodities.remove(commodity.get_id())
     
     def remove_property(self, property):
-        self.properties.remove(property)
+        self.properties.remove(property.get_id())

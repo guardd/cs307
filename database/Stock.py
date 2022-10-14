@@ -31,10 +31,10 @@ class Stock:
     def set_id(self, id):
         self.id = id
     
-    def get_protfolioID(self):
+    def get_portfolioID(self):
         return self.portfolioID
 
-    def set_porfolioID(self, portfolioID):
+    def set_portfolioID(self, portfolioID):
         self.portfolioID = portfolioID
 
     def get_userID(self):

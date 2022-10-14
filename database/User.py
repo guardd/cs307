@@ -1,4 +1,5 @@
 import sqlite3
+import json
 class User:
     def __init__(self, id, username, password, email, dateofbirth, genderID, userPortfolios):
         self.id = id #INTEGER PRIMARY KEY
@@ -55,18 +56,22 @@ class User:
         return self.userPortfolios
     
     def add_portfolio(self, portfolio):
-        self.userPortfolios.append(portfolio)
+        self.userPortfolios.append(portfolio.get_id())
     
     def remove_portfolio(self, portfolio):
-        self.userPortfolios.remove(portfolio)
+        self.userPortfolios.remove(portfolio.get_id())
 
-    def change_username(self, username, id):
+    def change_username(self, username, id):        
          self.cur.execute("UPDATE 'User' SET username=? WHERE id=?", (username,id,))
          self.connect.commit()
     
     def change_password(self, password, id):
          self.cur.execute("UPDATE 'User' SET password=? WHERE id=?", (password,id,))
          self.connect.commit()
+    
+    def update_portfolios(self, portfolio, id):
+        self.cur.execute("UPDATE 'User' SET userPortfolios=? WHERE id=?", (json.dump(portfolio), id,))
+        self.connect.commit()
     
 
     #def get_notifications(self):

@@ -1,4 +1,3 @@
-from msilib.schema import Error
 from User import User
 from notifications import Notifications
 from Portfolio import Portfolio
@@ -7,26 +6,24 @@ from Property import Property
 from Commodity import Commodity
 import sqlite3
 import json
+from Trade import Trade
 
 class Transmission:
 
     def __init__(self): #connects to db and makes a cursor
-        self.connect = sqlite3.connect("mydb.db", check_same_thread=False)
+        self.connect = sqlite3.connect("mydb.db")
         self.cur = self.connect.cursor()
 
     def insert_user(self, user): #inserts a user into the database and saves database
-        if (user.userPortfolios == {}):
-            self.cur.execute("INSERT INTO 'User' VALUES(?,?,?,?,?,?,?)", (user.id, user.username, user.password, user.email, user.dateofbirth, user.genderID, None))
-        else:
-            self.cur.execute("INSERT INTO 'User' VALUES(?,?,?,?,?,?,?)", (user.id, user.username, user.password, user.email, user.dateofbirth, user.genderID, json.dumps((user.userPortfolios))))
+        self.cur.execute("INSERT INTO 'User' VALUES(?,?,?,?,?,?,?)", (user.id, user.username, user.password, user.email, user.dateofbirth, user.genderID, json.dumps((user.userPortfolios))))
         self.connect.commit()
     
-    def insert_porfolio(self, portfolio): #inserts a user into the database and saves database
+    def insert_portfolio(self, portfolio): #inserts a user into the database and saves database
         self.cur.execute("INSERT INTO 'Portfolios' VALUES(?,?,?,?,?,?,?)", (portfolio.name, portfolio.id, portfolio.userID, portfolio.funds, json.dumps(portfolio.stocks),  json.dumps(portfolio.commodities), json.dumps((portfolio.properties))))
         self.connect.commit()
 
     def insert_stock(self, stock): #inserts a user into the database and saves database
-        self.cur.execute("INSERT INTO 'Stock' VALUES(?,?,?,?,?,?,?)", (stock.name, stock.nameABV,stock.id, stock.portfolioID, stock.userID, stock.avgSharePrice, stock.Shares))
+        self.cur.execute("INSERT INTO 'Stock' VALUES(?,?,?,?,?,?,?)", (stock.name, stock.nameABV,stock.id, stock.portfolioID, stock.userID, stock.avgSharePrice, stock.shares))
         self.connect.commit()
     
     def insert_property(self, property): #inserts a user into the database and saves database
@@ -47,7 +44,7 @@ class Transmission:
             return -1 #couldn't find
     
     def remove_portfolio(self, id): #searches for stock with matching id and removes it
-         self.cur.execute("DELETE * FROM 'Portfolios' WHERE id=?", (id,))
+         self.cur.execute("DELETE FROM 'Portfolios' WHERE id=?", (id,))
          self.connect.commit()
     
     def search_stock_by_id(self, id): #searches a stock by its unique id and returns it
@@ -69,7 +66,7 @@ class Transmission:
             return -1 #couldn't find
     
     def remove_stock(self, id): #searches for stock with matching id and removes it
-         self.cur.execute("DELETE * FROM 'Stock' WHERE id=?", (id,))
+         self.cur.execute("DELETE FROM 'Stock' WHERE id=?", (id,))
          self.connect.commit()
     
     def search_property_by_id(self, id): #searches a property by its unique id and returns it
@@ -82,7 +79,7 @@ class Transmission:
             return -1 #couldn't find
     
     def remove_property(self, id): #searches for stock with matching id and removes it
-         self.cur.execute("DELETE * FROM 'Property' WHERE id=?", (id,))
+         self.cur.execute("DELETE FROM 'Property' WHERE id=?", (id,))
          self.connect.commit()
     
     def search_commodity_by_id(self, id): #searches a commodity by its unique id and returns it
@@ -94,18 +91,15 @@ class Transmission:
         except TypeError:
             return -1 #couldn't find
     
-    def remove_property(self, id): #searches for stock with matching id and removes it
-         self.cur.execute("DELETE * FROM 'Commodity' WHERE id=?", (id,))
+    def remove_commodity(self, id): #searches for stock with matching id and removes it
+         self.cur.execute("DELETE FROM 'Commodity' WHERE id=?", (id,))
          self.connect.commit()
     
     def search_user_by_id(self, id): #searches a user by id and returns the user
         self.cur.execute("SELECT * FROM 'User' WHERE id=?", (id,))
         user = self.cur.fetchone()
         try:
-            if (user[6] == None):
-                userobject = User(user[0], user[1], user[2], user[3], user[4], user[5], {})
-            else:
-                userobject = User(user[0], user[1], user[2], user[3], user[4], user[5], json.loads(user[6]))
+            userobject = User(user[0], user[1], user[2], user[3], user[4], user[5], json.loads(user[6]))
             return userobject
         except TypeError:
             return -1 #couldn't find
@@ -114,22 +108,7 @@ class Transmission:
         self.cur.execute("SELECT * FROM 'User' WHERE username=?", (username,))
         user = self.cur.fetchone()
         try:
-            if (user[6] == None):
-                userobject = User(user[0], user[1], user[2], user[3], user[4], user[5], {})
-            else:
-                userobject = User(user[0], user[1], user[2], user[3], user[4], user[5], json.loads(user[6]))
-            return userobject
-        except TypeError:
-            return -1 #couldn't find
-
-    def search_user_by_email(self, email):#searches a user by username and returns the user
-        self.cur.execute("SELECT * FROM 'User' WHERE email=?", (email,))
-        user = self.cur.fetchone()
-        try:
-            if (user[6] == None):
-                userobject = User(user[0], user[1], user[2], user[3], user[4], user[5], {})
-            else:
-                userobject = User(user[0], user[1], user[2], user[3], user[4], user[5], json.loads(user[6]))
+            userobject = User(user[0], user[1], user[2], user[3], user[4], user[5], json.loads(user[6]))
             return userobject
         except TypeError:
             return -1 #couldn't find
@@ -141,19 +120,21 @@ class Transmission:
         return userobject
     
     def remove_user(self, id): #searches for stock with matching id and removes it
-        try:
-            self.cur.execute("DELETE FROM 'User' WHERE id=?", (id,))
-            self.connect.commit()
-            return 1
-        except TypeError:
-            return -1
+         t = Trade(id)
+         self.cur.execute("SELECT * FROM 'User' WHERE id=?", (id,))
+         user = self.cur.fetchone()
+
+         portfoliolist = json.dumps(user[6])
+
+         for x in portfoliolist:
+             t.delete_portfolio(x)
+
+         self.cur.execute("DELETE FROM 'User' WHERE id=?", (id,))
+         self.connect.commit()
+         
     
     def insert_notification(self, notification):
         self.cur.execute("Insert Into 'Notifications' VALUES(?, ?, ?, ?, ?)", (notification.id, notification.userid, notification.code, notification.name, notification.text))
-        self.connect.commit()
-
-    def insert_bug_report(self, name, email, problem):
-        self.cur.execute("Insert Into 'BugReports' VALUES(?, ?, ?)", (name, email, problem))
         self.connect.commit()
 
     def retrieve_notification_by_user(self, user):
@@ -172,11 +153,11 @@ class Transmission:
         self.connect.close()
 
     def login_sequence(self, username, password): #returns user when correct, error code when not
-        user = self.search_user_by_username(username)
+        user = self.search_by_username(username)
         if user == -1:
             return -1 #user nonexistant
         else:
             if user.password == password:
-                return user #in current commit return user
+                return 1 #in current commit return user
             else:
                 return -2 # password different
