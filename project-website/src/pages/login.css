@@ -1,4 +1,4 @@
-.contact-container {
+.logIn-container {
     background: #e8b0e2;
    font-weight: 400;
    justify-content: center;
@@ -9,7 +9,7 @@
    height: 87.5vh;
    gap: 20px;
  }
- .contact-Form {
+ .logIn-Form {
      width: 420px;
      box-shadow: rgb(0 0 0 / 16%) 1px 1px 10px;
      padding-top: 30px;
@@ -17,12 +17,12 @@
      border-radius: 8px;
      background: #fafafa;
  }
- .contact-content {
+ .logIn-content {
    padding-left: 12%;
    padding-right: 12%;
  }
 
- .contact-title {
+ .logIn-title {
      text-align: center;
      margin-bottom: 1em;
      font-size: 24px;
@@ -38,11 +38,11 @@
    justify-content: center;
    display: flex;
 }
- .contact-button, .contact-username, .contact-password {
+ .logIn-button, .logIn-username, .logIn-password, .logIn-forgot {
    display: flex;
    justify-content: center;
  }
- .contact-button-button {
+ .logIn-button-button, .recovery-button {
    display: flex;
    justify-content: center;
    margin-top: 10px;
@@ -52,5 +52,14 @@
    border: 1px solid #01d28e;
    color: #fff;
    padding: 10px 20px;
+ }
+ .logIn-email-input {
+   font-size: 15px;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  justify-content: center;
+  display: flex;
  }
  
