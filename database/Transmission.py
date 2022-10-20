@@ -45,7 +45,18 @@ class Transmission:
             return portfolioobject
         except TypeError:
             return -1 #couldn't find
-    
+
+    def search_portfolio_by_userId(self, userid):
+        self.cur.execute("SELECT * FROM 'Portfolios' WHERE userID=?", (userid,))
+        portfolios = self.cur.fetchall()
+        portfoliolist = []
+        for portfolio in portfolios:
+            try:
+                portfoliolist.append(Portfolio(portfolio[0], portfolio[1], portfolio[2], portfolio[3], json.loads(portfolio[4]), json.loads(portfolio[5]), json.loads(portfolio[6])))
+            except TypeError:
+                return -1 #SOMETHING WENT WRONG!
+        return portfoliolist  
+     
     def remove_portfolio(self, id): #searches for stock with matching id and removes it
          self.cur.execute("DELETE * FROM 'Portfolios' WHERE id=?", (id,))
          self.connect.commit()

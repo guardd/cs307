@@ -69,7 +69,7 @@ def user_signup_complete():
     code = requestJson['code']
     if code in userSignupDict:
         #sign up user
-        user = User(str(uuid.uuid4()), userSignupDict[code][0], userSignupDict[code][1], userSignupDict[code][2], 1, "TODO", {})
+        user = User(str(uuid.uuid4()), userSignupDict[code][0], userSignupDict[code][1], userSignupDict[code][2], 1, "TODO", [])
         db.insert_user(user)
         data = {
             "returncode": 1
@@ -170,5 +170,38 @@ def bug_report():
     db.insert_bug_report(name, email, problem)
     data = {
         "returncode": 0
+    }
+    return data
+
+@app.route('/getUserPortfolios', methods=['POST'])
+def userPortfolios():
+    requestJson = request.get_json()
+    id = requestJson[id]
+    userports = db.search_portfolio_by_userID(id)
+    howmany = len(userports)
+    portnames = []
+    portids = []
+    data = {}
+    data['size'] = howmany
+    for port in userports:
+        portnames.append(port.name)
+        portids.append(port.id)
+    data["portnames"] = portnames
+    data["portids"] = portids
+    return data
+
+@app.route('/makeNewPortfolio', methods=['POST'])
+def makeNewPortfolio():
+    requestJson = request.get_json()
+    name = requestJson[name]
+    id = requestJson[id]
+    funds = requestJson[funds]
+    port = Portfolio(name, str(uuid.uuid4()), id, funds, [], [], [])
+    db.insert_porfolio(port)
+    user = db.search_user_by_id(id)
+    user.add_portfolio(port.id)
+    user.update_portfolios()
+    data = {
+        "returncode": "0"
     }
     return data
