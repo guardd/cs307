@@ -26,7 +26,7 @@ class Transmission:
         self.connect.commit()
 
     def insert_stock(self, stock): #inserts a user into the database and saves database
-        self.cur.execute("INSERT INTO 'Stock' VALUES(?,?,?,?,?,?,?)", (stock.name, stock.nameABV,stock.id, stock.portfolioID, stock.userID, stock.avgSharePrice, stock.Shares))
+        self.cur.execute("INSERT INTO 'Stock' VALUES(?,?,?,?,?,?,?)", (stock.name, stock.nameABV,stock.id, stock.portfolioID, stock.userID, stock.avgSharePrice, stock.shares))
         self.connect.commit()
     
     def insert_property(self, property): #inserts a user into the database and saves database
