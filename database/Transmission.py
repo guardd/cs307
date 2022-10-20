@@ -21,7 +21,7 @@ class Transmission:
             self.cur.execute("INSERT INTO 'User' VALUES(?,?,?,?,?,?,?)", (user.id, user.username, user.password, user.email, user.dateofbirth, user.genderID, json.dumps((user.userPortfolios))))
         self.connect.commit()
     
-    def insert_porfolio(self, portfolio): #inserts a user into the database and saves database
+    def insert_portfolio(self, portfolio): #inserts a user into the database and saves database
         self.cur.execute("INSERT INTO 'Portfolios' VALUES(?,?,?,?,?,?,?)", (portfolio.name, portfolio.id, portfolio.userID, portfolio.funds, json.dumps(portfolio.stocks),  json.dumps(portfolio.commodities), json.dumps((portfolio.properties))))
         self.connect.commit()
 
