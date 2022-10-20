@@ -8,7 +8,7 @@ class Email():
         from User import User
         import random
         self.configuration = mailslurp_client.Configuration()
-        self.configuration.api_key['x-api-key'] = "a8af51cd52b73a71e78dd7c3a53b798179c5326868e3a567d3b01ec6650f8fad"
+        self.configuration.api_key['x-api-key'] = "fad70e9b7a0127f76862a66d290f3178a18ad386b843125c6730048604b2ec6d"
         with mailslurp_client.ApiClient(self.configuration) as api_client:
             self.inbox_controller = mailslurp_client.InboxControllerApi(api_client)
             self.inbox_1 = self.inbox_controller.create_inbox()

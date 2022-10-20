@@ -8,6 +8,7 @@ from Email import Email
 from notifications import Notifications
 from Commodity import Commodity
 from IDCreation import IDCreation
+from StockData import StockData
 import json
 import uuid 
 app = Flask(__name__)
@@ -197,11 +198,34 @@ def makeNewPortfolio():
     id = requestJson[id]
     funds = requestJson[funds]
     port = Portfolio(name, str(uuid.uuid4()), id, funds, [], [], [])
-    db.insert_porfolio(port)
+    db.insert_portfolio(port)
     user = db.search_user_by_id(id)
     user.add_portfolio(port.id)
     user.update_portfolios()
     data = {
         "returncode": "0"
     }
+    return data
+
+@app.route('/getPortfolioData', methods=['POST'])
+def getPortfolioData():
+    sd = StockData()
+    requestJson = request.get_json()
+    id = requestJson[id]
+    port = db.search_portfolio_by_id(id)
+    stocks = port.stocks
+    data = {}
+    data['size'] = len(stocks)
+    data["stockABVs"] = []
+    data["stockids"] = []
+    data["stockAmount"] = []
+    data["stockPrices"] = []
+    data["stockWeight"] = []
+    for stockid in stocks:
+        stock = db.search_stock_by_id(stockid)
+        data["stockABVs"].append(stock.nameABV)
+        data["stockids"].append(stock.id)
+        data["stockAmount"].append(stock.shares)
+        data["stockPrices"].append(sd.get_price(stock.nameABV))
+        data["stockWeight"].append(sd.get_price(stock.nameABV) * stock.shares)
     return data
