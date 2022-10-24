@@ -8,7 +8,7 @@ import Login from './pages/login';
 import Portfolio from './pages/portfolio';
 import SignUp from './pages/signup';
 import Profile from './pages/profile'
-
+import PortfolioChange from './pages/portfolioChange';
 function App() {
   return (
     <Router>
@@ -18,6 +18,7 @@ function App() {
         <Route exact path="/contact" exact element={<Contact />} />
         <Route exact path="/login" exact element={<Login />} />
         <Route exact path="/portfolio" exact element={<Portfolio />} />
+        <Route exact path="/portfolioChange" exact element={<PortfolioChange />} />
         <Route exact path="/signup" exact element={<SignUp />} />
         <Route exact path="/profile" exact element={<Profile />} />
       </Routes>

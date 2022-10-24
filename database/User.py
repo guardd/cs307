@@ -70,7 +70,7 @@ class User:
          self.connect.commit()
     
     def update_portfolios(self):
-        self.cur.execute("UPDATE 'User' SET userPortfolios=? WHERE id=?", (json.dump(self.userPortfolios), self.id,))
+        self.cur.execute("UPDATE 'User' SET userPortfolios=? WHERE id=?", (json.dumps(self.userPortfolios), self.id,))
         self.connect.commit()
     
 

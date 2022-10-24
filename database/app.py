@@ -14,7 +14,7 @@ import uuid
 app = Flask(__name__)
 print("Flask running")
 db = Transmission()
-hostEmail = Email()
+#hostEmail = Email()
 userSignupDict = {}
 
 @app.route('/loginMethod', methods=['POST'])
@@ -177,8 +177,8 @@ def bug_report():
 @app.route('/getUserPortfolios', methods=['POST'])
 def userPortfolios():
     requestJson = request.get_json()
-    id = requestJson[id]
-    userports = db.search_portfolio_by_userID(id)
+    id = requestJson['id']
+    userports = db.search_portfolio_by_userId(id)
     howmany = len(userports)
     portnames = []
     portids = []
@@ -194,13 +194,13 @@ def userPortfolios():
 @app.route('/makeNewPortfolio', methods=['POST'])
 def makeNewPortfolio():
     requestJson = request.get_json()
-    name = requestJson[name]
-    id = requestJson[id]
-    funds = requestJson[funds]
+    name = requestJson['name']
+    id = requestJson['id']
+    funds = requestJson['funds']
     port = Portfolio(name, str(uuid.uuid4()), id, funds, [], [], [])
     db.insert_portfolio(port)
     user = db.search_user_by_id(id)
-    user.add_portfolio(port.id)
+    user.add_portfolio(port)
     user.update_portfolios()
     data = {
         "returncode": "0"
@@ -211,7 +211,7 @@ def makeNewPortfolio():
 def getPortfolioData():
     sd = StockData()
     requestJson = request.get_json()
-    id = requestJson[id]
+    id = requestJson['id']
     port = db.search_portfolio_by_id(id)
     stocks = port.stocks
     data = {}

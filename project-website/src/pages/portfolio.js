@@ -92,14 +92,14 @@ const Portfolio = () => {
   const [userId, setUserid]=useState(null)
   const [loggedIn, setLoggedIn]=useState("false")
   const navigate = useNavigate();
-  const portNames = []
-  const portIds = []
+  var portNames = []
+  var portIds = []
   const [howmanyports, sethowmanyports] = useState(0)
-  const stockABVS = []
-  const stockids = []
-  const stockAmount = []
-  const stockPrices = []
-  const stockWeight = []
+  var stockABVS = []
+  var stockids = []
+  var stockAmount = []
+  var stockPrices = []
+  var stockWeight = []
 
   //purpose of this function - to call it in the beginning of page load so we will know if we're logged in with who
   function getSessionStorage() {
@@ -110,7 +110,6 @@ const Portfolio = () => {
       navigate('/home')
     }
     console.log(loggedIn)
-    getUserData(userId)
   }
   //purpose of this function - getting the portfolio ids and names to show in the dropdown menu
   function getUserPortfolios() {
@@ -162,6 +161,7 @@ function getportfoliodata(portid) {
     stockWeight = data.stockWeight
   }
 )
+
   
 }
 
@@ -232,6 +232,9 @@ function getportfoliodata(portid) {
             </div>
           </div>
         </div>
+      </div>
+      <div>
+      <button onClick={()=>navigate('/portfoliochange')}> Edit portfolio </button>
       </div>
 
 
