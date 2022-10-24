@@ -1,3 +1,5 @@
+import sqlite3
+import json
 class Portfolio:
     def __init__(self, name, id, userID, funds, stocks, commodities, properties):
     
@@ -10,7 +12,8 @@ class Portfolio:
         self.commodities = commodities
         self.properties = properties
 
-
+        self.connect = sqlite3.connect("mydb.db") ##connects to database
+        self.cur = self.connect.cursor()
 
     def get_name(self):
         return self.name 
@@ -62,3 +65,19 @@ class Portfolio:
     
     def remove_property(self, property):
         self.properties.remove(property.get_id())
+    
+    def update_stocks(self, stocks, id):
+        self.cur.execute("UPDATE 'Portfolios' SET stocks=? WHERE id=?", (json.dump(stocks), id,))
+        self.connect.commit()
+    
+    def update_properties(self, properties, id):
+        self.cur.execute("UPDATE 'Portfolios' SET properties=? WHERE id=?", (json.dump(properties), id,))
+        self.connect.commit()
+    
+    def update_commodities(self, commodities, id):
+        self.cur.execute("UPDATE 'Portfolios' SET commodites=? WHERE id=?", (json.dump(commodities), id,))
+        self.connect.commit()
+    
+    def update_funds(self, funds, id):
+        self.cur.execute("UPDATE 'Portfolios' SET funds=? WHERE id=?", (funds, id,))
+        self.connect.commit()

@@ -1,3 +1,5 @@
+import sqlite3
+import json
 class Stock:
     def __init__(self, name, nameABV, id, portfolioID, userID, avgSharePrice, shares):
     
@@ -9,6 +11,8 @@ class Stock:
         self.avgSharePrice = avgSharePrice #INTEGER
         self.shares = shares #INTEGER
 
+        elf.connect = sqlite3.connect("mydb.db") ##connects to database
+        self.cur = self.connect.cursor()
 
 
 
@@ -54,3 +58,10 @@ class Stock:
 
     def set_shares(self, shares):
         self.shares = shares
+    
+    def update_stockShares(self, shares, id):
+        self.cur.execute("UPDATE 'Stock' SET shares=? WHERE id=?", (shares, id,))
+        self.connect.commit()
+    def update_stockAvgSharePrice(self, avgSharePrice, id):
+        self.cur.execute("UPDATE 'Stock' SET avgSharePrice=? WHERE id=?", (avgSharePrice, id,))
+        self.connect.commit()
