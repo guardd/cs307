@@ -21,10 +21,10 @@ const PortfolioChange = () => {
     var stockPrices = []
     var stockWeight = []
     var portOptions = []
-    var gotportfolios = false;
+    const [gotportfolios, setGotportfolios] = useState(false);
     var debugMessage = null;
     var newPortFailed = false
-    var chosenport;
+    var chosenportId;
 
     function getNewPortName(val) {
         setNewPortName(val.target.value)
@@ -38,9 +38,12 @@ const PortfolioChange = () => {
         setShowNewPort(true)
     }
 
-    const onOptionChangeHandler = (event) => {
-        chosenport = event.target
-        console.log(event.target)
+    //function choosePortId(val) {
+    //    chosenportId = val.target.value
+    //    console.log(chosenportId)
+    //}
+    var choosePortId = e => {
+      chosenportId = e.value
     }
   
     //purpose of this function - to call it in the beginning of page load so we will know if we're logged in with who
@@ -71,11 +74,11 @@ const PortfolioChange = () => {
         console.log(portNames) // DEBUG
         portIds = data.portids
         console.log(portIds) // DEBUG
-        gotportfolios = true;
+        setGotportfolios(true);
         for (let i = 0; i < howmanyports; i++) {
             const port = {
                 names: portNames[i],
-                ids: portIds[i]
+                value: portIds[i]
             }
             portOptions.push(
                 port
@@ -98,6 +101,7 @@ const PortfolioChange = () => {
   }).then(res=>res.json()).then(
       data => {
         console.log("portfolio created")
+        showNewPort = false;
       }
     )
   }
@@ -119,7 +123,13 @@ const PortfolioChange = () => {
     }
   )  
   }
-
+/*
+<select onchange={choosePortId}>
+                {portOptions.map((option) => {
+                    return <option value = {option.value}> {option.names} </option>
+                })}
+                </select>
+*/
 
   return (
     <div>
@@ -127,12 +137,9 @@ const PortfolioChange = () => {
         {
             gotportfolios?
             <div>
-                <select onchange={onOptionChangeHandler}>
-                {portNames.map((option, index) => {
-                    return <option key = {index}> {option} </option>
-                })}
-                </select>
-                
+              <h1>
+                <select options={portOptions} onchange={choosePortId}/>
+              </h1>  
             </div>:null
 
         }
