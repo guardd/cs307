@@ -29,3 +29,10 @@ class CommodityData:
          self.cur.execute("INSERT INTO 'CommodityData' VALUES(?,?)", (x, resp.json()[x]))
          self.connect.commit()
         return resp
+    def get_company_name(self,symbol):
+        self.cur.execute("SELECT 'Name' FROM 'CommodityData' WHERE Symbols=?", (symbol,))
+        companyname = self.cur.fetchone()
+        if companyname==None:
+            return -1
+        else:
+            return companyname
