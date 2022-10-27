@@ -3,6 +3,7 @@ import React from "react";
 import { PieChart, Pie, Legend, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line} from 'recharts';
 import {useEffect, useState} from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import Select from 'react-select';
 
 const PortfolioChange = () => {
 
@@ -20,7 +21,7 @@ const PortfolioChange = () => {
     var stockAmount = []
     var stockPrices = []
     var stockWeight = []
-    var portOptions = []
+    const [portOptions, setPortOptions] = useState([]); 
     const [gotportfolios, setGotportfolios] = useState(false);
     var debugMessage = null;
     var newPortFailed = false
@@ -37,6 +38,7 @@ const PortfolioChange = () => {
     function getShowNewPort() {
         setShowNewPort(true)
     }
+ 
 
     //function choosePortId(val) {
     //    chosenportId = val.target.value
@@ -58,6 +60,7 @@ const PortfolioChange = () => {
     }
     //purpose of this function - getting the portfolio ids and names to show in the dropdown menu
     function getUserPortfolios() {
+      var portOption = []; 
       let userInfo = {
         "id": sessionStorage.getItem("id")
       };
@@ -74,17 +77,22 @@ const PortfolioChange = () => {
         console.log(portNames) // DEBUG
         portIds = data.portids
         console.log(portIds) // DEBUG
-        setGotportfolios(true);
-        for (let i = 0; i < howmanyports; i++) {
-            const port = {
-                names: portNames[i],
-                value: portIds[i]
+        for (let i = 0; i < data.size; i++) {
+            var port = {
+                value: portIds[i],
+                label: portNames[i]
             }
-            portOptions.push(
+            console.log(1)
+            portOption.push(
                 port
             )
+            console.log(port)
+            console.log(portOption)
         }
         console.log(portOptions) // DEBUG
+        setPortOptions(portOption)
+        console.log(portOptions) // DEBUG
+        setGotportfolios(true);
       }
     )
   }
@@ -101,7 +109,7 @@ const PortfolioChange = () => {
   }).then(res=>res.json()).then(
       data => {
         console.log("portfolio created")
-        showNewPort = false;
+        setShowNewPort(false);
       }
     )
   }
@@ -134,13 +142,12 @@ const PortfolioChange = () => {
   return (
     <div>
         <button onClick={()=>getUserPortfolios()}> Edit portfolio </button>
+    
         {
             gotportfolios?
-            <div>
-              <h1>
-                <select options={portOptions} onchange={choosePortId}/>
-              </h1>  
-            </div>:null
+            <Select options={portOptions} onchange={choosePortId}/>
+               
+            :null
 
         }
         <button onClick={()=>getShowNewPort()}> Make new Portfolio </button>
