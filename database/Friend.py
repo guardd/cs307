@@ -25,17 +25,17 @@ class Friend:
     def get_friends(self):
         return self.friends    
     
-    def add_friend_request(self, friend):
-        self.friendRequests.append(friend.get_id())
+    def add_friend_request(self, id):
+        self.friendRequests.append(id)
     
-    def remove_friend_request(self, friend):
-        self.friendRequests.remove(friend.get_id())
+    def remove_friend_request(self, id):
+        self.friendRequests.remove(id)
 
-    def add_friend(self, friend):
-        self.friends.append(friend.get_id())
+    def add_friend(self, id):
+        self.friends.append(id)
     
-    def remove_friend(self, friend):
-        self.friends.remove(friend.get_id())
+    def remove_friend(self, id):
+        self.friends.remove(id)
 
     def add_message(self, msg):
         self.messages.append(msg)

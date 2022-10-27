@@ -9,6 +9,8 @@ from notifications import Notifications
 from Commodity import Commodity
 from IDCreation import IDCreation
 from StockData import StockData
+from Friend import Friend
+
 import json
 import uuid 
 app = Flask(__name__)
@@ -71,7 +73,9 @@ def user_signup_complete():
     if code in userSignupDict:
         #sign up user
         user = User(str(uuid.uuid4()), userSignupDict[code][0], userSignupDict[code][1], userSignupDict[code][2], 1, "TODO", [])
+        friend = Friend(user.id, [], [], [])
         db.insert_user(user)
+        db.insert_friend(friend)
         data = {
             "returncode": 1
         }
@@ -202,6 +206,7 @@ def makeNewPortfolio():
     user = db.search_user_by_id(id)
     user.add_portfolio(port)
     user.update_portfolios()
+    db.save() 
     data = {
         "returncode": "0"
     }
@@ -229,3 +234,121 @@ def getPortfolioData():
         data["stockPrices"].append(sd.get_price(stock.nameABV))
         data["stockWeight"].append(sd.get_price(stock.nameABV) * stock.shares)
     return data
+
+
+
+# How ADDING Friends should work
+# Add friend by username
+# case : username doesn't exist / fail return code -1
+# case : already sent request / fail return code -2
+# then, case : push in friend request in other user return code 1
+# Other user can see this, can accept BY : SAME CALL, JUST THE USERNAME WILL BE THE OPPOSITE
+# that way we can avoid the case where both user sends to each other and not being added
+# therefore :
+# case : the other user that we are about to send a request to is already in my friendrequest / GET THEM BOTH IN FRIEND CATEGORY return code 2
+@app.route('/addFriend', methods=['POST'])
+def addFriend():
+    requestJson = request.get_json()
+    #what json should have : id (of the user), username (of the person the user is adding)
+    userId = requestJson['userId']
+    userFriend = db.search_friend_by_id(userId)
+    otherUsername = requestJson['otherUsername']
+    otherUserId = db.search_user_by_username(otherUsername)
+    if (otherUserId == -1):
+        data = {
+            "returncode": -1
+        }
+        return data
+    otherFriend = db.search_friend_by_id(otherUserId.get_id())
+    try:
+        otherFriend.friendRequests.index(userId)
+        data = {
+            "returncode": -2
+        }
+        return data
+    except ValueError:
+        print("addFriend No error!")
+    try:
+        index = userFriend.friendRequests.index("otherUserId")
+        ## make them friends
+        userFriend.remove_friend_request(otherUserId)
+        userFriend.add_friend(otherUserId)
+        otherFriend.add_friend(userId)
+        userFriend.update_friend_requests()
+        userFriend.update_friends()
+        otherFriend.update_friends()
+        data = {
+            "returncode": 2
+        }
+        return data
+    except ValueError:
+        ##send request
+        otherFriend.add_friend_request(userId)
+        otherFriend.update_friend_requests()
+        data = {
+            "returncode": 1
+        }
+        return data
+    
+@app.route('/getFriends', methods=['POST'])
+def userFriends():
+    requestJson = request.get_json()
+    id = requestJson['id']
+    friend = db.search_friend_by_id(id)
+
+    friendRequests = []
+    friendRequestNames = []
+    friendNames = []
+    friendIds = []
+    data = {}
+    for friendRequest in friend.friendRequests:
+        if (db.search_user_by_id(friendRequest) == -1):
+            friend.remove_friend_request(friendRequest)
+            print("user gone, removed friend request")
+            friend.update_friend_requests()
+        else:
+            friendRequests.append(friendRequest)
+            friendRequestNames.append(db.search_user_by_id(friendRequest).get_username)
+    for indfriend in friend.friends:
+        if (db.search_user_by_id(indfriend) == -1):
+            friend.remove_friend(indfriend)
+            print("user gone, removed friend")
+            friend.update_friends()
+        else:    
+            friendIds.append(indfriend)
+            friendNames.append(db.search_user_by_id(indfriend).get_username)
+    data["friendRequests"] = friendRequests
+    data["friendRequestNames"] = friendRequestNames
+    data["friendNames"] = friendNames
+    data["friendIds"] = friendIds
+    return data
+    
+@app.route('/textFriend', methods=['POST'])
+def textFriend():
+    requestJson = request.get_json()
+    id = requestJson['id']
+    friendId = requestJson['friendId']
+    msg = requestJson['msg']
+    friend = db.search_friend_by_id(id)
+    try:
+        index = friend.friends.index(friendId)
+        otherfriend = db.search_friend_by_id(friendId)
+        if (otherfriend == -1):
+            #friend nonexistant
+            data = {
+            "returncode": -2
+            }
+            return data
+        otherfriend.add_message(db.search_user_by_id(id).get_username + ": " + msg)
+        otherfriend.update_messages()
+        #message sent!
+        data = {
+            "returncode": 1
+        }
+        return data
+    except ValueError:
+        #not friend
+        data = {
+            "returncode": -1
+        }
+        return data
