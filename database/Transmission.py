@@ -1,5 +1,6 @@
 from msilib.schema import Error
 from User import User
+from Friend import Friend
 from notifications import Notifications
 from Portfolio import Portfolio
 from Stock import Stock
@@ -13,6 +14,19 @@ class Transmission:
     def __init__(self): #connects to db and makes a cursor
         self.connect = sqlite3.connect("mydb.db", check_same_thread=False)
         self.cur = self.connect.cursor()
+
+    def insert_friend(self, friend):
+        self.cur.execute("INSERT INTO 'Friends' VALUES(?,?,?,?)", (friend.id, json.dumps(friend.friendRequests), json.dumps(friend.friends), json.dumps(friend.messages)))
+        self.connect.commit()
+
+    def search_friend_by_id(self, id):
+        self.cur.execute("SELECT * FROM 'Friends' WHERE id=?", (id,))
+        friend = self.cur.fetchone()
+        try:
+            friendObject = Friend(friend[0], json.loads(friend[1]), json.loads(friend[2]), json.loads(friend[3]))
+            return friendObject
+        except TypeError:
+            return -1
 
     def insert_user(self, user): #inserts a user into the database and saves database
         if (user.userPortfolios == {}):
