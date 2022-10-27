@@ -1,6 +1,5 @@
 from msilib.schema import Error
 from User import User
-from Friend import Friend
 from notifications import Notifications
 from Portfolio import Portfolio
 from Stock import Stock
@@ -15,19 +14,6 @@ class Transmission:
         self.connect = sqlite3.connect("mydb.db", check_same_thread=False)
         self.cur = self.connect.cursor()
 
-    def insert_friend(self, friend):
-        self.cur.execute("INSERT INTO 'Friends' VALUES(?,?,?,?)", (friend.id, json.dumps(friend.friendRequests), json.dumps(friend.friends), json.dumps(friend.messages)))
-        self.connect.commit()
-
-    def search_friend_by_id(self, id):
-        self.cur.execute("SELECT * FROM 'Friends' WHERE id=?", (id,))
-        friend = self.cur.fetchone()
-        try:
-            friendObject = Friend(friend[0], json.loads(friend[1]), json.loads(friend[2]), json.loads(friend[3]))
-            return friendObject
-        except TypeError:
-            return -1
-
     def insert_user(self, user): #inserts a user into the database and saves database
         if (user.userPortfolios == {}):
             self.cur.execute("INSERT INTO 'User' VALUES(?,?,?,?,?,?,?)", (user.id, user.username, user.password, user.email, user.dateofbirth, user.genderID, None))
@@ -35,12 +21,12 @@ class Transmission:
             self.cur.execute("INSERT INTO 'User' VALUES(?,?,?,?,?,?,?)", (user.id, user.username, user.password, user.email, user.dateofbirth, user.genderID, json.dumps((user.userPortfolios))))
         self.connect.commit()
     
-    def insert_portfolio(self, portfolio): #inserts a user into the database and saves database
+    def insert_porfolio(self, portfolio): #inserts a user into the database and saves database
         self.cur.execute("INSERT INTO 'Portfolios' VALUES(?,?,?,?,?,?,?)", (portfolio.name, portfolio.id, portfolio.userID, portfolio.funds, json.dumps(portfolio.stocks),  json.dumps(portfolio.commodities), json.dumps((portfolio.properties))))
         self.connect.commit()
 
     def insert_stock(self, stock): #inserts a user into the database and saves database
-        self.cur.execute("INSERT INTO 'Stock' VALUES(?,?,?,?,?,?,?)", (stock.name, stock.nameABV,stock.id, stock.portfolioID, stock.userID, stock.avgSharePrice, stock.shares))
+        self.cur.execute("INSERT INTO 'Stock' VALUES(?,?,?,?,?,?,?)", (stock.name, stock.nameABV,stock.id, stock.portfolioID, stock.userID, stock.avgSharePrice, stock.Shares))
         self.connect.commit()
     
     def insert_property(self, property): #inserts a user into the database and saves database
@@ -59,18 +45,7 @@ class Transmission:
             return portfolioobject
         except TypeError:
             return -1 #couldn't find
-
-    def search_portfolio_by_userId(self, userid):
-        self.cur.execute("SELECT * FROM 'Portfolios' WHERE userID=?", (userid,))
-        portfolios = self.cur.fetchall()
-        portfoliolist = []
-        for portfolio in portfolios:
-            try:
-                portfoliolist.append(Portfolio(portfolio[0], portfolio[1], portfolio[2], portfolio[3], json.loads(portfolio[4]), json.loads(portfolio[5]), json.loads(portfolio[6])))
-            except TypeError:
-                return -1 #SOMETHING WENT WRONG!
-        return portfoliolist  
-     
+    
     def remove_portfolio(self, id): #searches for stock with matching id and removes it
          self.cur.execute("DELETE * FROM 'Portfolios' WHERE id=?", (id,))
          self.connect.commit()
@@ -112,15 +87,6 @@ class Transmission:
     
     def search_commodity_by_id(self, id): #searches a commodity by its unique id and returns it
         self.cur.execute("SELECT * FROM 'Commodity' WHERE id=?", (id,))
-        commodity = self.cur.fetchone()
-        try:
-            commodityobject = Commodity(commodity[0],commodity[1],commodity[2],commodity[3],commodity[4],commodity[5],commodity[6])
-            return commodityobject
-        except TypeError:
-            return -1 #couldn't find
-    
-    def search_commodity_by_type(self, type, portfolioID): #searches a commodity by its unique id and returns it
-        self.cur.execute("SELECT * FROM 'Commodity' WHERE type=? AND portfolioID=?", (type,portfolioID))
         commodity = self.cur.fetchone()
         try:
             commodityobject = Commodity(commodity[0],commodity[1],commodity[2],commodity[3],commodity[4],commodity[5],commodity[6])
@@ -183,31 +149,23 @@ class Transmission:
 
          for x in portfoliolist:
               portfolio = self.search_portfolio_by_id(x)
-              if (portfolio == -1):
-                self.cur.execute("DELETE FROM 'User' WHERE id=?", (id,))
-                self.cur.execute("DELETE FROM 'Friends' WHERE id=?", (id,))
-                self.connect.commit()
-                return
-              
+
               stocklist = portfolio.get_stocks()
-              
+              propertylist = portfolio.get_properties()
+              commoditylist =  portfolio.get_commodities()
+
               for x in stocklist:
                 self.remove_stock(x)
-              propertylist = portfolio.get_properties()
-              
+        
               for x in propertylist:
                 self.remove_property(x)
-              commoditylist =  portfolio.get_commodities()
-              
+        
               for x in commoditylist:
                 self.remove_commodity(x)
-
-              
         
               self.remove_portfolio(portfolio)
 
          self.cur.execute("DELETE FROM 'User' WHERE id=?", (id,))
-         self.cur.execute("DELETE FROM 'Friends' WHERE id=?", (id,))
          self.connect.commit()
          
     

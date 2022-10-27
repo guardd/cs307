@@ -26,7 +26,7 @@ class Trade:
         self.user.update_portfolios(self.user.get_userPortfolios(), self.user.get_id())
     def delete_portfolio(self, portfolioID):
         p = Transmission()
-        portfolio = p.search_portfolio_by_id(portfolioID)
+        portfolio = Transmission.search_portfolio_by_id(portfolioID)
 
         stocklist = portfolio.get_stocks()
         propertylist = portfolio.get_properties()
