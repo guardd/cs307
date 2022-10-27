@@ -176,6 +176,7 @@ class Transmission:
               portfolio = self.search_portfolio_by_id(x)
               if (portfolio == -1):
                 self.cur.execute("DELETE FROM 'User' WHERE id=?", (id,))
+                self.cur.execute("DELETE FROM 'Friends' WHERE id=?", (id,))
                 self.connect.commit()
                 return
               
@@ -197,6 +198,7 @@ class Transmission:
               self.remove_portfolio(portfolio)
 
          self.cur.execute("DELETE FROM 'User' WHERE id=?", (id,))
+         self.cur.execute("DELETE FROM 'Friends' WHERE id=?", (id,))
          self.connect.commit()
          
     
