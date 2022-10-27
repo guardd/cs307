@@ -18,24 +18,40 @@ class Friend:
         self.id = id
 
     
-    def get_userPortfolios(self):
-        return self.userPortfolios
     
-    def add_portfolio(self, portfolio):
-        self.userPortfolios.append(portfolio.get_id())
-    
-    def remove_portfolio(self, portfolio):
-        self.userPortfolios.remove(portfolio.get_id())
+    def get_friendRequests(self):
+        return self.friendRequests
 
-    def change_username(self, username, id):        
-         self.cur.execute("UPDATE 'User' SET username=? WHERE id=?", (username,id,))
-         self.connect.commit()
+    def get_friends(self):
+        return self.friends    
     
-    def change_password(self, password, id):
-         self.cur.execute("UPDATE 'User' SET password=? WHERE id=?", (password,id,))
-         self.connect.commit()
+    def add_friend_request(self, friend):
+        self.friendRequests.append(friend.get_id())
     
-    def update_portfolios(self):
-        self.cur.execute("UPDATE 'User' SET userPortfolios=? WHERE id=?", (json.dumps(self.userPortfolios), self.id,))
+    def remove_friend_request(self, friend):
+        self.friendRequests.remove(friend.get_id())
+
+    def add_friend(self, friend):
+        self.friends.append(friend.get_id())
+    
+    def remove_friend(self, friend):
+        self.friends.remove(friend.get_id())
+
+    def add_message(self, msg):
+        self.messages.append(msg)
+    
+    def remove_message(self, msg):
+        self.messages.remove(msg)
+    
+    def update_friend_requests(self):
+        self.cur.execute("UPDATE 'Friends' SET friendRequests=? WHERE id=?", (json.dumps(self.friendRequests), self.id,))
+        self.connect.commit()
+
+    def update_friends(self):
+        self.cur.execute("UPDATE 'Friends' SET friends=? WHERE id=?", (json.dumps(self.friends), self.id,))
+        self.connect.commit()
+    
+    def update_messages(self):
+        self.cur.execute("UPDATE 'Friends' SET messages=? WHERE id=?", (json.dumps(self.messages), self.id,))
         self.connect.commit()
     
