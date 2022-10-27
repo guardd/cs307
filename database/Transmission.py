@@ -119,6 +119,15 @@ class Transmission:
         except TypeError:
             return -1 #couldn't find
     
+    def search_commodity_by_type(self, type, portfolioID): #searches a commodity by its unique id and returns it
+        self.cur.execute("SELECT * FROM 'Commodity' WHERE type=? AND portfolioID=?", (type,portfolioID))
+        commodity = self.cur.fetchone()
+        try:
+            commodityobject = Commodity(commodity[0],commodity[1],commodity[2],commodity[3],commodity[4],commodity[5],commodity[6])
+            return commodityobject
+        except TypeError:
+            return -1 #couldn't find
+    
     def remove_commodity(self, id): #searches for stock with matching id and removes it
          self.cur.execute("DELETE * FROM 'Commodity' WHERE id=?", (id,))
          self.connect.commit()
