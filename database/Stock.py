@@ -11,7 +11,7 @@ class Stock:
         self.avgSharePrice = avgSharePrice #INTEGER
         self.shares = shares #INTEGER
 
-        elf.connect = sqlite3.connect("mydb.db") ##connects to database
+        self.connect = sqlite3.connect("mydb.db") ##connects to database
         self.cur = self.connect.cursor()
 
 

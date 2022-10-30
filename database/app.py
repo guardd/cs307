@@ -1,3 +1,4 @@
+from xml.etree.ElementTree import tostring
 from Transmission import Transmission
 from User import User
 from Portfolio import Portfolio
@@ -8,8 +9,10 @@ from Email import Email
 from notifications import Notifications
 from Commodity import Commodity
 from IDCreation import IDCreation
-from StockData import StockData
+#from StockData import StockData
+import StockData
 from Friend import Friend
+from Trade import Trade
 
 import json
 import uuid 
@@ -214,7 +217,7 @@ def makeNewPortfolio():
 
 @app.route('/getPortfolioData', methods=['POST'])
 def getPortfolioData():
-    sd = StockData()
+
     requestJson = request.get_json()
     id = requestJson['id']
     port = db.search_portfolio_by_id(id)
@@ -226,15 +229,30 @@ def getPortfolioData():
     data["stockAmount"] = []
     data["stockPrices"] = []
     data["stockWeight"] = []
+    data["funds"] = port.funds
     for stockid in stocks:
         stock = db.search_stock_by_id(stockid)
         data["stockABVs"].append(stock.nameABV)
         data["stockids"].append(stock.id)
         data["stockAmount"].append(stock.shares)
-        data["stockPrices"].append(sd.get_price(stock.nameABV))
-        data["stockWeight"].append(sd.get_price(stock.nameABV) * stock.shares)
+        data["stockPrices"].append(StockData.get_price(stock.nameABV))
+        data["stockWeight"].append(StockData.get_price(stock.nameABV) * stock.shares)
     return data
 
+@app.route('/buyStock', methods=['POST'])
+def buyStock():
+    requestJson = request.get_json()
+    uid = requestJson['uid']
+    id = requestJson['id']
+    nameABV = requestJson['nameABV']
+    shares = requestJson['shares']
+    port = db.search_portfolio_by_id(id)
+    trade = Trade()
+    ret = trade.buy_stock(uid, nameABV, id, int(shares))
+    data = {
+        "returncode": str(ret)
+    }
+    return data
 
 
 # How ADDING Friends should work

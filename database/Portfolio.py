@@ -67,15 +67,15 @@ class Portfolio:
         self.properties.remove(property.get_id())
     
     def update_stocks(self, stocks, id):
-        self.cur.execute("UPDATE 'Portfolios' SET stocks=? WHERE id=?", (json.dump(stocks), id,))
+        self.cur.execute("UPDATE 'Portfolios' SET stocks=? WHERE id=?", (json.dumps(stocks), id,))
         self.connect.commit()
     
     def update_properties(self, properties, id):
-        self.cur.execute("UPDATE 'Portfolios' SET properties=? WHERE id=?", (json.dump(properties), id,))
+        self.cur.execute("UPDATE 'Portfolios' SET properties=? WHERE id=?", (json.dumps(properties), id,))
         self.connect.commit()
     
     def update_commodities(self, commodities, id):
-        self.cur.execute("UPDATE 'Portfolios' SET commodites=? WHERE id=?", (json.dump(commodities), id,))
+        self.cur.execute("UPDATE 'Portfolios' SET commodites=? WHERE id=?", (json.dumps(commodities), id,))
         self.connect.commit()
     
     def update_funds(self, funds, id):

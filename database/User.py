@@ -57,9 +57,11 @@ class User:
     
     def add_portfolio(self, portfolio):
         self.userPortfolios.append(portfolio.get_id())
+        self.update_portfolios()
     
     def remove_portfolio(self, portfolio):
         self.userPortfolios.remove(portfolio.get_id())
+        self.update_portfolios()
 
     def change_username(self, username, id):        
          self.cur.execute("UPDATE 'User' SET username=? WHERE id=?", (username,id,))
