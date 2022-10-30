@@ -162,18 +162,18 @@ const Profile = () => {
       <h1>
       {
         profileSuccess?
-        <h2>
+        <p>
         <button className='delete' onClick={()=>deleteProfile()}> 
         delete profile</button>
         <button className = 'editUser' onClick={()=>setEditUsername(true)}> 
         edit username</button>
         <button className = 'editPass' onClick={()=>setEditPassword(true)}> 
         edit password</button>
-        </h2>:null
+        </p>:null
       }
       {
         editUsername?
-        <h2>
+        <p>
             New Username:<input type="text" onChange={getChangeUsername} 
              placeholder="Enter New Username"/>
             <button onClick={()=>usernameChange(changeUsername)}> Change Username complete </button>
@@ -183,15 +183,15 @@ const Profile = () => {
                     duplicate username, change another
                 </h3>:null
             }
-        </h2>:null
+        </p>:null
       }
       {
         editPassword?
-        <h2>
+        <p>
             New Password:<input type="text" onChange={getChangePassword} 
              placeholder="Enter New Password"/>
             <button onClick={()=>passwordChange(changeUsername)}> Change Password complete</button>
-        </h2>:null
+        </p>:null
       }
       </h1>
         <button onClick={()=>getSessionStorage()}> 
