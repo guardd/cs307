@@ -13,7 +13,7 @@ class Stock:
 
         self.connect = sqlite3.connect("mydb.db") ##connects to database
         self.cur = self.connect.cursor()
-
+    
 
 
 

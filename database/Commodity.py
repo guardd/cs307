@@ -1,3 +1,5 @@
+import sqlite3
+import json
 class Commodity:
    def __init__(self, name, type, id, portfolioID, userID, amount, avgUnitPrice):
     
@@ -8,6 +10,8 @@ class Commodity:
         self.userID = userID #INTEGER
         self.amount = amount #INTEGER
         self.avgUnitPrice = avgUnitPrice #INTEGER
+        self.connect = sqlite3.connect("mydb.db") ##connects to database
+        self.cur = self.connect.cursor()
 
 
 
@@ -55,5 +59,10 @@ class Commodity:
    def set_avgUnitPrice(self, avgUnitPrice):
         self.avgUnitPrice = avgUnitPrice
     
-    
+   def update_commodityAmount(self, amount, id):
+        self.cur.execute("UPDATE 'Commodity' SET amount=? WHERE id=?", (amount, id,))
+        self.connect.commit()
+   def update_commodityAvgUnitPrice(self, avgUnitPrice, id):
+        self.cur.execute("UPDATE 'Commodity' SET avgUnitPrice=? WHERE id=?", (avgUnitPrice, id,))
+        self.connect.commit() 
     

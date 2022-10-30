@@ -28,7 +28,7 @@ class Trade:
         
     def delete_portfolio(self, uid, portfolioID):
         p = Transmission()
-        portfolio = p.search_portfolio_by_id(portfolioID)
+        portfolio = Transmission.search_portfolio_by_id(portfolioID)
 
         stocklist = portfolio.get_stocks()
         propertylist = portfolio.get_properties()
