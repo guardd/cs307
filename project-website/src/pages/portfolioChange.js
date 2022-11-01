@@ -16,11 +16,11 @@ const PortfolioChange = () => {
     var portNames = []
     var portIds = []
     const [howmanyports, sethowmanyports] = useState(0)
-    var stockABVS = []
-    var stockids = []
-    var stockAmount = []
-    var stockPrices = []
-    var stockWeight = []
+    const [stockABVS, setStockABVS] = useState([]);
+    const [stockids, setStockids] = useState([]);
+    const [stockAmount, setStockAmount] = useState([]);
+    const [stockPrices, setStockPrices] = useState([]);
+    const [stockWeight, setStockWeight] = useState([]);
     const [portOptions, setPortOptions] = useState([]); 
     const [gotportfolios, setGotportfolios] = useState(false);
     const [choseportfolio, setChoseportfolio] = useState(false);
@@ -35,7 +35,21 @@ const PortfolioChange = () => {
     var newPortFailed = false
     const [chosenportId, setchosenportId] = useState(null);
     const [showPort, setShowPort] = useState(false)
-
+    function getStockABVS(val) {
+      setStockABVS(val)
+    }
+    function getStockids(val) {
+      setStockids(val)
+    }
+    function getStockAmount(val) {
+      setStockAmount(val)
+    }
+    function getStockPrices(val) {
+      setStockPrices(val)
+    }
+    function getStockWeight(val) {
+      setStockWeight(val)
+    }
     function getBuyNameABV(val) {
       setBuyNameABV(val.target.value)
     }
@@ -158,17 +172,19 @@ const PortfolioChange = () => {
       "body": JSON.stringify(portInfo)
   }).then(res=>res.json()).then(
     data => {
-      stockABVS = data.stockABVS
-      stockids = data.stockids
-      stockAmount = data.stockAmount
-      stockPrices = data.stockPrices
-      stockWeight = data.stockWeight
+
+      getStockABVS(data.stockABVS)
+      getStockids(data.stockids)
+      getStockAmount(data.stockAmount)
+      getStockPrices(data.stockPrices)
+      getStockWeight(data.stockWeight)
       setSelectportFunds(data.funds)
       console.log(data)
       var stocks = [];
       for (let i = 0; i < data.size; i++) {
+        console.log(stockABVS)
         var stock = {
-            ABV: stockABVS[i],
+            abv: stockABVS[i],
             id: stockids[i],
             amount: stockAmount[i],
             price: stockPrices[i],
@@ -201,13 +217,15 @@ const PortfolioChange = () => {
     data => {
       if (data.returncode === "1") {
         setBuyInfoString("Stock Bought")
-        getShowBuy("false")
+        getShowBuy(false)
       } else if (data.returncode === "-1") {
         setBuyInfoString("Insufficient funds")
       } else if (data.returncode === "-2") {
         setBuyInfoString("Not valid ABV")
       }
     }
+  ).then(
+    getportfoliodata(portid)
   )
   }
 /*
@@ -217,7 +235,14 @@ const PortfolioChange = () => {
                 })}
                 </select>
 */
+function showportdata() {
+  return (
 
+    selectport.map((stock) => (
+      <p key = {stock.abv}> {stock.abv}{stock.id}{stock.amount}{stock.price}{stock.weight} </p>
+  ))
+  )
+}
   return (
     <div>
         <button onClick={()=>getUserPortfolios()}> Edit portfolio </button>
@@ -240,10 +265,7 @@ const PortfolioChange = () => {
         }
         {
           showPort?          
-          selectport.map(({ABV, id, amount, price, weight}) => (
-            
-            <p key = {ABV}>{ABV}{id}{amount}{price}{weight}</p>
-          ))
+          showportdata()
 
           :null
         }
