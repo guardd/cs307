@@ -103,5 +103,3 @@ def pullStockData(symbol):
     price = price.to_numpy()
     data_array = np.array((dates,price)).T
     return data_array
-
-pullStockData('goog')
