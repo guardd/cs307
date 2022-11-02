@@ -12,7 +12,8 @@ import StockData
 from Friend import Friend
 from CommodityData import CommodityData
 import json
-import uuid 
+import uuid
+import prediction
 app = Flask(__name__)
 print("Flask running")
 db = Transmission()
@@ -215,6 +216,16 @@ def userPortfolios():
     data["portids"] = portids
     return data
 
+@app.route('/getPredictions', methods=['POST'])
+def getPredictions():
+    requestJson = request.get_json()
+    projectABV = requestJson['projectABV']
+    stockdata = prediction.pullStockData
+    data = {}
+    for point in stockdata:
+        data.append(point)
+    return data
+    
 @app.route('/makeNewPortfolio', methods=['POST'])
 def makeNewPortfolio():
     requestJson = request.get_json()

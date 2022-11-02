@@ -100,7 +100,11 @@ const Portfolio = () => {
   var stockAmount = []
   var stockPrices = []
   var stockWeight = []
+  const [projectABV, setprojectABV] = useState(null)
 
+  function getprojectABV(val) {
+    setprojectABV(val.target.value)
+  }
   //purpose of this function - to call it in the beginning of page load so we will know if we're logged in with who
   function getSessionStorage() {
     setUserid(sessionStorage.getItem("id"))
@@ -111,6 +115,22 @@ const Portfolio = () => {
     }
     console.log(loggedIn)
   }
+  function getPredictions() {
+    let predictionInfo = {
+      "projectABV": projectABV
+    };
+    fetch('/getPredictions', {
+      "method": "POST",
+      "headers": {"Content-Type": "application/json"},
+      "body": JSON.stringify(predictionInfo)
+  }).then(res=>res.json()).then(
+    data => {
+      console.log(data)
+    }
+    
+  )
+  }
+  
   //purpose of this function - getting the portfolio ids and names to show in the dropdown menu
   function getUserPortfolios() {
     let userInfo = {
@@ -215,7 +235,7 @@ function getportfoliodata(portid) {
             <h1 className="prediction-title">Make a Prediction</h1>
             <div className="prediction-symbol">
               <input type="text"  
-              className="prediction-symbol-input" placeholder="Enter Symbol"/>
+              className="prediction-symbol-input" placeholder="Enter Symbol" onChange={()=>getprojectABV}/>
             </div>
             <div className="prediction-button">
               <button type="submit" className="prediction-button-button"> 
