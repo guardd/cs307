@@ -1,4 +1,5 @@
 import json
+from pickle import FALSE
 import sqlite3
 import requests
 import csv
@@ -37,23 +38,45 @@ class CommodityData:
             return -1
         else:
             return companyname
-    def get_commodity_exchange_rate(self, symbol1, symbol2,base):
+    def get_commodity_exchange_rate(self, symbol1, symbol2,base, amount):
+       if int(amount) <= 0 or int(amount)> 1000000000:
+           return 2
+       else:
         base_currency = str(base).upper()
         endpoint = 'latest'
         symbol1 = str(symbol1).upper()
         symbol2 = str(symbol2).upper()
-
-        resp = requests.get('https://commodities-api.com/api/'+endpoint+'?access_key='+self.access_key+'&base='+base_currency+'&symbols='+symbol1+","+symbol2)
-        if resp.status_code != 200:
-        # This means something went wrong.
-            return -1
+        
+        self.cur.execute("SELECT 'Symbols' FROM 'CommodityData' WHERE Name=?", (symbol1,))
+        commodity1Name = self.cur.fetchone()
+        print(commodity1Name)
+        self.cur.execute("SELECT 'Symbols' FROM 'CommodityData' WHERE Name=?", (symbol2,))
+        commodity2Name = self.cur.fetchone()
+        print(commodity2Name)
+        self.cur.execute("SELECT 'Symbols' FROM 'CommodityData' WHERE Name=?", (base_currency,))
+        baseName = self.cur.fetchone()
+        print(baseName)
+        if baseName==None or  commodity1Name == None or commodity2Name == None:
+            print('bad symbols')
+            return 0
         else:
-            response = resp.json()
-            print(response)
-            print(response['data']['rates']['USD'])
-            print(response['data']['rates'][symbol2])
-            print(response['data']['rates'][symbol1])
-            exchangeRate = response['data']['rates'][symbol2]/response['data']['rates'][symbol1]
-            exchangeRate = f'{exchangeRate:.2f} {symbol2} per {symbol1}'
-            print(exchangeRate)
-            return exchangeRate
+            
+            resp = requests.get('https://commodities-api.com/api/'+endpoint+'?access_key='+self.access_key+'&base='+base_currency+'&symbols='+symbol1+","+symbol2)
+            if resp.status_code != 200:
+             # This means something went wrong.
+                return -1
+            else:
+                response = resp.json()
+                print(response)
+                print(response['data']['rates']['USD'])
+                print(response['data']['rates'][symbol2])
+                print(response['data']['rates'][symbol1])
+                exchangeRate = response['data']['rates'][symbol2]/response['data']['rates'][symbol1]
+                exchangeAmount = exchangeRate * float(amount)
+                exchangeAmount = f'{exchangeAmount:.2f} {symbol2} for {amount} {symbol1}'
+                exchangeRate = f'{exchangeRate:.2f} {symbol2} per {symbol1}'
+                exchangeData = {}
+                exchangeData['exchangeAmount'] = exchangeAmount
+                exchangeData['exchangeRate'] = exchangeRate
+                print(exchangeData)
+                return exchangeData
