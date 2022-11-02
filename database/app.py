@@ -25,38 +25,28 @@ def get_exchange_rate():
     symbol1 = requestJson['symbol1']
     symbol2 = requestJson['symbol2']
     base = requestJson['base']
+    amount = requestJson['amount']
     CD = CommodityData()
-    exchangeRate = CD.get_commodity_exchange_rate(symbol1, symbol2, base)
-    if exchangeRate ==-1:
+    exchangeData = CD.get_commodity_exchange_rate(symbol1, symbol2, base, amount)
+    if exchangeData ==-1:
         data = {
             "returncode": "-1"
         }
-    
+    elif exchangeData == 0:
+        data = {
+            "returncode": "0"
+        }
+    elif exchangeData == 2:
+        data = {
+            "returncode": "2"
+        }
     else:
         data = {
             "returncode": "1",
-            "exchangeRate": exchangeRate
+            "exchangeRate": exchangeData['exchangeRate'],
+            "exchangeAmount": exchangeData['exchangeAmount']
         }
 
-    return data
-
-@app.route('/loginMethod', methods=['POST'])
-def get_login_test():
-    print(request.is_json)
-    requestJson = request.get_json()
-    print(json.dumps(requestJson))
-    username = requestJson['username']
-    password = requestJson['password']
-    user = db.login_sequence(username, password)
-    try:
-        data = {
-            "returncode": "1",
-            "id": user.get_id()
-        }
-    except AttributeError:
-        data = {
-            "returncode": "-1"
-        }
     return data
 
 
