@@ -220,12 +220,22 @@ def userPortfolios():
 def getPredictions():
     requestJson = request.get_json()
     projectABV = requestJson['projectABV']
-    stockdata = prediction.pullStockData
+    stockdata = prediction.pullStockData(projectABV)
     data = {}
+    i = 0
     for point in stockdata:
-        data.append(point)
+        #date
+        
+        obj = {"date": point[0], "close": point[1]}
+        data[i] = obj
+        #date = point[0]
+        #price
+        #price = point[1]
+        #data[date] = price
+        i = i + 1
+    #data["lastindex"] = i
     return data
-    
+
 @app.route('/makeNewPortfolio', methods=['POST'])
 def makeNewPortfolio():
     requestJson = request.get_json()

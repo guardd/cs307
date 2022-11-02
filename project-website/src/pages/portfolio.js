@@ -1,8 +1,9 @@
 import React from "react";
+import {render} from "react-dom";
 import './portfolio.css';
 import { PieChart, Pie, Legend, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line} from 'recharts';
 import {useEffect, useState} from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, renderMatches, useNavigate } from "react-router-dom";
 
 const stockData = [
   {
@@ -100,7 +101,10 @@ const Portfolio = () => {
   var stockAmount = []
   var stockPrices = []
   var stockWeight = []
+  const result = []
+  const [projectData, setprojectData] = useState(null)
   const [projectABV, setprojectABV] = useState(null)
+  const [projected, setprojected] = useState(false)
 
   function getprojectABV(val) {
     setprojectABV(val.target.value)
@@ -116,6 +120,9 @@ const Portfolio = () => {
     console.log(loggedIn)
   }
   function getPredictions() {
+    console.log("functionCalled")
+    console.log(projectABV)
+
     let predictionInfo = {
       "projectABV": projectABV
     };
@@ -125,7 +132,17 @@ const Portfolio = () => {
       "body": JSON.stringify(predictionInfo)
   }).then(res=>res.json()).then(
     data => {
-      console.log(data)
+      //console.log(data);
+      for (let i = 0; i < 692; i++) {
+        let d = {date: data[i].date,
+                close: data[i].close};
+        //console.log(d)
+        result.push(d)
+      }
+      console.log(result)
+      console.log(stockData)
+      setprojectData(result)
+      setprojected(true)
     }
     
   )
@@ -204,10 +221,11 @@ function getportfoliodata(portid) {
       </PieChart>
       </div>
 
-
-      <div class="two">
+      {
+        
+      projected && <div class="two">
       <h1 className="stock-title">Current Stock</h1>
-      <LineChart width={400} height={250} data={stockData}
+      <LineChart width={400} height={250} data={projectData}
         margin={{ top: 70, right: 10, left: 0, bottom: 5 }}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />
@@ -227,6 +245,7 @@ function getportfoliodata(portid) {
         <Line type="monotone" dataKey="close" stroke="#8884d8" />
       </LineChart>
       </div>
+      }
 
       <div class="three">
         <div className="prediction-container"></div>
@@ -235,10 +254,10 @@ function getportfoliodata(portid) {
             <h1 className="prediction-title">Make a Prediction</h1>
             <div className="prediction-symbol">
               <input type="text"  
-              className="prediction-symbol-input" placeholder="Enter Symbol" onChange={()=>getprojectABV}/>
+              className="prediction-symbol-input" placeholder="Enter Symbol" onChange={getprojectABV}/>
             </div>
             <div className="prediction-button">
-              <button type="submit" className="prediction-button-button"> 
+              <button onClick= {()=>getPredictions()}> 
               Submit
               </button>
             </div>
@@ -260,4 +279,5 @@ function getportfoliodata(portid) {
 
   )
 };
+//render(<Portfolio />, document.getElementById("root"));
 export default Portfolio;

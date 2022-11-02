@@ -1,16 +1,16 @@
 import pandas as pd
 import numpy as np
 import yfinance as yf
-import tensorflow as tf
-from yahoofinancials import YahooFinancials
-import matplotlib.pyplot as plt
+#import tensorflow as tf
+#from yahoofinancials import YahooFinancials
+#import matplotlib.pyplot as plt
 import datetime
-import plotly_express as px
-import warnings
-import seaborn as sns
-from statsmodels.tsa.arima_model import ARIMA
-from sklearn.metrics import mean_squared_error
-from pandas.plotting import lag_plot
+#import plotly_express as px
+#import warnings
+#import seaborn as sns
+#from statsmodels.tsa.arima_model import ARIMA
+#from sklearn.metrics import mean_squared_error
+#from pandas.plotting import lag_plot
 '''
 warnings.filterwarnings('ignore')
 
@@ -97,8 +97,10 @@ def pullStockData(symbol):
     start = (datetime.date.today() - datetime.timedelta( NUM_DAYS ) )
     end = datetime.datetime.today()
     data = yf.download(symbol, start=start, end=end, interval=INTERVAL)
-    dates = data['Date']
-    price = data['Open']
+    data.to_csv(symbol + '.csv')
+    data_set = pd.read_csv(symbol + '.csv')
+    dates = data_set['Date']
+    price = data_set['Open']
     dates = dates.to_numpy()
     price = price.to_numpy()
     data_array = np.array((dates,price)).T
