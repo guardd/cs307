@@ -213,17 +213,9 @@ function getportfoliodata(portid) {
         <div className="prediction-Form">
           <div className="prediction-content">
             <h1 className="prediction-title">Make a Prediction</h1>
-            <div className="prediction-historical">
-              <input type="text" 
-              className="prediction-historical-input" placeholder="# of Historical Days"/>
-            </div>
             <div className="prediction-symbol">
               <input type="text"  
               className="prediction-symbol-input" placeholder="Enter Symbol"/>
-            </div>
-            <div className="prediction-interval">
-              <input type="text"  
-              className="prediction-interval-input" placeholder="Enter Interval"/>
             </div>
             <div className="prediction-button">
               <button type="submit" className="prediction-button-button"> 
