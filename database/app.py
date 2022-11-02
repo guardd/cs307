@@ -1,4 +1,3 @@
-from xml.etree.ElementTree import tostring
 from Transmission import Transmission
 from User import User
 from Portfolio import Portfolio
@@ -9,11 +8,9 @@ from Email import Email
 from notifications import Notifications
 from Commodity import Commodity
 from IDCreation import IDCreation
-#from StockData import StockData
 import StockData
 from Friend import Friend
-from Trade import Trade
-
+from CommodityData import CommodityData
 import json
 import uuid 
 app = Flask(__name__)
@@ -21,6 +18,26 @@ print("Flask running")
 db = Transmission()
 #hostEmail = Email()
 userSignupDict = {}
+@app.route('/exchangeRate', methods=['POST'])
+def get_exchange_rate():
+    requestJson = request.get_json()
+    symbol1 = requestJson['symbol1']
+    symbol2 = requestJson['symbol2']
+    base = requestJson['base']
+    CD = CommodityData()
+    exchangeRate = CD.get_commodity_exchange_rate(symbol1, symbol2, base)
+    if exchangeRate ==-1:
+        data = {
+            "returncode": "-1"
+        }
+    
+    else:
+        data = {
+            "returncode": "1",
+            "exchangeRate": exchangeRate
+        }
+
+    return data
 
 @app.route('/loginMethod', methods=['POST'])
 def get_login_test():
@@ -217,7 +234,7 @@ def makeNewPortfolio():
 
 @app.route('/getPortfolioData', methods=['POST'])
 def getPortfolioData():
-
+    sd = StockData()
     requestJson = request.get_json()
     id = requestJson['id']
     port = db.search_portfolio_by_id(id)
@@ -229,30 +246,15 @@ def getPortfolioData():
     data["stockAmount"] = []
     data["stockPrices"] = []
     data["stockWeight"] = []
-    data["funds"] = port.funds
     for stockid in stocks:
         stock = db.search_stock_by_id(stockid)
         data["stockABVs"].append(stock.nameABV)
         data["stockids"].append(stock.id)
         data["stockAmount"].append(stock.shares)
-        data["stockPrices"].append(StockData.get_price(stock.nameABV))
-        data["stockWeight"].append(StockData.get_price(stock.nameABV) * stock.shares)
+        data["stockPrices"].append(sd.get_price(stock.nameABV))
+        data["stockWeight"].append(sd.get_price(stock.nameABV) * stock.shares)
     return data
 
-@app.route('/buyStock', methods=['POST'])
-def buyStock():
-    requestJson = request.get_json()
-    uid = requestJson['uid']
-    id = requestJson['id']
-    nameABV = requestJson['nameABV']
-    shares = requestJson['shares']
-    port = db.search_portfolio_by_id(id)
-    trade = Trade()
-    ret = trade.buy_stock(uid, nameABV, id, int(shares))
-    data = {
-        "returncode": str(ret)
-    }
-    return data
 
 
 # How ADDING Friends should work
