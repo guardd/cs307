@@ -16,7 +16,9 @@ import nasdaqscrape
        ## self.ticker = yf.Ticker(self.nameABV)
      ##   self.stockInfo = self.ticker.info
 def get_price(nameABV):
+
    ticker = yf.Ticker(nameABV)
+
    return ticker.info['ask']
     
 def get_company_name(nameABV):
