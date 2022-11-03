@@ -7,6 +7,7 @@ class IDCreation:
 		return x
 	def generate_color_hex():
 		hexcode = binascii.b2a_hex(os.urandom(6))
-		hexcode=hexcode.upper()
+		hexcode = str(hexcode).upper()
+		hexcode = hexcode[2:8]
 		hexcode= f'#{hexcode}'
 		return hexcode
