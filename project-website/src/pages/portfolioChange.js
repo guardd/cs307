@@ -33,6 +33,7 @@ const PortfolioChange = () => {
     const [chosenportName, setchosenportName] = useState(null)
     var debugMessage = null;
     var newPortFailed = false
+    const [datalss, setdatalss] = useState([]);
     const [chosenportId, setchosenportId] = useState(null);
     const [showPort, setShowPort] = useState(false)
     function getStockABVS(val) {
@@ -181,6 +182,7 @@ const PortfolioChange = () => {
       setSelectportFunds(data.funds)
       console.log(data)
       var stocks = [];
+      var datals = [];
       for (let i = 0; i < data.size; i++) {
         console.log(stockABVS)
         var stock = {
@@ -190,14 +192,17 @@ const PortfolioChange = () => {
             price: stockPrices[i],
             weight: stockWeight[i]
         }
+        const datal = { name: stockABVS[i], amount: stockWeight[i], fill: '#57c0e8'}
         console.log(1)
         stocks.push(
             stock
         )
+        datals.push(datal)
         
     }
     setSelectport(stocks)
     getShowPort(true)
+    setdatalss(datals)
     }
     )  
   }
@@ -238,9 +243,16 @@ const PortfolioChange = () => {
 function showportdata() {
   return (
 
-    selectport.map((stock) => (
+    /*selectport.map((stock) => (
       <p key = {stock.abv}> {stock.abv}{stock.id}{stock.amount}{stock.price}{stock.weight} </p>
-  ))
+  ))*/
+  <h1>
+          <PieChart className= 'pie1'width={400} height={300}>
+          <Legend layout="vertical" verticalAlign="middle" align="right" />
+          <Pie data={datalss} dataKey="amount" nameKey="name" cx="50%" cy="50%" outerRadius={50} fill="#fff">
+          </Pie>
+          </PieChart>
+          </h1>
   )
 }
   return (
@@ -266,8 +278,15 @@ function showportdata() {
         {
           showPort?          
           showportdata()
-
-          :null
+         :null
+        }
+        {<h1>
+          <PieChart className= 'pie1'width={400} height={300}>
+          <Legend layout="vertical" verticalAlign="middle" align="right" />
+          <Pie data={datalss} dataKey="amount" nameKey="name" cx="50%" cy="50%" outerRadius={50} fill="#faf">
+          </Pie>
+          </PieChart>
+          </h1>
         }
         {
           showPort?

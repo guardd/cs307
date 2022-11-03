@@ -2,16 +2,16 @@ import pandas as pd
 import numpy as np
 import yfinance as yf
 import tensorflow as tf
-from yahoofinancials import YahooFinancials
+#from yahoofinancials import YahooFinancials
 import matplotlib.pyplot as plt
 import datetime
-import plotly_express as px
+#import plotly_express as px
 import warnings
 import seaborn as sns
 #from statsmodels.tsa.arima.model import ARIMA
 import statsmodels.api as sm
 from sklearn.metrics import mean_squared_error
-from pandas.plotting import lag_plot
+#from pandas.plotting import lag_plot
 
 warnings.filterwarnings('ignore')
 

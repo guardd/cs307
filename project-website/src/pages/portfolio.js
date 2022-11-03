@@ -6,14 +6,10 @@ import {useEffect, useState} from "react";
 import { Navigate, renderMatches, useNavigate } from "react-router-dom";
 import { CSVLink } from "react-csv";
 const headers = [
-  { label: "Name", key: "name" },
+  { label: "Date", key: "date" },
   { label: "Close", key: "close" }
 ];
-const csvreport = {
-  data: projectData,
-  headers: headers,
-  filename: 'stock.csv'
-};
+
 const data01 = [
   {name: 'AAPL', amount: 400, fill: '#57c0e8'},
   {name: 'GOOG', amount: 700, fill: "#FF6565"},
@@ -51,10 +47,16 @@ const Portfolio = () => {
   var stockPrices = []
   var stockWeight = []
   const result = []
+  const result2 = []
   const [projectData, setprojectData] = useState(null)
   const [projectABV, setprojectABV] = useState(null)
   const [projected, setprojected] = useState(false)
-
+  const [projectDataFinal, setprojectDataFinal] = useState(null)
+  const csvreport = {
+    data: projectData,
+    headers: headers,
+    filename: 'stock.csv'
+  };
   function getprojectABV(val) {
     setprojectABV(val.target.value)
   }
@@ -89,14 +91,47 @@ const Portfolio = () => {
         result.push(d)
       }
       console.log(result)
-      console.log(stockData)
+      //console.log(stockData)
       setprojectData(result)
       setprojected(true)
     }
     
+    
   )
+  getPredictionsFinal()
+  
   }
   
+  function getPredictionsFinal() {
+    console.log("functionCalled")
+    console.log(projectABV)
+
+    let predictionInfo = {
+      "projectABV": projectABV
+    };
+    fetch('/getPredictionsFinal', {
+      "method": "POST",
+      "headers": {"Content-Type": "application/json"},
+      "body": JSON.stringify(predictionInfo)
+  }).then(res=>res.json()).then(
+    data => {
+      //console.log(data);
+      for (let i = 0; i < 139; i++) {
+        let d = {date: data[i].date,
+                close: data[i].close};
+        //console.log(d)
+        result2.push(d)
+      }
+      console.log(result2)
+      //console.log(stockData)
+      setprojectDataFinal(result2)
+    }
+    
+    
+  )
+  }
+
+
   //purpose of this function - getting the portfolio ids and names to show in the dropdown menu
   function getUserPortfolios() {
     let userInfo = {
@@ -184,7 +219,7 @@ function getportfoliodata(portid) {
         <Line type="monotone" dataKey="close" stroke="#8884d8" />
       </LineChart>
       <h1 className="project-title">Projected Stock</h1>
-      <LineChart className= 'graph' width={400} height={250} data={projectedData}
+      <LineChart className= 'graph' width={400} height={250} data={projectDataFinal}
         margin={{ top: 70, right: 10, left: 0, bottom: 5 }}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />
