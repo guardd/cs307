@@ -64,7 +64,7 @@ class Trade:
             portfolio.add_stock(stock)
             portfolio.update_stocks(portfolio.get_stocks(), portfolioID)
             portfolio.update_funds(portfolio.get_funds()-price, portfolioID)
-     elif stock.get_portfolioID != portfolioID:
+     elif stock.get_portfolioID() != portfolioID:
             
       stock = Stock(StockData.get_company_name(nameABV), nameABV, IDCreation.generate_ID(), portfolioID, uid, StockData.get_price(nameABV), shares, IDCreation.generate_color_hex())
       p.insert_stock(stock)

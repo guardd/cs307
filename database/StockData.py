@@ -16,11 +16,13 @@ import nasdaqscrape
        ## self.ticker = yf.Ticker(self.nameABV)
      ##   self.stockInfo = self.ticker.info
 def get_price(nameABV):
-
    ticker = yf.Ticker(nameABV)
-
    return ticker.info['ask']
-    
+def get_price_nasdaq(nameABV):
+    connect = sqlite3.connect("mydb.db") ##connects to database
+    cur = connect.cursor()
+    price = cur.execute("SELECT LastSale FROM 'StockData' WHERE Symbol=?", (nameABV,))
+    return price
 def get_company_name(nameABV):
    ticker = yf.Ticker(nameABV)
    return ticker.info['shortName']
@@ -33,7 +35,30 @@ def store_stock_info():
             spamreader = csv.reader(csvfile, delimiter=',', quotechar='|')
 
             for row in spamreader:
-                cur.execute("INSERT INTO 'StockData' VALUES(?,?,?,?,?,?,?,?,?,?,?)", (row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10]))
+                if row[10] == '':
+                    row[10] = "no industry"
+                if row[9] == '':
+                    row[9] = "no sector"
+                if row[8] == '':
+                    row[8] =0
+                if row[7] == '':
+                    row[7] = "n/a"
+                if row[6] == '':
+                    row[6] = "n/a"
+                if row[5] == '':
+                    row[5] = 0
+                if row[4] == '':
+                    row[4] = "0%"
+                if row[3] == '':
+                    row[3] = 0
+                if row[2] == '':
+                    row[2] = "$0"
+                if row[1] == '':
+                    row[1] = 0
+                if row[0] == '':
+                    row[0] = "n/a"
+
+                cur.execute("INSERT INTO 'StockData' VALUES(?,?,?,?,?,?,?,?,?,?,?)", (row[0],row[1],row[2][1:],row[3],row[4][:-1],row[5],row[6],row[7],row[8],row[9],row[10]))
                         
             connect.commit()    
 
@@ -49,7 +74,29 @@ def update_stock_info():
             if row[0] == "Symbol":
                pass
             else:   
+                if row[10] == '':
+                    row[10] = "no industry"
+                if row[9] == '':
+                    row[9] = "no sector"
+                if row[8] == '':
+                    row[8] = 0
+                if row[7] == '':
+                    row[7] = "n/a"
+                if row[6] == '':
+                    row[6] = "n/a"
+                if row[5] == '':
+                    row[5] = 0
+                if row[4] == '':
+                    row[4] = "0%"
+                if row[3] == '':
+                    row[3] = 0
+                if row[2] == '':
+                    row[2] = "$0"
+                if row[1] == '':
+                    row[1] = 0
+                if row[0] == '':
+                    row[0] = "n/a"
                     print(row[0])
-                    cur.execute("UPDATE 'StockData' SET LastSale=?, NetChange=?, PercentChange=?, MarketCap=?, Volume=? WHERE Symbol=?", (row[2],row[3],row[4],row[5],row[9],row[0]))
+                    cur.execute("UPDATE 'StockData' SET LastSale=?, NetChange=?, PercentChange=?, MarketCap=?, Volume=? WHERE Symbol=?", (row[2][1:],row[3],row[4][:-1],row[5],row[8],row[0]))
            connect.commit()          
                
