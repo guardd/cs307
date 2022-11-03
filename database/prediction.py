@@ -121,3 +121,31 @@ def pullStockData(symbol):
 
 #find_prediction("tsla")
 #pullStockData("tsla")
+
+def generate_risk(db):
+    db = db.astype(float)
+    sd = np.std(db)
+    mean = np.mean(db)
+    variation = sd/mean
+    if (variation > 2):
+        return((10, "high"))
+    elif (variation > 1.5):
+        return((9, "high"))
+    elif (variation > 1.3):
+        return((8, "high"))
+    elif (variation > 1.1):
+        return((7, "high"))
+    elif (variation > 1):
+        return((6, "medium"))
+    elif (variation == 1):
+        return((5, "medium"))
+    elif (variation > 0.75):
+        return((4, "medium"))
+    elif (variation > 0.5):
+        return((3, "low"))
+    elif (variation > 0.1):
+        return((2, "low"))
+    else:
+        return((1, "low"))
+
+
