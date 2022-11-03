@@ -128,24 +128,22 @@ def generate_risk(db):
     mean = np.mean(db)
     variation = sd/mean
     if (variation > 2):
-        return((10, "high"))
+        return((10, "sell"))
     elif (variation > 1.5):
-        return((9, "high"))
+        return((9, "sell"))
     elif (variation > 1.3):
-        return((8, "high"))
+        return((8, "sell"))
     elif (variation > 1.1):
-        return((7, "high"))
+        return((7, "sell"))
     elif (variation > 1):
-        return((6, "medium"))
+        return((6, "hold"))
     elif (variation == 1):
-        return((5, "medium"))
+        return((5, "hold"))
     elif (variation > 0.75):
-        return((4, "medium"))
+        return((4, "hold"))
     elif (variation > 0.5):
-        return((3, "low"))
+        return((3, "boy"))
     elif (variation > 0.1):
-        return((2, "low"))
+        return((2, "buy"))
     else:
-        return((1, "low"))
-
-
+        return((1, "buy"))
