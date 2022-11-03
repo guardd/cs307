@@ -67,10 +67,10 @@ class CommodityData:
                 return -1
             else:
                 response = resp.json()
-                print(response)
-                print(response['data']['rates']['USD'])
-                print(response['data']['rates'][symbol2])
-                print(response['data']['rates'][symbol1])
+                #print(response)
+                #print(response['data']['rates']['USD'])
+                #print(response['data']['rates'][symbol2])
+                #print(response['data']['rates'][symbol1])
                 exchangeRate = response['data']['rates'][symbol2]/response['data']['rates'][symbol1]
                 exchangeAmount = exchangeRate * float(amount)
                 exchangeAmount = f'{exchangeAmount:.2f} {symbol2} for {amount} {symbol1}'
