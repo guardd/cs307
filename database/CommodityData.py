@@ -5,7 +5,7 @@ import requests
 import csv
 class CommodityData:
     def __init__(self):
-        self.access_key = 'zlksliz38pfu59i5qiapo815taa1g783gxu0dh6e083wevv80860yg2j13gw'
+        self.access_key = 'z4ppaflt7d2crmc876715ksn77srvkx4za64rzdb782ckdvz8h9qcdqa7472'
         self.connect = sqlite3.connect("mydb.db") ##connects to database
         self.cur = self.connect.cursor()
 
