@@ -310,12 +310,13 @@ def getPortfolioData():
         obj = {"stockABVs": stock.nameABV,
         "stockids": stock.id,
           "stockAmount": stock.shares,
+          "stockColor": stock.color,
            "stockPrices": StockData.get_price(stock.nameABV),
             "stockWeight": StockData.get_price(stock.nameABV) * stock.shares}
-        #print(obj)
+        #print(StockData.get_price(stock.nameABV) * stock.shares)
         data[i] = obj 
         i = i + 1
-    data[0] = i
+    data[0] = {"size": i, "funds": port.funds}
     return data
 
 @app.route('/buyStock', methods=['POST'])

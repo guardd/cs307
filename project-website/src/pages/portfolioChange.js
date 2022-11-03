@@ -180,10 +180,10 @@ const PortfolioChange = () => {
       getStockAmount(data.stockAmount)
       getStockPrices(data.stockPrices)
       getStockWeight(data.stockWeight)
-      setSelectportFunds(data.funds)
+      setSelectportFunds(data[0].funds)
       console.log(data)
       var stocks = [];
-      for (let i = 1; i < data[0]; i++) {
+      for (let i = 1; i < data[0].size; i++) {
         //console.log(stockABVS)
         var stock = {
             abv: data[i].stockABVs,
@@ -193,7 +193,7 @@ const PortfolioChange = () => {
             weight: data[i].stockWeight
         }
         console.log(data)
-        let datal = {name: data[i].stockABVs, amount: data[i].stockWeight, fill: '#57c0e8'};
+        let datal = {name: data[i].stockABVs, amount: data[i].stockWeight, fill: data[i].stockColor};
         console.log(1)
         stocks.push(
             stock
@@ -242,21 +242,7 @@ const PortfolioChange = () => {
                 })}
                 </select>
 */
-function showportdata() {
-  return (
 
-    /*selectport.map((stock) => (
-      <p key = {stock.abv}> {stock.abv}{stock.id}{stock.amount}{stock.price}{stock.weight} </p>
-  ))*/
-  <h1>
-          <PieChart className= 'pie1'width={400} height={300}>
-          <Legend layout="vertical" verticalAlign="middle" align="right" />
-          <Pie data={datalss} dataKey="amount" nameKey="name" cx="50%" cy="50%" outerRadius={50} fill="#fff">
-          </Pie>
-          </PieChart>
-          </h1>
-  )
-}
   return (
     <div>
         <button onClick={()=>getUserPortfolios()}> Edit portfolio </button>
@@ -288,14 +274,7 @@ function showportdata() {
           </h1>
          
         }
-        {<h1>
-          <PieChart className= 'pie1'width={400} height={300}>
-          <Legend layout="vertical" verticalAlign="middle" align="right" />
-          <Pie data={datalss} dataKey="amount" nameKey="name" cx="50%" cy="50%" outerRadius={50} fill="#faf">
-          </Pie>
-          </PieChart>
-          </h1>
-        }
+        
         {
           showPort?
           <button onClick={()=>getShowBuy(true)}> buy stock </button>
