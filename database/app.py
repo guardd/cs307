@@ -275,6 +275,7 @@ def getPredictionsFinal():
         obj = {"date": point[0], "close": point[1]}
         data[i] = obj      
         i = i + 1
+    print(prediction.generate_risk(stockdata))
     return data
 
 
