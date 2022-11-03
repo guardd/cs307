@@ -8,13 +8,15 @@ import datetime
 import plotly_express as px
 import warnings
 import seaborn as sns
-from statsmodels.tsa.arima_model import ARIMA
+#from statsmodels.tsa.arima.model import ARIMA
+import statsmodels.api as sm
 from sklearn.metrics import mean_squared_error
 from pandas.plotting import lag_plot
 
 warnings.filterwarnings('ignore')
 
 def find_prediction(symbol):
+    warnings.filterwarnings('ignore')
     NUM_DAYS = 1000
     INTERVAL = "1d"
     start = (datetime.date.today() - datetime.timedelta( NUM_DAYS ) )
@@ -38,7 +40,6 @@ def find_prediction(symbol):
     '''
     shape = data_set.shape[0]
     shape_temp = shape-1
-    print(shape)
     size = int(len(data_set)*0.8)
     train_data, test_data = data_set[0:size], data_set[size:]
     '''
@@ -57,8 +58,8 @@ def find_prediction(symbol):
     hist = [x for x in train]
     prediction = list()
     for t in range(len(test)):
-        model = ARIMA(hist, order=(5,1,0))
-        model_fit = model.fit(disp=0)
+        model = sm.tsa.arima.ARIMA(hist, order=(5,1,0))
+        model_fit = model.fit()
         out = model_fit.forecast()
         prediction.append(out[0])
         ob = test[t]
@@ -100,6 +101,7 @@ def find_prediction(symbol):
     sizedf = sizedf.to_numpy()
     df = df.to_numpy()
     final = np.array((sizedf, df)).T
+    print(final)
     return final
 
 def pullStockData(symbol):
@@ -117,3 +119,4 @@ def pullStockData(symbol):
     data_array = np.array((dates,price)).T
     return data_array
 
+find_prediction("tsla")
