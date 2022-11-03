@@ -101,7 +101,6 @@ def find_prediction(symbol):
     sizedf = sizedf.to_numpy()
     df = df.to_numpy()
     final = np.array((sizedf, df)).T
-    print(final)
     return final
 
 def pullStockData(symbol):
@@ -119,4 +118,4 @@ def pullStockData(symbol):
     data_array = np.array((dates,price)).T
     return data_array
 
-find_prediction("tsla")
+
