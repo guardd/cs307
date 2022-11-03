@@ -1,17 +1,17 @@
 import pandas as pd
 import numpy as np
 import yfinance as yf
-import tensorflow as tf
-from yahoofinancials import YahooFinancials
+#import tensorflow as tf
+#from yahoofinancials import YahooFinancials
 import matplotlib.pyplot as plt
 import datetime
-import plotly_express as px
+#import plotly_express as px
 import warnings
-import seaborn as sns
+#import seaborn as sns
 #from statsmodels.tsa.arima.model import ARIMA
 import statsmodels.api as sm
 from sklearn.metrics import mean_squared_error
-from pandas.plotting import lag_plot
+#from pandas.plotting import lag_plot
 
 warnings.filterwarnings('ignore')
 
@@ -102,7 +102,6 @@ def find_prediction(symbol):
     sizedf = sizedf.ravel()
     df = df.to_numpy().ravel()
     final = np.array((sizedf, df)).T
-    print (final)
     return final
 
 def pullStockData(symbol):
@@ -118,8 +117,7 @@ def pullStockData(symbol):
     dates = dates.to_numpy()
     price = price.to_numpy()    
     data_array = np.array((dates,price)).T
-    print(data_array)
     return data_array
 
-find_prediction("tsla")
-pullStockData("tsla")
+#find_prediction("tsla")
+#pullStockData("tsla")
