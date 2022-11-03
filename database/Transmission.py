@@ -40,7 +40,7 @@ class Transmission:
         self.connect.commit()
 
     def insert_stock(self, stock): #inserts a user into the database and saves database
-        self.cur.execute("INSERT INTO 'Stock' VALUES(?,?,?,?,?,?,?)", (stock.name, stock.nameABV,stock.id, stock.portfolioID, stock.userID, stock.avgSharePrice, stock.shares, stock.color))
+        self.cur.execute("INSERT INTO 'Stock' VALUES(?,?,?,?,?,?,?,?)", (stock.name, stock.nameABV,stock.id, stock.portfolioID, stock.userID, stock.avgSharePrice, stock.shares, stock.color))
         self.connect.commit()
     
     def insert_property(self, property): #inserts a user into the database and saves database
@@ -78,10 +78,12 @@ class Transmission:
     def search_stock_by_id(self, id): #searches a stock by its unique id and returns it
         self.cur.execute("SELECT * FROM 'Stock' WHERE id=?", (id,))
         stock = self.cur.fetchone()
+        print(stock)
         try:
             stockobject = Stock(stock[0],stock[1],stock[2],stock[3],stock[4],stock[5],stock[6], stock[7])
             return stockobject
         except TypeError:
+            print(TypeError)
             return -1 #couldn't find
     
     def search_stock_by_nameABV(self, nameABV, portfolioID): #used to find stocks that already exist in a given protfolio
