@@ -40,7 +40,7 @@ class Transmission:
         self.connect.commit()
 
     def insert_stock(self, stock): #inserts a user into the database and saves database
-        self.cur.execute("INSERT INTO 'Stock' VALUES(?,?,?,?,?,?,?)", (stock.name, stock.nameABV,stock.id, stock.portfolioID, stock.userID, stock.avgSharePrice, stock.shares))
+        self.cur.execute("INSERT INTO 'Stock' VALUES(?,?,?,?,?,?,?)", (stock.name, stock.nameABV,stock.id, stock.portfolioID, stock.userID, stock.avgSharePrice, stock.shares, stock.color))
         self.connect.commit()
     
     def insert_property(self, property): #inserts a user into the database and saves database
@@ -79,7 +79,7 @@ class Transmission:
         self.cur.execute("SELECT * FROM 'Stock' WHERE id=?", (id,))
         stock = self.cur.fetchone()
         try:
-            stockobject = Stock(stock[0],stock[1],stock[2],stock[3],stock[4],stock[5],stock[6])
+            stockobject = Stock(stock[0],stock[1],stock[2],stock[3],stock[4],stock[5],stock[6], stock[7])
             return stockobject
         except TypeError:
             return -1 #couldn't find
@@ -88,7 +88,7 @@ class Transmission:
         self.cur.execute("SELECT * FROM 'Stock' WHERE nameABV=? AND portfolioID=?", (nameABV,portfolioID))
         stock = self.cur.fetchone()
         try:
-            stockobject = Stock(stock[0],stock[1],stock[2],stock[3],stock[4],stock[5],stock[6])
+            stockobject = Stock(stock[0],stock[1],stock[2],stock[3],stock[4],stock[5],stock[6], stock[7])
             return stockobject
         except TypeError:
             return -1 #couldn't find
