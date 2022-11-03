@@ -1,5 +1,6 @@
 import sqlite3
 import json
+import IDCreation
 class Stock:
     def __init__(self, name, nameABV, id, portfolioID, userID, avgSharePrice, shares):
     
@@ -10,7 +11,7 @@ class Stock:
         self.userID = userID #INTEGER
         self.avgSharePrice = avgSharePrice #INTEGER
         self.shares = shares #INTEGER
-
+        self.color = IDCreation.generate_color_hex()
         self.connect = sqlite3.connect("mydb.db") ##connects to database
         self.cur = self.connect.cursor()
     
@@ -58,7 +59,8 @@ class Stock:
 
     def set_shares(self, shares):
         self.shares = shares
-    
+    def get_color(self):
+        return self.color
     def update_stockShares(self, shares, id):
         self.cur.execute("UPDATE 'Stock' SET shares=? WHERE id=?", (shares, id,))
         self.connect.commit()
