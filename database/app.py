@@ -13,7 +13,7 @@ from Friend import Friend
 from CommodityData import CommodityData
 import json
 import uuid
-import prediction
+#import prediction
 app = Flask(__name__)
 print("Flask running")
 db = Transmission()
@@ -49,7 +49,24 @@ def get_exchange_rate():
 
     return data
 
-
+@app.route('/loginMethod', methods=['POST'])
+def get_login_test():
+    print(request.is_json)
+    requestJson = request.get_json()
+    print(json.dumps(requestJson))
+    username = requestJson['username']
+    password = requestJson['password']
+    user = db.login_sequence(username, password)
+    try:
+        data = {
+            "returncode": "1",
+            "id": user.get_id()
+        }
+    except AttributeError:
+        data = {
+            "returncode": "-1"
+        }
+    return data
 
 @app.route('/userSignup', methods=['POST'])
 def user_signup_check():
@@ -225,6 +242,28 @@ def getPredictions():
         i = i + 1
     #data["lastindex"] = i
     return data
+
+@app.route('/getPredictionsFinal', methods=['POST'])
+def getPredictionsFinal():
+    requestJson = request.get_json()
+    projectABV = requestJson['projectABV']
+    stockdata = prediction.find_prediction(projectABV)
+    data = {}
+    i = 0
+    for point in stockdata:
+        #date
+        
+        obj = {"date": point[0], "close": point[1]}
+        data[i] = obj
+        #date = point[0]
+        #price
+        #price = point[1]
+        #data[date] = price
+        i = i + 1
+    #data["lastindex"] = i
+    return data
+
+
 
 @app.route('/makeNewPortfolio', methods=['POST'])
 def makeNewPortfolio():
