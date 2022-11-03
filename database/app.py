@@ -49,7 +49,31 @@ def get_exchange_rate():
         }
 
     return data
+@app.route('/topTenRefresh', methods=['POST'])
+def get_top_ten():
+    requestJson = request.get_json()
+    symbols = []
+    
+    for x in range(10):
+        
+        iterator = f'symbol{x+1}'
+        symbols.append(requestJson[iterator])
+        
+    CD = CommodityData()
 
+    topTenRefreshData = CD.get_top_ten(symbols)
+
+    if topTenRefreshData ==-1:
+        data = {
+            "returncode": "-1"
+        }
+    else:
+        data = {
+            "returncode": "1",
+             "rates":topTenRefreshData
+        }
+        print(data)
+    return data
 @app.route('/loginMethod', methods=['POST'])
 def get_login_test():
     print(request.is_json)
