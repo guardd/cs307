@@ -13,6 +13,9 @@ const Trade = () => {
     const [validAmount, setValidAmount] = useState(false)
     const [amount, setAmount] = useState(null)
     const [exchangeAmount, setexchangeAmount] = useState(null)
+    const [topTenRefresh, settopTenRefresh] = useState(false)
+    const [topTenRefreshFail, settopTenRefreshFail] = useState(false)
+    const [topTenRates, settopTenRates] = useState([]) 
     const navigate = useNavigate();
 
     
@@ -48,7 +51,7 @@ const Trade = () => {
         }).then(res => res.json()).then(
             data => {
                 if (data.returncode == "-1") {
-                    setexchangeRateSuccess(true)
+                    setexchangeRateSuccess(false)
                     setValidAmount(false)
                     return;
                 }
@@ -77,6 +80,53 @@ const Trade = () => {
         ).catch(error => {
             console.error('exchange class error', error);
         });
+    }
+    function getTopTen() {
+        let exchangeInfo = {
+            "symbol1": "WTIOIL",
+            "symbol2": "COFFEE",
+            "symbol3": "NG",
+            "symbol4": "XAU",
+            "symbol5": "WHEAT",
+            "symbol6": "COTTON",
+            "symbol7": "CORN",
+            "symbol8": "SUGAR",
+            "symbol9": "XAG",
+            "symbol10": "XCU"
+
+            
+        };
+        fetch('/topTenRefresh', {
+            "method": "POST",
+            "headers": { "Content-Type": "application/json" },
+            "body": JSON.stringify(exchangeInfo)
+        }).then(res => res.json()).then(
+            data => {
+                if (data.returncode == "-1") {
+                    settopTenRefresh(false)
+                    settopTenRefreshFail(true)
+                    return;
+                }
+              
+                else {
+                    settopTenRefresh(true)
+                    settopTenRefreshFail(false)
+                    const array = []
+                    for (const [key, value] of Object.entries(data.rates)) {
+
+                        array.push(key, value)
+
+                    }
+              
+                    settopTenRates(array)
+                    console.log(data.rates)
+                    
+                }
+            }
+        ).catch(error => {
+            console.error('Top Ten Refresh error', error);
+        });
+
     }
     
     return (
@@ -142,16 +192,33 @@ const Trade = () => {
               <div className="prediction-container"></div>
                <div className="prediction-Form">
                 <div className="prediction-content">
-                        <h1 className="prediction-title">Top Commodities Rate</h1>
+                        <h1 className="prediction-title">Top Commodities </h1>
 
-                        <div className="exchange-rate">
-                            
-                            Commodity1 <br/>
-                            Commodity2 <br/>
-                            Commodity3 <br/>
-                            
-                        </div>
+                            {topTenRefresh?
+                            <div className="exchange-rate">
+                                WTIOIL: {topTenRates[topTenRates.indexOf("WTIOIL") + 1]}<br />
+                                COFFEE: {topTenRates[topTenRates.indexOf("COFFEE") + 1]}<br />
+                                NG      {topTenRates[topTenRates.indexOf("NG") + 1]}<br />
+                                XAU:    {topTenRates[topTenRates.indexOf("XAU") + 1]}<br />
+                                WHEAT:  {topTenRates[topTenRates.indexOf("WHEAT") + 1]}<br />
+                                COTTON: {topTenRates[topTenRates.indexOf("COTTON") + 1]}<br />
+                                CORN:   {topTenRates[topTenRates.indexOf("CORN") + 1]}<br />
+                                SUGAR:  {topTenRates[topTenRates.indexOf("SUGAR") + 1]}<br />
+                                XAG:    {topTenRates[topTenRates.indexOf("XAG") + 1]}<br />
+                                XCU:    {topTenRates[topTenRates.indexOf("XCU") + 1]}
+                                
+                                    
 
+                            </div>: null}
+                            {topTenRefreshFail?
+                            <div className="exchange-rate">
+
+
+                                Refresh Failed
+
+
+
+                            </div> : null}
 
 
 
@@ -161,7 +228,7 @@ const Trade = () => {
 
                         <div className="prediction-button">
                             <button type="submit" className="prediction-button-button"
-                                onClick={() => getExchangeRate(symbol1, symbol2, base)}                            >
+                                onClick={() => getTopTen()}                            >
                                 Refresh
                             </button>
                         </div>
