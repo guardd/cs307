@@ -1,6 +1,7 @@
 from Transmission import Transmission
 from Stock import Stock
-from StockData import StockData
+#from StockData import StockData
+import StockData
 from Portfolio import Portfolio
 from Property import Property
 from Commodity import Commodity
@@ -8,23 +9,24 @@ from CommodityData import CommodityData
 from User import User
 from IDCreation import IDCreation
 class Trade:
-    def __init__(self, uid):
+    def __init__(self):
         p = Transmission()
-        self.user = p.search_user_by_id(uid)
+
         
 
         
     
     
     
-    def create_new_portfolio(self, name, funds):
+    def create_new_portfolio(self, uid, name, funds):
   
-        portfolio = Portfolio(name, IDCreation.generate_ID(), self.user.get_id(), funds, [], [], [])
-        self.user.add_portfolio(portfolio)
+        portfolio = Portfolio(name, IDCreation.generate_ID(), uid, funds, [], [], [])
+        p.search_user_by_id(uid).add_portfolio(portfolio)
         p = Transmission()
         p.insert_portfolio(portfolio)
-        self.user.update_portfolios(self.user.get_userPortfolios(), self.user.get_id())
-    def delete_portfolio(self, portfolioID):
+
+        
+    def delete_portfolio(self, uid, portfolioID):
         p = Transmission()
         portfolio = Transmission.search_portfolio_by_id(portfolioID)
 
@@ -43,32 +45,32 @@ class Trade:
         
         p.remove_portfolio(portfolio)
 
-        self.user.remove_portfolio(portfolio)
+        p.search_user_by_id(uid).remove_portfolio(portfolio)
 
-        self.user.update_portfolios(self.user.get_userPortfolios(), self.user.get_id())
+ 
     
     
     
-    def buy_stock(self, nameABV, portfolioID, shares):
+    def buy_stock(self, uid, nameABV, portfolioID, shares):
      p = Transmission()
      stock =p.search_stock_by_nameABV(nameABV, portfolioID)
      portfolio = p.search_portfolio_by_id(portfolioID)
      price = shares * StockData.get_price(nameABV)
      if portfolio.get_funds() < price:
-         return "User cannot afford this many shares"
+         return -1
      elif stock==-1:
-            stock = Stock(StockData.get_company_name(nameABV), nameABV, IDCreation.generate_ID(), portfolioID, self.user.get_id(), StockData.get_price(nameABV), shares)
+            stock = Stock(StockData.get_company_name(nameABV), nameABV, IDCreation.generate_ID(), portfolioID, uid, StockData.get_price(nameABV), shares)
             p.insert_stock(stock)
             portfolio.add_stock(stock)
             portfolio.update_stocks(portfolio.get_stocks(), portfolioID)
             portfolio.update_funds(portfolio.get_funds()-price, portfolioID)
      elif stock.get_portfolioID != portfolioID:
             
-      stock = Stock(StockData.get_company_name(nameABV), nameABV, IDCreation.generate_ID(), portfolioID, self.user.get_id(), StockData.get_price(nameABV), shares)
+      stock = Stock(StockData.get_company_name(nameABV), nameABV, IDCreation.generate_ID(), portfolioID, uid, StockData.get_price(nameABV), shares)
       p.insert_stock(stock)
       portfolio.add_stock(stock)
       portfolio.update_stocks(portfolio.get_stocks(), portfolioID)
-      portfolio.update_funds(portfolio.get_funds()-price)
+      portfolio.update_funds(portfolio.get_funds()-price, portfolioID)
      else:
             #p.remove_stock(stock.get_id()) ##remove stock from database
             #currentShares = stock.get_shares()
@@ -82,17 +84,17 @@ class Trade:
             newAvgSharePrice = ((currentShares * stock.get_avgSharePrice()) + (shares * StockData.get_price(nameABV)))/(shares+currentShares)
             stock.update_stockAvgSharePrice(newAvgSharePrice)
             portfolio.update_funds(portfolio.get_funds()-price, portfolioID)
-
+     return 1
     
-    def sell_stock(self,stockID,shares):
+    def sell_stock(self, uid, stockID,shares):
         t = Transmission()
         stock = t.search_stock_by_id(stockID)
         portfolio = t.search_portfolio_by_id(stock.get_portfolioID())
         if stock==-1 or portfolio==-1:
             return -1 ## this will indicate no stock or portfolio by that ID found
-        elif stock.get_userID()==self.user.get_id():
+        elif stock.get_userID()==uid:
             print(stock.get_userID())
-            print(self.user.get_id())
+            print(uid)
             return 1 ## this will indicate stock does not belong to user
         else:
             if shares >= stock.get_shares():
@@ -117,14 +119,14 @@ class Trade:
             if portfolio.get_funds() < price:
                 return "User cannot afford this many shares"
             elif commodity==-1:
-                commodity = Commodity(Commodity.get_commodity_name(type), type, IDCreation.generate_ID(), portfolioID, self.user.get_id(), amount, price)
+                commodity = Commodity(Commodity.get_company_name(type), type, IDCreation.generate_ID(), portfolioID, uid, amount, price)
                 p.insert_commodity(commodity)
                 portfolio.add_commodity(commodity)
                 portfolio.update_commodities(portfolio.get_commodities(), portfolioID)
                 portfolio.update_funds(portfolio.get_funds()-price, portfolioID)
             elif commodity.get_portfolioID != portfolioID:
             
-                commodity = Commodity(Commodity.get_commodity_name(type), type, IDCreation.generate_ID(), portfolioID, self.user.get_id(), amount, price)
+                commodity = Commodity(Commodity.get_company_name(type), type, IDCreation.generate_ID(), portfolioID, uid, amount, price)
                 p.insert_commodity(commodity)
                 portfolio.add_commodity(commodity)
                 portfolio.update_commodities(portfolio.get_commodities(), portfolioID)
@@ -144,37 +146,32 @@ class Trade:
                 portfolio.update_funds(portfolio.get_funds()-price, portfolioID)
 
             return 0
-        def sell_commodity(self, commodityID, amount):
+        def sell_commodity(self, uid, commodityID, amount):
             t = Transmission()
-            commodity = t.search_commodity_by_id(commodityID)
-            portfolio = t.search_portfolio_by_id(commodity.get_portfolioID())
-            if commodity==-1 or portfolio==-1:
+            stock = t.search_stock_by_id(stockID)
+            ortfolio = t.search_portfolio_by_id(stock.get_portfolioID())
+            if stock==-1 or portfolio==-1:
                  return -1 ## this will indicate no stock or portfolio by that ID found
-            elif commodity.get_userID()==self.user.get_id():
-                print(commodity.get_userID())
-                print(self.user.get_id())
+            elif stock.get_userID()==t.search_user_by_id(uid).get_id():
+                print(stock.get_userID())
+                print(t.search_user_by_id(uid).get_id())
                 return 1 ## this will indicate stock does not belong to user
             else:
-                if amount >= commodity.get_amount():
-                    portfolio.set_funds(portfolio.get_funds()+(commodity.get_amount()*CommodityData.get_price(commodity.type())))
+                if shares >= stock.get_shares():
+                    portfolio.set_funds(portfolio.get_funds()+(stock.get_shares()*StockData.get_price(stock.get_nameABV())))
                     portfolio.update_funds(portfolio.get_funds(), portfolio.get_id())
-                    t.remove_commodity(commodityID)
-                    portfolio.remove_commodity(commodity)
-                    portfolio.update_commodities(portfolio.get_commodities(),portfolio.get_id())
+                    t.remove_stock(stockID)
+                    portfolio.remove_stock(stock)
+                    portfolio.update_stocks(portfolio.get_stocks(),portfolio.get_id())
 
                 else:
-                    portfolio.set_funds(portfolio.get_funds()+(commodity.get_amount()*CommodityData.get_price(commodity.get_type())))
+                    portfolio.set_funds(portfolio.get_funds()+(stock.get_shares()*StockData.get_price(stock.get_nameABV())))
                     portfolio.update_funds(portfolio.get_funds(), portfolio.get_id())
-                    stock.set_amount(commodity.get_amount()-amount)
-                    stock.update_stockShares(commodity.get_amount())   
+                    stock.set_shares(stock.get_shares()-shares)
+                    stock.update_stockShares(stock.get_shares())   
         def buy_property():
             return 0
         def sell_property():
             return 0
         
-
-
-
-
-    
 

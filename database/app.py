@@ -11,9 +11,10 @@ from IDCreation import IDCreation
 import StockData
 from Friend import Friend
 from CommodityData import CommodityData
+from Trade import Trade
 import json
 import uuid
-#import prediction
+import prediction
 app = Flask(__name__)
 print("Flask running")
 db = Transmission()
@@ -231,16 +232,12 @@ def getPredictions():
     data = {}
     i = 0
     for point in stockdata:
-        #date
+        
         
         obj = {"date": point[0], "close": point[1]}
         data[i] = obj
-        #date = point[0]
-        #price
-        #price = point[1]
-        #data[date] = price
+       
         i = i + 1
-    #data["lastindex"] = i
     return data
 
 @app.route('/getPredictionsFinal', methods=['POST'])
@@ -250,17 +247,10 @@ def getPredictionsFinal():
     stockdata = prediction.find_prediction(projectABV)
     data = {}
     i = 0
-    for point in stockdata:
-        #date
-        
+    for point in stockdata:      
         obj = {"date": point[0], "close": point[1]}
-        data[i] = obj
-        #date = point[0]
-        #price
-        #price = point[1]
-        #data[date] = price
+        data[i] = obj      
         i = i + 1
-    #data["lastindex"] = i
     return data
 
 
@@ -284,27 +274,40 @@ def makeNewPortfolio():
 
 @app.route('/getPortfolioData', methods=['POST'])
 def getPortfolioData():
-    sd = StockData()
+    #sd = StockData()
     requestJson = request.get_json()
     id = requestJson['id']
     port = db.search_portfolio_by_id(id)
     stocks = port.stocks
     data = {}
-    data['size'] = len(stocks)
-    data["stockABVs"] = []
-    data["stockids"] = []
-    data["stockAmount"] = []
-    data["stockPrices"] = []
-    data["stockWeight"] = []
+    i = 1
     for stockid in stocks:
         stock = db.search_stock_by_id(stockid)
-        data["stockABVs"].append(stock.nameABV)
-        data["stockids"].append(stock.id)
-        data["stockAmount"].append(stock.shares)
-        data["stockPrices"].append(sd.get_price(stock.nameABV))
-        data["stockWeight"].append(sd.get_price(stock.nameABV) * stock.shares)
+        obj = {"stockABVs": stock.nameABV,
+        "stockids": stock.id,
+          "stockAmount": stock.shares,
+           "stockPrices": StockData.get_price(stock.nameABV),
+            "stockWeight": StockData.get_price(stock.nameABV) * stock.shares}
+        #print(obj)
+        data[i] = obj 
+        i = i + 1
+    data[0] = i
     return data
 
+@app.route('/buyStock', methods=['POST'])
+def buyStock():
+    requestJson = request.get_json()
+    uid = requestJson['uid']
+    id = requestJson['id']
+    nameABV = requestJson['nameABV']
+    shares = requestJson['shares']
+    port = db.search_portfolio_by_id(id)
+    trade = Trade()
+    ret = trade.buy_stock(uid, nameABV, id, int(shares))
+    data = {
+        "returncode": str(ret)
+    }
+    return data
 
 
 # How ADDING Friends should work

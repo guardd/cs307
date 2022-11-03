@@ -95,7 +95,7 @@ def find_prediction(symbol):
     '''
     length = list()
     for x in range(len(prediction)):
-        length.append(x)
+        length.append(str(x))
     df = pd.DataFrame(prediction)
     sizedf = pd.DataFrame(length)
     sizedf = sizedf.to_numpy()

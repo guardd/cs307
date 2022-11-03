@@ -33,7 +33,8 @@ const PortfolioChange = () => {
     const [chosenportName, setchosenportName] = useState(null)
     var debugMessage = null;
     var newPortFailed = false
-    const [datalss, setdatalss] = useState([]);
+    const datals = []
+    const [datalss, setdatalss] = useState(null);
     const [chosenportId, setchosenportId] = useState(null);
     const [showPort, setShowPort] = useState(false)
     function getStockABVS(val) {
@@ -174,7 +175,7 @@ const PortfolioChange = () => {
   }).then(res=>res.json()).then(
     data => {
 
-      getStockABVS(data.stockABVS)
+      getStockABVS(data.stockABVs)
       getStockids(data.stockids)
       getStockAmount(data.stockAmount)
       getStockPrices(data.stockPrices)
@@ -182,21 +183,22 @@ const PortfolioChange = () => {
       setSelectportFunds(data.funds)
       console.log(data)
       var stocks = [];
-      var datals = [];
-      for (let i = 0; i < data.size; i++) {
-        console.log(stockABVS)
+      for (let i = 1; i < data[0]; i++) {
+        //console.log(stockABVS)
         var stock = {
-            abv: stockABVS[i],
-            id: stockids[i],
-            amount: stockAmount[i],
-            price: stockPrices[i],
-            weight: stockWeight[i]
+            abv: data[i].stockABVs,
+            id: data[i].stockids,
+            amount: data[i].stockAmount,
+            price: data[i].stockPrices,
+            weight: data[i].stockWeight
         }
-        const datal = { name: stockABVS[i], amount: stockWeight[i], fill: '#57c0e8'}
+        console.log(data)
+        let datal = {name: data[i].stockABVs, amount: data[i].stockWeight, fill: '#57c0e8'};
         console.log(1)
         stocks.push(
             stock
         )
+        console.log(datal)
         datals.push(datal)
         
     }
@@ -276,9 +278,15 @@ function showportdata() {
           :null
         }
         {
-          showPort?          
-          showportdata()
-         :null
+          showPort &&          
+          <h1>
+          <PieChart className= 'pie1'width={400} height={300}>
+          <Legend layout="vertical" verticalAlign="middle" align="right" />
+          <Pie data={datalss} dataKey="amount" nameKey="name" cx="50%" cy="50%" outerRadius={50} fill="#fff">
+          </Pie>
+          </PieChart>
+          </h1>
+         
         }
         {<h1>
           <PieChart className= 'pie1'width={400} height={300}>
