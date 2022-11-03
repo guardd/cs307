@@ -3,6 +3,7 @@ import './trade.css';
 import { PieChart, Pie, Legend, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line } from 'recharts';
 import { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import Select from 'react-select';
 const Trade = () => {
     const [ExchangeRate, setExchangeRate] = useState(null)
     const [symbol1, setSymbol1] = useState(null)
@@ -17,8 +18,18 @@ const Trade = () => {
     const [topTenRefreshFail, settopTenRefreshFail] = useState(false)
     const [topTenRates, settopTenRates] = useState([]) 
     const navigate = useNavigate();
+    var chosenportId;
+    const portOptions = [
+        { label: 'Trade Volume', value: '1' },
+        { label: 'Market Cap', value: '2' },
+        { label: 'Last Sale', value: '3' },
+        { label: 'Net Change', value: '4' },
+        { label: 'Industry', value: '5'}
+    ]
+    var choosePortId = e => {
+        chosenportId = e.value
+    }
 
-    
 
     function getSymbol1(val) {
         setSymbol1(val.target.value)
@@ -132,6 +143,8 @@ const Trade = () => {
     return (
         
         <div class="main">
+            <Select options={portOptions} onChange={choosePortId} />
+
            <div class="one">
            <div className="prediction-container"></div>
            <div className="prediction-Form">
@@ -188,7 +201,9 @@ const Trade = () => {
                         </div>
                  </div>
             </div>
+            
             <div class="two">
+            
               <div className="prediction-container"></div>
                <div className="prediction-Form">
                 <div className="prediction-content">
@@ -234,11 +249,12 @@ const Trade = () => {
                         </div>
                 </div>
                 </div>
-                </div>
+                
+            </div>
+                
              </div>
          
-       
-
+              
     );
 };
 export default Trade;
