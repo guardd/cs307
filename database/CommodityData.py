@@ -80,3 +80,19 @@ class CommodityData:
                 exchangeData['exchangeRate'] = exchangeRate
                 print(exchangeData)
                 return exchangeData
+    def get_top_ten(self, symbols):
+        endpoint = 'latest'
+        base_currency = 'usd'
+        symbols = ",".join(symbols)
+        print(symbols)
+        resp = requests.get('https://commodities-api.com/api/'+endpoint+'?access_key='+self.access_key+'&base='+base_currency+'&symbols='+symbols)
+        if resp.status_code != 200:
+         # This means something went wrong.
+           return -1
+        else:
+            response = resp.json()
+            for key, value in response['data']['rates'].items():
+               newValue = 1/value
+               response['data']['rates'][key] = f'${newValue:.2f}'
+            print(response['data']['rates'])
+            return response['data']['rates']
