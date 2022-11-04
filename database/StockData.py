@@ -31,7 +31,7 @@ def get_company_name(nameABV):
 def get_news(userID):
     connect = sqlite3.connect("mydb.db") ##connects to database
     cur = connect.cursor()
-    
+    print(userID)
 
     cur.execute("SELECT nameABV FROM 'Stock' WHERE userID=?", (userID,))
     nameABV = cur.fetchall()
@@ -55,6 +55,7 @@ def get_news(userID):
     for x in ticker.symbols:
      
      newsPackage.append(news[x][0])
+    print(newsPackage)
     return newsPackage
 def store_stock_info():
         connect = sqlite3.connect("mydb.db") ##connects to database
