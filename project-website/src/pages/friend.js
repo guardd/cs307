@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Navigate, useNavigate } from "react-rou
 import Select from 'react-select';
 
 const Friend = () => {
+    const [texts, setTexts] = useState(null)
     const navigate = useNavigate();
     const [userId, setUserid]=useState(null)
     const [loggedIn, setLoggedIn]=useState("false")
@@ -21,10 +22,16 @@ const Friend = () => {
     const [choseFriend, setChoseFriend] = useState(false)
     const [portfolioName, setportfolioName] = useState(null)
     const [shareFailString, setshareFailString] = useState(null)
+    const [chatFailString, setChatFailString] = useState(null)
+    const [chatToSend, setChatToSend] = useState(null)
     const friendOptions = []
     const [friendOptionss, setFriendOptionss] = useState(null)
+    const [chatting, setChatting] = useState(false)
     function getPortfolioName(val) {
         setportfolioName(val.target.value)
+    }
+    function getChatToSend(val) {
+        setChatToSend(val.target.value)
     }
     function getOtherUsername(val)
     {
@@ -51,7 +58,8 @@ const Friend = () => {
     function sharePortfolio() {
         let Info = {
             "portfolioName": portfolioName,
-            "friendId": friendChatid
+            "friendId": friendChatid,
+            "uid": userId
         };
         fetch('/sharePortfolio', {
             "method": "POST",
@@ -129,6 +137,44 @@ const Friend = () => {
             }
         )
     }
+    function getMsgs() {
+        let idInfo = {
+            "id": sessionStorage.getItem("id")
+        };
+        fetch('/textGet', {
+            "method": "POST",
+            "headers": {"Content-Type": "application/json"},
+            "body": JSON.stringify(idInfo)
+        }).then(res => res.json()).then(
+            data => {setTexts(data.msgs)
+            console.log(data.msgs)
+            console.log(texts)
+            }
+            
+        )
+        
+    }
+    function sendMsgs() {
+        let idInfo = {
+            "id": sessionStorage.getItem("id"),
+            "friendId": friendChatid,
+            "msg": chatToSend
+        };
+        fetch('/textFriend', {
+            "method": "POST",
+            "headers": {"Content-Type": "application/json"},
+            "body": JSON.stringify(idInfo)
+        }).then(res => res.json()).then(
+            data => {
+                if (data.returncode != 1) {
+                    setChatFailString("chat failed")
+                } else {
+                    setChatFailString("chat sent")
+                    setChatting(false)
+                }
+            }
+        )
+    }
     return (
         
         <div>
@@ -140,15 +186,29 @@ const Friend = () => {
             {friendRequestsNames}
             {friendNames}
             <Select options={friendOptionss} onChange={chooseFriendId}/>
+            <button onClick={()=>getMsgs()}> get Texts</button>
+            {texts}
             </div>
             
         }
         {
             setChoseFriend && <div>
             {friendChatname}
-            <input type="text" onChange={(e)=>getPortfolioName(e)} 
-        placeholder="Enter Portfolio name to share"/>
+            <input type="text" onChange={(e)=>getPortfolioName(e)} placeholder="Enter Portfolio name to share"/>
+        {shareFailString}
+        <button onClick={()=>sharePortfolio()}> Share portfolio</button>
+        <button onClick={()=>setChatting(true)}> Open chat</button>    
+        
             </div>
+
+            
+        
+        }
+        {
+        chatting && <div><input type="text" onChange={(e)=>getChatToSend(e)} placeholder="Enter chat to send"/>
+        {chatFailString}
+        <button onClick={()=>sendMsgs()}> Send chat</button>
+        </div>
         }
 
         <div>

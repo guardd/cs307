@@ -16,6 +16,7 @@ const Home = () => {
       <div className= 'mission'>
         <h1 className='mission-title'>Our Mission</h1>
         <p className='about-words'>This is our Mission</p>
+        
       </div>
     </div>
   );

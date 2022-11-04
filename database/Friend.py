@@ -55,3 +55,10 @@ class Friend:
         self.cur.execute("UPDATE 'Friends' SET messages=? WHERE id=?", (json.dumps(self.messages), self.id,))
         self.connect.commit()
     
+   
+    def pop_messages(self):
+        returnString = self.messages
+        self.messages = []
+        self.cur.execute("UPDATE 'Friends' SET messages=? WHERE id=?", (json.dumps(self.messages), self.id,))
+        self.connect.commit()
+        return returnString

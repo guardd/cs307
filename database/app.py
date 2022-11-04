@@ -340,9 +340,10 @@ def sharePort():
     requestJson = request.get_json()
     friendId = requestJson['friendId']
     portfolioName = requestJson['portfolioName']
+    uid = requestJson['uid']
     trade = Trade()
     data = {
-        'returncode': trade.share_portfolio()
+        'returncode': trade.share_portfolio(friendId, portfolioName, uid)
     }
     return data
 
@@ -468,7 +469,10 @@ def textFriend():
             "returncode": -2
             }
             return data
-        otherfriend.add_message(db.search_user_by_id(id).get_username + ": " + msg)
+        toSend = db.search_user_by_id(id).get_username() + ":" + msg
+        #toSend.append(":")
+        #toSend.append(msg)
+        otherfriend.add_message(toSend)
         otherfriend.update_messages()
         #message sent!
         data = {
@@ -481,3 +485,20 @@ def textFriend():
             "returncode": -1
         }
         return data
+
+@app.route('/textGet', methods=['POST'])
+def textGet():
+    requestJson = request.get_json()
+    id = requestJson['id']
+    friend = db.search_friend_by_id(id)
+
+    returnArray = friend.pop_messages()
+
+    returnString = ""
+    for each in returnArray:
+        returnString = returnString + each + "\n"
+        #returnString.append("\n")
+    data = {
+        "msgs": returnString
+    }
+    return data
