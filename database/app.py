@@ -18,7 +18,7 @@ import prediction
 app = Flask(__name__)
 print("Flask running")
 db = Transmission()
-#hostEmail = Email()
+hostEmail = Email()
 userSignupDict = {}
 @app.route('/exchangeRate', methods=['POST'])
 def get_exchange_rate():
@@ -335,6 +335,16 @@ def buyStock():
     }
     return data
 
+@app.route('/sharePortfolio', methods=['POST'])
+def sharePort():
+    requestJson = request.get_json()
+    friendId = requestJson['friendId']
+    portfolioName = requestJson['portfolioName']
+    trade = Trade()
+    data = {
+        'returncode': trade.share_portfolio()
+    }
+    return data
 
 # How ADDING Friends should work
 # Add friend by username
@@ -368,20 +378,33 @@ def addFriend():
     except ValueError:
         print("addFriend No error!")
     try:
-        index = userFriend.friendRequests.index("otherUserId")
+        print(otherUserId.get_id())
+        index = userFriend.friendRequests.index(otherUserId.get_id())
+
         ## make them friends
-        userFriend.remove_friend_request(otherUserId)
-        userFriend.add_friend(otherUserId)
+        userFriend.remove_friend_request(otherUserId.get_id())
+
+        userFriend.add_friend(otherUserId.get_id())
+
         otherFriend.add_friend(userId)
+
         userFriend.update_friend_requests()
+
         userFriend.update_friends()
+
         otherFriend.update_friends()
+
         data = {
             "returncode": 2
         }
         return data
     except ValueError:
         ##send request
+        if userId in otherFriend.get_friends():
+            data = {
+            "returncode": -2
+            }
+            return data
         otherFriend.add_friend_request(userId)
         otherFriend.update_friend_requests()
         data = {
@@ -394,12 +417,15 @@ def userFriends():
     requestJson = request.get_json()
     id = requestJson['id']
     friend = db.search_friend_by_id(id)
-
+    
+    
     friendRequests = []
     friendRequestNames = []
     friendNames = []
     friendIds = []
     data = {}
+    friendRequestSize = 0
+    friendSize = 0
     for friendRequest in friend.friendRequests:
         if (db.search_user_by_id(friendRequest) == -1):
             friend.remove_friend_request(friendRequest)
@@ -407,7 +433,8 @@ def userFriends():
             friend.update_friend_requests()
         else:
             friendRequests.append(friendRequest)
-            friendRequestNames.append(db.search_user_by_id(friendRequest).get_username)
+            friendRequestNames.append(db.search_user_by_id(friendRequest).get_username())
+            friendRequestSize = friendRequestSize + 1
     for indfriend in friend.friends:
         if (db.search_user_by_id(indfriend) == -1):
             friend.remove_friend(indfriend)
@@ -415,11 +442,14 @@ def userFriends():
             friend.update_friends()
         else:    
             friendIds.append(indfriend)
-            friendNames.append(db.search_user_by_id(indfriend).get_username)
+            friendNames.append(db.search_user_by_id(indfriend).get_username())
+            friendSize = friendSize + 1
     data["friendRequests"] = friendRequests
     data["friendRequestNames"] = friendRequestNames
     data["friendNames"] = friendNames
     data["friendIds"] = friendIds
+    data["friendRequestSize"] = friendRequestSize
+    data["friendSize"] = friendSize
     return data
     
 @app.route('/textFriend', methods=['POST'])
