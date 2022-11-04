@@ -188,6 +188,8 @@ function getportfoliodata(portid) {
 
   return (
     <div class="main">
+    {
+      false &&
       <div class="one">
       <h1 className="current-title">Current Porfolio</h1>
       <PieChart className= 'pie1'width={400} height={300}>
@@ -204,7 +206,7 @@ function getportfoliodata(portid) {
       <Pie data={predictdeData02} dataKey="amount" nameKey="name" cx="50%" cy="50%" innerRadius={60} outerRadius={80} fill="#fff" label />
       </PieChart>
       </div>
-
+    } 
       {
         
       projected && <div class="two">
