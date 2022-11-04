@@ -20,7 +20,7 @@ print("Flask running")
 db = Transmission()
 hostEmail = Email()
 userSignupDict = {}
-@app.route('/exchangeRate', methods=['POST'])
+@app.route('/getNews', methods=['POST'])
 def get_news():
   requestJson = request.get_json()
   userID = requestJson['uid']
