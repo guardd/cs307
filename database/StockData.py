@@ -5,6 +5,7 @@ import csv
 import json
 import sqlite3
 import nasdaqscrape
+import re
 ##class StockData:
    ## def __init__(self, nameABV, userID, portfolioID, stockID):
     
@@ -26,7 +27,29 @@ def get_price_nasdaq(nameABV):
 def get_company_name(nameABV):
    ticker = yf.Ticker(nameABV)
    return ticker.info['shortName']
-   
+
+def get_news(userID):
+    connect = sqlite3.connect("mydb.db") ##connects to database
+    cur = connect.cursor()
+    nameABV = []
+
+    cur.execute("SELECT nameABV FROM 'Stock' WHERE userID=?", (userID,))
+    nameABV = cur.fetchall()
+    names = []
+    for x in range(3):
+        names.append(str(nameABV[x]))
+    tickers = ' '.join(names)    
+    regex = re.compile('[^a-zA-Z ]')
+    #First parameter is the replacement, second parameter is your input string
+    tickers = regex.sub('', tickers)
+    ticker = yf.Tickers(tickers)
+
+    newsPackage = []
+    news = ticker.news()
+    for x in ticker.symbols:
+     
+     newsPackage.append(news[x][0])
+    return newsPackage   
 def store_stock_info():
         connect = sqlite3.connect("mydb.db") ##connects to database
         cur = connect.cursor()
