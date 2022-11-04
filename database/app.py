@@ -363,6 +363,7 @@ def getPortfolioData():
 def buyStock():
     requestJson = request.get_json()
     uid = requestJson['uid']
+    print(uid)
     id = requestJson['id']
     nameABV = requestJson['nameABV']
     shares = requestJson['shares']
@@ -379,13 +380,17 @@ def sellStock():
     requestJson = request.get_json()
     uid = requestJson['uid']
     id = requestJson['id']
+    
     nameABV = requestJson['nameABV']
     shares = requestJson['shares']
-    port = db.search_portfolio_by_id(id)
-    sid = ""
-    for each in port.stocks:
-        if db.search_stock_by_id(each).nameABV == nameABV:
-            sid = each
+    print(nameABV)
+    print(uid)
+    #port = db.search_portfolio_by_id(id)
+    sid = db.search_stock_by_nameABV_and_userId(nameABV, uid).id
+    #for each in port.stocks:
+    #    if db.search_stock_by_id(each).nameABV == nameABV:
+    #        sid = each
+
     trade = Trade()
     ret = trade.sell_stock(uid,sid, int(shares))
     data = {

@@ -64,7 +64,9 @@ class Trade:
      if portfolio.get_funds() < price:
          return -1
      elif stock==-1:
+            print(uid)
             stock = Stock(StockData.get_company_name(nameABV), nameABV, IDCreation.generate_ID(), portfolioID, uid, StockData.get_price(nameABV), shares, IDCreation.generate_color_hex())
+            print(stock.userID)
             p.insert_stock(stock)
             portfolio.add_stock(stock)
             portfolio.update_stocks(portfolio.get_stocks(), portfolioID)

@@ -28,9 +28,13 @@ const PortfolioChange = () => {
     const [selectportFunds, setSelectportFunds] = useState(0);
     const [buyInfoString, setBuyInfoString] = useState("");
     const [showBuy, setShowBuy] = useState(false);
+    const [showSell, setShowSell] = useState(false);
     const [buyNameABV, setBuyNameABV] = useState(null)
+    const [sellNameABV, setSellNameABV] = useState(null)
     const [buyShares, setBuyShares] = useState(null)
+    const [sellShares, setSellShares] = useState(null)
     const [chosenportName, setchosenportName] = useState(null)
+    const [portfolioChangeMessage, setportfolioChangeMessage] = useState(null)
     var debugMessage = null;
     var newPortFailed = false
     const datals = []
@@ -55,14 +59,23 @@ const PortfolioChange = () => {
     function getBuyNameABV(val) {
       setBuyNameABV(val.target.value)
     }
+    function getSellNameABV(val) {
+      setSellNameABV(val.target.value)
+    }
     function getBuyShares(val) {
       setBuyShares(val.target.value)
+    }
+    function getSellShares(val) {
+      setSellShares(val.target.value)
     }
     function getShowPort() {
       setShowPort(true);
     }
     function getShowBuy(val) {
       setShowBuy(val);
+    }
+    function getShowSell(val) {
+      setShowSell(val);
     }
     function getNewPortName(val) {
         setNewPortName(val.target.value)
@@ -159,7 +172,12 @@ const PortfolioChange = () => {
       "body": JSON.stringify(portInfo)
   }).then(res=>res.json()).then(
       data => {
-        console.log("portfolio created")
+        if (data.returncode === 0) {
+          setportfolioChangeMessage("portfolio created")
+        } else if (data.returncode === -1){
+          setportfolioChangeMessage("duplicate portfolio name")
+        }
+       
         setShowNewPort(false);
       }
     )
@@ -211,7 +229,7 @@ const PortfolioChange = () => {
 
   function buyStock(portid, nameABV, shares) {
     let buyInfo = {
-      "uid": userId,
+      "uid": sessionStorage.getItem("id"),
       "id": portid,
       "nameABV": nameABV,
       "shares": shares
@@ -227,8 +245,45 @@ const PortfolioChange = () => {
         getShowBuy(false)
       } else if (data.returncode === "-1") {
         setBuyInfoString("Insufficient funds")
+        getShowBuy(false)
       } else if (data.returncode === "-2") {
         setBuyInfoString("Not valid ABV")
+        getShowBuy(false)
+      } else if (data.returncode === "-3") {
+        setBuyInfoString("Not valid # of shares")
+        getShowBuy(false)
+      }
+    }
+  ).then(
+    getportfoliodata(portid)
+  )
+  }
+
+  function sellStock(portid, nameABV, shares) {
+    let sellInfo = {
+      "uid": sessionStorage.getItem("id"),
+      "id": portid,
+      "nameABV": nameABV,
+      "shares": shares
+    };
+    fetch('/sellStock', {
+      "method": "POST",
+      "headers": {"Content-Type": "application/json"},
+      "body": JSON.stringify(sellInfo)
+  }).then(res=>res.json()).then(
+    data => {
+      if (data.returncode === "1") {
+        setBuyInfoString("Stock Sold")
+        getShowSell(false)
+      } else if (data.returncode === "-1") {
+        setBuyInfoString("Insufficient funds")
+        getShowSell(false)
+      } else if (data.returncode === "-2") {
+        setBuyInfoString("Not valid #")
+        getShowSell(false)
+      } else if (data.returncode === "-3") {
+        setBuyInfoString("Not valid # of shares")
+        getShowSell(false)
       }
     }
   ).then(
@@ -280,6 +335,11 @@ const PortfolioChange = () => {
           <button onClick={()=>getShowBuy(true)}> buy stock </button>
           :null
         }
+        {
+          showPort?
+          <button onClick={()=>getShowSell(true)}> sell stock </button>
+          :null
+        }
          <h1>
          {buyInfoString}
          </h1>
@@ -294,6 +354,18 @@ const PortfolioChange = () => {
           </div>
           :null
         }
+        {
+          showSell?
+          <div>
+          Stock ABV:<input type="text" onChange={getSellNameABV} 
+          placeholder="Enter Stock Abreviation"/>
+          Shares:<input type="text" onChange={getSellShares} 
+          placeholder="Enter # of Shares"/>
+          <button onClick={()=>sellStock(chosenportId, sellNameABV, sellShares)}>Sell confirm</button>
+          </div>
+          :null
+        }
+        {portfolioChangeMessage}
         <button onClick={()=>getShowNewPort()}> Make new Portfolio </button>
         {
             showNewPort?

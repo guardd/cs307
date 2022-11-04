@@ -67,10 +67,28 @@ const Friend = () => {
             "body": JSON.stringify(Info)
         }).then(res => res.json()).then(
             data => {
-                if (data.returncode === -1) {
+                if (data.returncode != 0) {
                     setshareFailString("Portfolio not found")
                 } else {
                     setshareFailString("Portfolio shared")
+                }
+            }
+        )
+    }
+
+    function deleteFriend() {
+        let Info = {
+            "friendId": friendChatid,
+            "uid": userId
+        };
+        fetch('/deleteFriend', {
+            "method": "POST",
+            "headers": {"Content-Type": "application/json"},
+            "body": JSON.stringify(Info)
+        }).then(res => res.json()).then(
+            data => {
+                if (data.returncode != 1) {
+                    console.log("uhh")
                 }
             }
         )
@@ -197,6 +215,7 @@ const Friend = () => {
             <input type="text" onChange={(e)=>getPortfolioName(e)} placeholder="Enter Portfolio name to share"/>
         {shareFailString}
         <button onClick={()=>sharePortfolio()}> Share portfolio</button>
+        <button onClick={()=>deleteFriend()}> Delete Friend</button>
         <button onClick={()=>setChatting(true)}> Open chat</button>    
         
             </div>

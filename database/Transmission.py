@@ -93,14 +93,22 @@ class Transmission:
     def search_stock_by_id(self, id): #searches a stock by its unique id and returns it
         self.cur.execute("SELECT * FROM 'Stock' WHERE id=?", (id,))
         stock = self.cur.fetchone()
-        print(stock)
+        #print(stock)
         try:
             stockobject = Stock(stock[0],stock[1],stock[2],stock[3],stock[4],stock[5],stock[6], stock[7])
             return stockobject
         except TypeError:
             print(TypeError)
             return -1 #couldn't find
-    
+    def search_stock_by_nameABV_and_userId(self, nameABV, userID): #searches a portfolio by its unique id and returns it
+        self.cur.execute("SELECT * FROM 'Stock' WHERE nameABV=? AND userID=?", (nameABV,userID))
+        stock = self.cur.fetchone()
+        #print(stock)
+        try:
+            stockobject = Stock(stock[0],stock[1],stock[2],stock[3],stock[4],stock[5],stock[6], stock[7])
+            return stockobject
+        except TypeError:
+            return -1 #couldn't find
     def search_stock_by_nameABV(self, nameABV, portfolioID): #used to find stocks that already exist in a given protfolio
         self.cur.execute("SELECT * FROM 'Stock' WHERE nameABV=? AND portfolioID=?", (nameABV,portfolioID))
         stock = self.cur.fetchone()
