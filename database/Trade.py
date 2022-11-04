@@ -10,7 +10,7 @@ from User import User
 from IDCreation import IDCreation
 class Trade:
     def __init__(self):
-        p = Transmission()
+        self.p = Transmission()
 
         
 
@@ -173,5 +173,47 @@ class Trade:
             return 0
         def sell_property():
             return 0
+        def share_portfolio(self,friendID, portfolioName):
+            user = self.p.search_user_by_id(friendID)
+            portfolio = self.p.search_portfolio_by_name(portfolioName)
+            if user == -1:
+                return -1
+            elif portfolio ==-1:
+                return -1
+            else:
+             try:
+                ##print("1st")
+                newPortfolio = Portfolio(portfolioName,IDCreation.generate_ID(), friendID,portfolio.get_funds(),[],[],[])
+                stocklist = portfolio.get_stocks()
+                propertylist = portfolio.get_properties()
+                commoditylist =  portfolio.get_commodities()
+                ##print("1st")
+                for x in stocklist:
+                    oldStock = self.p.get_stock_by_id(x)
+                    newStock = Stock(oldStock.get_name(),oldStock.get_nameABV(),IDCreation.generate_ID(),newPortfolio.get_id(),friendID, oldStock.get_shares(), oldStock.get_color())
+                    newPortfolio.add_stock(newStock)
+                    ##print("2st")
+                for x in propertylist:
+                    oldProperty = self.p.get_property_by_id(x)
+                    newProperty = Property(oldProperty.get_name(),oldProperty.get_type(),oldProperty.get_URL(),IDCreation.generate_ID(),newPortfolio.get_id(),friendID, oldStock.get_unitPrice())
+                    newPortfolio.add_property(newProperty)
+                   ## print("3st")
         
+                for x in commoditylist:
+                    oldCommodity = self.p.get_commodity_by_id(x)
+                    newCommodity = Commodity(oldCommodity.get_name(),oldCommodity.get_type(),IDCreation.generate_ID(),newPortfolio.get_id(),friendID, oldCommodity.get_avgUnitPrice())
+                    newPortfolio.add_commodity(newCommodity)
+                    ##print("4st")
+                
+                newPortfolio.update_commodities(newPortfolio.get_commodities(),newPortfolio.get_id())
+                newPortfolio.update_stocks(newPortfolio.get_stocks(),newPortfolio.get_id())
+                newPortfolio.update_properties(newPortfolio.get_properties(),newPortfolio.get_id())
+                self.p.insert_portfolio(newPortfolio)
+                user.add_portfolio(newPortfolio)
+                user.update_portfolios()
+                ##print("5st")
+                return 0
+             except TypeError:
+               return 1
+             
 
