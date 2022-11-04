@@ -21,6 +21,36 @@ db = Transmission()
 hostEmail = Email()
 userSignupDict = {}
 @app.route('/exchangeRate', methods=['POST'])
+def get_news():
+  requestJson = request.get_json()
+  userID = requestJson['uid']
+
+  newsPackage = StockData.get_news(userID)
+  if newsPackage == -1:
+        data={"retruncode": "-1" }
+  else:
+    newstitles = []
+    newspublishers = []
+    newsurls = []
+
+    for x in range(newsPackage[0].__len__()):
+        newstitles.append(newsPackage[x+1]['title'])
+        newspublishers.append(newsPackage[x+1]['publisher'])
+        newsurls.append(newsPackage[x+1]['url'])
+ 
+
+
+    data = {
+         "retruncode": "0",
+         "#ofarticles": newsPackage[0].__len__(),
+         "stocks": newsPackage[0],
+         "newstitles": newstitles,
+         "stock1publisher": newspublishers,
+         "stock1url": newsurls
+
+    }
+  return data
+@app.route('/exchangeRate', methods=['POST'])
 def get_exchange_rate():
     requestJson = request.get_json()
     symbol1 = requestJson['symbol1']
