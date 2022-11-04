@@ -24,10 +24,10 @@ userSignupDict = {}
 def get_news():
   requestJson = request.get_json()
   userID = requestJson['uid']
-
+  print(userID)
   newsPackage = StockData.get_news(userID)
   if newsPackage == -1:
-        data={"retruncode": "-1" }
+        data={"returncode": "-1" }
   else:
     newstitles = []
     newspublishers = []
@@ -36,19 +36,20 @@ def get_news():
     for x in range(newsPackage[0].__len__()):
         newstitles.append(newsPackage[x+1]['title'])
         newspublishers.append(newsPackage[x+1]['publisher'])
-        newsurls.append(newsPackage[x+1]['url'])
+        newsurls.append(newsPackage[x+1]['link'])
  
 
 
     data = {
          "retruncode": "0",
-         "#ofarticles": newsPackage[0].__len__(),
+         "number": newsPackage[0].__len__(),
          "stocks": newsPackage[0],
          "newstitles": newstitles,
-         "stock1publisher": newspublishers,
-         "stock1url": newsurls
+         "newspublishers": newspublishers,
+         "newsurls": newsurls
 
     }
+    print(data)
   return data
 @app.route('/exchangeRate', methods=['POST'])
 def get_exchange_rate():
