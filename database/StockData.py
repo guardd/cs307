@@ -31,12 +31,17 @@ def get_company_name(nameABV):
 def get_news(userID):
     connect = sqlite3.connect("mydb.db") ##connects to database
     cur = connect.cursor()
-    nameABV = []
+    
 
     cur.execute("SELECT nameABV FROM 'Stock' WHERE userID=?", (userID,))
     nameABV = cur.fetchall()
+    if nameABV == None:
+        return -1
+    
     names = []
-    for x in range(3):
+    for x in range(nameABV.__len__()):
+        if x == 3:
+            break
         names.append(str(nameABV[x]))
     tickers = ' '.join(names)    
     regex = re.compile('[^a-zA-Z ]')
@@ -45,11 +50,12 @@ def get_news(userID):
     ticker = yf.Tickers(tickers)
 
     newsPackage = []
+    newsPackage.append(ticker.symbols)
     news = ticker.news()
     for x in ticker.symbols:
      
      newsPackage.append(news[x][0])
-    return newsPackage   
+    return newsPackage
 def store_stock_info():
         connect = sqlite3.connect("mydb.db") ##connects to database
         cur = connect.cursor()
