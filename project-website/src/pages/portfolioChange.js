@@ -27,6 +27,7 @@ const PortfolioChange = () => {
     const [selectport, setSelectport] = useState([]);
     const [selectportFunds, setSelectportFunds] = useState(0);
     const [buyInfoString, setBuyInfoString] = useState("");
+    const [sellInfoString, setSellInfoString] = useState("");
     const [showBuy, setShowBuy] = useState(false);
     const [showSell, setShowSell] = useState(false);
     const [buyNameABV, setBuyNameABV] = useState(null)
@@ -211,7 +212,7 @@ const PortfolioChange = () => {
             weight: data[i].stockWeight
         }
         console.log(data)
-        let datal = {name: data[i].stockABVs, amount: data[i].stockWeight, fill: data[i].stockColor};
+        let datal = {name: data[i].stockABVs + ": " +data[i].stockAmount + " shares", amount: data[i].stockWeight, fill: data[i].stockColor};
         console.log(1)
         stocks.push(
             stock
@@ -255,7 +256,7 @@ const PortfolioChange = () => {
       }
     }
   ).then(
-    getportfoliodata(portid)
+    //getportfoliodata(portid)
   )
   }
 
@@ -273,21 +274,25 @@ const PortfolioChange = () => {
   }).then(res=>res.json()).then(
     data => {
       if (data.returncode === "1") {
-        setBuyInfoString("Stock Sold")
+        setSellInfoString("Stock Sold")
         getShowSell(false)
       } else if (data.returncode === "-1") {
-        setBuyInfoString("Insufficient funds")
+        setSellInfoString("Insufficient funds")
         getShowSell(false)
       } else if (data.returncode === "-2") {
-        setBuyInfoString("Not valid #")
+        setSellInfoString("Not valid #")
         getShowSell(false)
       } else if (data.returncode === "-3") {
-        setBuyInfoString("Not valid # of shares")
+        setSellInfoString("Not valid # of shares")
+        getShowSell(false)
+      }
+      else if (data.returncode === "-4") {
+        setSellInfoString("Not valid stockABV")
         getShowSell(false)
       }
     }
   ).then(
-    getportfoliodata(portid)
+    //getportfoliodata(portid)
   )
   }
 /*
@@ -342,7 +347,9 @@ const PortfolioChange = () => {
         }
          <h1>
          {buyInfoString}
+
          </h1>
+         <h1>{sellInfoString}</h1>
         {
           showBuy?
           <div>

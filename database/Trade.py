@@ -87,7 +87,7 @@ class Trade:
             #p.insert_stock(stock)
             #portfolio.update_stocks(portfolio.get_stocks(), portfolioID)
             currentShares = stock.get_shares()
-            stock.update_stockShares(currentShares + shares, stock.id)
+            stock.update_stockShares(currentShares + shares)
             newAvgSharePrice = ((currentShares * stock.get_avgSharePrice()) + (shares * StockData.get_price(nameABV)))/(shares+currentShares)
             stock.update_stockAvgSharePrice(newAvgSharePrice, stock.id)
             portfolio.update_funds(portfolio.get_funds()-price, portfolioID)

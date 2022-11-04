@@ -386,7 +386,12 @@ def sellStock():
     print(nameABV)
     print(uid)
     #port = db.search_portfolio_by_id(id)
-    sid = db.search_stock_by_nameABV_and_userId(nameABV, uid).id
+    stock = db.search_stock_by_nameABV_and_userId(nameABV, uid)
+    if stock == -1:
+        return {
+            "returncode": "-4"
+        }
+    sid = stock.id
     #for each in port.stocks:
     #    if db.search_stock_by_id(each).nameABV == nameABV:
     #        sid = each
@@ -406,6 +411,10 @@ def sharePort():
     uid = requestJson['uid']
     toShare = db.search_portfolio_by_name_and_id(portfolioName, uid)
     trade = Trade()
+    if toShare == -1:
+        return {
+            'returncode': -2
+        }
     data = {
         'returncode': trade.share_portfolio(friendId, toShare)
     }
