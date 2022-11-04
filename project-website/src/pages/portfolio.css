@@ -23,6 +23,20 @@
   height: 100%;
 }
 
+.four {
+    justify-content: right;
+    text-align: left;
+    display: flex;
+    width: 25%;
+    height: 100%;
+}
+.five {
+    justify-content: center;
+    text-align: left;
+    
+    width: 500px;
+    height: 500px;
+
 .current-title {
     height: auto;
     margin-left: auto;
