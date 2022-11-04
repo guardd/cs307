@@ -59,7 +59,22 @@ class Transmission:
             return portfolioobject
         except TypeError:
             return -1 #couldn't find
-
+    def search_portfolio_by_name(self, name): #searches a portfolio by its unique id and returns it
+        self.cur.execute("SELECT * FROM 'Portfolios' WHERE name=?", (name,))
+        portfolio = self.cur.fetchone()
+        try:
+            portfolioobject = Portfolio(portfolio[0], portfolio[1], portfolio[2], portfolio[3], json.loads(portfolio[4]), json.loads(portfolio[5]), json.loads(portfolio[6]))
+            return portfolioobject
+        except TypeError:
+            return -1 #couldn't find
+    def search_portfolio_by_name_and_id(self, name, userID): #searches a portfolio by its unique id and returns it
+        self.cur.execute("SELECT * FROM 'Portfolios' WHERE name=? AND userID=?", (name,userID))
+        portfolio = self.cur.fetchone()
+        try:
+            portfolioobject = Portfolio(portfolio[0], portfolio[1], portfolio[2], portfolio[3], json.loads(portfolio[4]), json.loads(portfolio[5]), json.loads(portfolio[6]))
+            return portfolioobject
+        except TypeError:
+            return -1 #couldn't find
     def search_portfolio_by_userId(self, userid):
         self.cur.execute("SELECT * FROM 'Portfolios' WHERE userID=?", (userid,))
         portfolios = self.cur.fetchall()
