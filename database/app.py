@@ -286,9 +286,18 @@ def makeNewPortfolio():
     name = requestJson['name']
     id = requestJson['id']
     funds = requestJson['funds']
+    user = db.search_user_by_id(id)
+    names = []
+    for single in user.userPortfolios:
+        names.append(db.search_portfolio_by_id(single).name)
+    if name in names:
+        data = {
+        "returncode": "-1"
+        }
+        return data
     port = Portfolio(name, str(uuid.uuid4()), id, funds, [], [], [])
     db.insert_portfolio(port)
-    user = db.search_user_by_id(id)
+
     user.add_portfolio(port)
     user.update_portfolios()
     db.save() 
@@ -335,18 +344,55 @@ def buyStock():
     }
     return data
 
+@app.route('/sellStock', methods=['POST'])
+def sellStock():
+    requestJson = request.get_json()
+    uid = requestJson['uid']
+    id = requestJson['id']
+    nameABV = requestJson['nameABV']
+    shares = requestJson['shares']
+    port = db.search_portfolio_by_id(id)
+    sid = ""
+    for each in port.stocks:
+        if db.search_stock_by_id(each).nameABV == nameABV:
+            sid = each
+    trade = Trade()
+    ret = trade.sell_stock(uid,sid, int(shares))
+    data = {
+        "returncode": str(ret)
+    }
+    return data
+
 @app.route('/sharePortfolio', methods=['POST'])
 def sharePort():
     requestJson = request.get_json()
     friendId = requestJson['friendId']
     portfolioName = requestJson['portfolioName']
     uid = requestJson['uid']
+    toShare = db.search_portfolio_by_name_and_id(portfolioName, uid)
     trade = Trade()
     data = {
-        'returncode': trade.share_portfolio(friendId, portfolioName, uid)
+        'returncode': trade.share_portfolio(friendId, toShare)
     }
     return data
 
+
+
+@app.route('/deleteFriend', methods=['POST'])
+def deleteFriend():
+    requestJson = request.get_json()
+    friendId = requestJson['friendId']
+    uid = requestJson['uid']
+    userFriend = db.search_friend_by_id(uid)
+    otherFriend = db.search_friend_by_id(friendId)
+    userFriend.remove_friend(friendId)
+    otherFriend.remove_friend(uid)
+    userFriend.update_friends()
+    otherFriend.update_friends()
+    data = {
+        "returncode": 1
+    }
+    return data
 # How ADDING Friends should work
 # Add friend by username
 # case : username doesn't exist / fail return code -1

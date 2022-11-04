@@ -111,7 +111,7 @@ class Transmission:
             return -1 #couldn't find
     
     def remove_stock(self, id): #searches for stock with matching id and removes it
-         self.cur.execute("DELETE * FROM 'Stock' WHERE id=?", (id,))
+         self.cur.execute("DELETE FROM 'Stock' WHERE id=?", (id,))
          self.connect.commit()
     
     def search_property_by_id(self, id): #searches a property by its unique id and returns it

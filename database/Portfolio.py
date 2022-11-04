@@ -43,7 +43,7 @@ class Portfolio:
        return self.stocks
    
     def get_properties(self):
-       return self.property
+       return self.properties
    
     def get_commodities(self):
        return self.commodities
@@ -75,7 +75,7 @@ class Portfolio:
         self.connect.commit()
     
     def update_commodities(self, commodities, id):
-        self.cur.execute("UPDATE 'Portfolios' SET commodites=? WHERE id=?", (json.dumps(commodities), id,))
+        self.cur.execute("UPDATE 'Portfolios' SET commodities=? WHERE id=?", (json.dumps(commodities), id,))
         self.connect.commit()
     
     def update_funds(self, funds, id):

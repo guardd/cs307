@@ -61,8 +61,8 @@ class Stock:
         self.shares = shares
     def get_color(self):
         return self.color
-    def update_stockShares(self, shares, id):
-        self.cur.execute("UPDATE 'Stock' SET shares=? WHERE id=?", (shares, id,))
+    def update_stockShares(self, shares):
+        self.cur.execute("UPDATE 'Stock' SET shares=? WHERE id=?", (shares, self.id,))
         self.connect.commit()
     def update_stockAvgSharePrice(self, avgSharePrice, id):
         self.cur.execute("UPDATE 'Stock' SET avgSharePrice=? WHERE id=?", (avgSharePrice, id,))

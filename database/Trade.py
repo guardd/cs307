@@ -55,7 +55,12 @@ class Trade:
      p = Transmission()
      stock =p.search_stock_by_nameABV(nameABV, portfolioID)
      portfolio = p.search_portfolio_by_id(portfolioID)
-     price = shares * StockData.get_price(nameABV)
+     try:
+        price = shares * StockData.get_price(nameABV)
+     except KeyError:
+        return -2
+     if shares <= 0:
+        return -3
      if portfolio.get_funds() < price:
          return -1
      elif stock==-1:
@@ -92,7 +97,7 @@ class Trade:
         portfolio = t.search_portfolio_by_id(stock.get_portfolioID())
         if stock==-1 or portfolio==-1:
             return -1 ## this will indicate no stock or portfolio by that ID found
-        elif stock.get_userID()==uid:
+        elif stock.get_userID()!=uid:
             print(stock.get_userID())
             print(uid)
             return 1 ## this will indicate stock does not belong to user
@@ -105,13 +110,14 @@ class Trade:
              portfolio.update_stocks(portfolio.get_stocks(),portfolio.get_id())
 
             else:
+                return -2
                 portfolio.set_funds(portfolio.get_funds()+(stock.get_shares()*StockData.get_price(stock.get_nameABV())))
                 portfolio.update_funds(portfolio.get_funds(), portfolio.get_id())
                 stock.set_shares(stock.get_shares()-shares)
                 stock.update_stockShares(stock.get_shares())
                
             
-        def buy_commodity(self, type, portfolioID, amount):
+    def buy_commodity(self, type, portfolioID, amount):
             p = Transmission()
             commodity =p.search_commodity_by_type(type,portfolioID)
             portfolio = p.search_portfolio_by_type(portfolioID)
@@ -146,7 +152,7 @@ class Trade:
                 portfolio.update_funds(portfolio.get_funds()-price, portfolioID)
 
             return 0
-        def sell_commodity(self, uid, commodityID, amount):
+    def sell_commodity(self, uid, commodityID, amount):
             t = Transmission()
             stock = t.search_stock_by_id(stockID)
             ortfolio = t.search_portfolio_by_id(stock.get_portfolioID())
@@ -169,13 +175,14 @@ class Trade:
                     portfolio.update_funds(portfolio.get_funds(), portfolio.get_id())
                     stock.set_shares(stock.get_shares()-shares)
                     stock.update_stockShares(stock.get_shares())   
-        def buy_property():
+    def buy_property():
             return 0
-        def sell_property():
+    def sell_property():
             return 0
-        def share_portfolio(self,friendID, portfolioName):
+    def share_portfolio(self,friendID, toShare):
+            portfolioName = toShare.name
             user = self.p.search_user_by_id(friendID)
-            portfolio = self.p.search_portfolio_by_name(portfolioName)
+            portfolio = toShare
             if user == -1:
                 return -1
             elif portfolio ==-1:
@@ -189,8 +196,9 @@ class Trade:
                 commoditylist =  portfolio.get_commodities()
                 ##print("1st")
                 for x in stocklist:
-                    oldStock = self.p.get_stock_by_id(x)
-                    newStock = Stock(oldStock.get_name(),oldStock.get_nameABV(),IDCreation.generate_ID(),newPortfolio.get_id(),friendID, oldStock.get_shares(), oldStock.get_color())
+                    oldStock = self.p.search_stock_by_id(x)
+                    newStock = Stock(oldStock.get_name(),oldStock.get_nameABV(),IDCreation.generate_ID(),newPortfolio.get_id(),friendID, oldStock.avgSharePrice, oldStock.get_shares(), oldStock.get_color())
+                    self.p.insert_stock(newStock)
                     newPortfolio.add_stock(newStock)
                     ##print("2st")
                 for x in propertylist:
@@ -200,7 +208,7 @@ class Trade:
                    ## print("3st")
         
                 for x in commoditylist:
-                    oldCommodity = self.p.get_commodity_by_id(x)
+                    oldCommodity = self.p.search_commodity_by_id(x)
                     newCommodity = Commodity(oldCommodity.get_name(),oldCommodity.get_type(),IDCreation.generate_ID(),newPortfolio.get_id(),friendID, oldCommodity.get_avgUnitPrice())
                     newPortfolio.add_commodity(newCommodity)
                     ##print("4st")
