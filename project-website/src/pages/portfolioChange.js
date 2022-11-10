@@ -253,6 +253,9 @@ const PortfolioChange = () => {
       } else if (data.returncode === "-3") {
         setBuyInfoString("Not valid # of shares")
         getShowBuy(false)
+      } else if (data.returncode === "-4") {
+        setBuyInfoString("Daytrade rejected due to pattern day trader rule")
+        getShowBuy(false)
       }
     }
   ).then(
@@ -273,6 +276,7 @@ const PortfolioChange = () => {
       "body": JSON.stringify(sellInfo)
   }).then(res=>res.json()).then(
     data => {
+      console.log(data)
       if (data.returncode === "1") {
         setSellInfoString("Stock Sold")
         getShowSell(false)
@@ -285,9 +289,11 @@ const PortfolioChange = () => {
       } else if (data.returncode === "-3") {
         setSellInfoString("Not valid # of shares")
         getShowSell(false)
-      }
-      else if (data.returncode === "-4") {
+      } else if (data.returncode === "-4") {
         setSellInfoString("Not valid stockABV")
+        getShowSell(false)
+      } else if (data.returncode === "-5") {
+        setSellInfoString("Daytrade rejected due to pattern day trader rule")
         getShowSell(false)
       }
     }
@@ -347,7 +353,6 @@ const PortfolioChange = () => {
         }
          <h1>
          {buyInfoString}
-
          </h1>
          <h1>{sellInfoString}</h1>
         {

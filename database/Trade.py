@@ -104,19 +104,20 @@ class Trade:
             print(uid)
             return 1 ## this will indicate stock does not belong to user
         else:
-            if shares <= stock.get_shares():
+            if shares == stock.get_shares():
              portfolio.set_funds(portfolio.get_funds()+(stock.get_shares()*StockData.get_price(stock.get_nameABV())))
              portfolio.update_funds(portfolio.get_funds(), portfolio.get_id())
              t.remove_stock(stockID)
              portfolio.remove_stock(stock)
              portfolio.update_stocks(portfolio.get_stocks(),portfolio.get_id())
 
-            else:
-                return -2
+            elif shares < stock.get_shares():
                 portfolio.set_funds(portfolio.get_funds()+(stock.get_shares()*StockData.get_price(stock.get_nameABV())))
                 portfolio.update_funds(portfolio.get_funds(), portfolio.get_id())
                 stock.set_shares(stock.get_shares()-shares)
                 stock.update_stockShares(stock.get_shares())
+            else:
+                return -2
                
             
     def buy_commodity(self, type, portfolioID, amount):

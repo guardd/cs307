@@ -15,11 +15,84 @@ from Trade import Trade
 import json
 import uuid
 import prediction
+from twisted.internet import task, reactor
+import sched, time
 app = Flask(__name__)
 print("Flask running")
 db = Transmission()
 hostEmail = Email()
 userSignupDict = {}
+userDaytradeDict = {}
+userDaytradeCountDict = {}
+s = sched.scheduler(time.time, time.sleep)  
+#code = hostEmail.send_email_verify_email(email)
+#userSignupDict.update({code: [username, password, email]})
+secs_in_day = 86400
+secs_in_week = 604800.0
+
+def reset_dayTrade():
+    userDaytradeDict = {}
+    s.enter(secs_in_day , 1, reset_dayTrade, ())
+
+s.enter(secs_in_day , 1, reset_dayTrade, ())
+#userDaytradeDict format: 
+#{stock: [portid, buy / sell]}
+#if different buy sell add count to id remove stock
+#userDaytradeCountDict format:
+#{id: [counts, [remove_dates]]}
+#l = task.LoopingCall(reset_dayTrade)
+#l.start(secs_in_day)
+
+#userDaytradeCountDict format:
+#{id: count}
+#schedule a -1 1 week later whenever a +1 happens
+#format
+#s = sched.scheduler(time.time, time.sleep)  
+def reduce_dayTrade(portid):
+    if portid in userDaytradeCountDict:
+        userDaytradeCountDict[portid] = userDaytradeCountDict[portid] - 1
+
+#s = sched.scheduler(time.time, time.sleep)
+#reactor.run()
+#return values:
+#1 = is day trade
+#2 = not Daytrade
+#3 = daytrade and rejected
+#4 = daytrade and over 25000
+def dayTradeCheck(portid, stock, buySell):
+    print(userDaytradeCountDict)
+    print(userDaytradeDict)
+    if stock in userDaytradeDict:
+        if userDaytradeDict[stock][1] != buySell:
+            #is a daytrade
+            if portid in userDaytradeCountDict:
+                if userDaytradeCountDict[portid] == 4:
+                    #need to intervene
+                    port = db.search_portfolio_by_id(portid)
+                    if port.funds > 25000:
+                        userDaytradeCountDict.update({portid: userDaytradeCountDict[portid] + 1})
+                        s.enter(secs_in_week, 1, reduce_dayTrade, (portid))
+                        del userDaytradeDict[stock]
+                        return 4
+                    else:
+                        return 3
+                else:
+                    userDaytradeCountDict.update({portid: userDaytradeCountDict[portid] + 1})
+                    s.enter(secs_in_week, 1, reduce_dayTrade, (portid))
+                    del userDaytradeDict[stock]
+                    return 1
+            else:
+                userDaytradeCountDict.update({portid: 1})
+                s.enter(secs_in_week, 1, reduce_dayTrade, (portid))
+                del userDaytradeDict[stock]
+                return 1
+        else:    
+            return 2
+    else:
+        userDaytradeDict.update({stock: [portid, buySell]})
+        return 2
+
+
 @app.route('/getNews', methods=['POST'])
 def get_news():
   requestJson = request.get_json()
@@ -369,8 +442,11 @@ def buyStock():
     nameABV = requestJson['nameABV']
     shares = requestJson['shares']
     port = db.search_portfolio_by_id(id)
-    trade = Trade()
-    ret = trade.buy_stock(uid, nameABV, id, int(shares))
+    #daycheck = dayTradeCheck(id, )
+    #trade = Trade()
+    ret = buy_stock_trade(uid, nameABV, id, int(shares))
+    stockid = db.search_stock_by_nameABV_and_userId(nameABV, uid)
+    
     data = {
         "returncode": str(ret)
     }
@@ -397,8 +473,8 @@ def sellStock():
     #    if db.search_stock_by_id(each).nameABV == nameABV:
     #        sid = each
 
-    trade = Trade()
-    ret = trade.sell_stock(uid,sid, int(shares))
+    #trade = Trade()
+    ret = sell_stock_trade(uid,sid, int(shares))
     data = {
         "returncode": str(ret)
     }
@@ -593,3 +669,84 @@ def textGet():
         "msgs": returnString
     }
     return data
+
+def buy_stock_trade(uid, nameABV, portfolioID, shares):
+     p = db
+     stock =p.search_stock_by_nameABV(nameABV, portfolioID)
+     portfolio = p.search_portfolio_by_id(portfolioID)
+     try:
+        price = shares * StockData.get_price(nameABV)
+     except KeyError:
+        return -2
+     if shares <= 0:
+        return -3
+     if portfolio.get_funds() < price:
+         return -1
+     elif stock==-1:
+            print(uid)
+            stock = Stock(StockData.get_company_name(nameABV), nameABV, IDCreation.generate_ID(), portfolioID, uid, StockData.get_price(nameABV), shares, IDCreation.generate_color_hex())
+            daytrade = dayTradeCheck(portfolioID, stock.id, 1)
+            if daytrade == 3:
+                 return -4
+            print(stock.userID)
+            p.insert_stock(stock)
+            portfolio.add_stock(stock)
+            portfolio.update_stocks(portfolio.get_stocks(), portfolioID)
+            portfolio.update_funds(portfolio.get_funds()-price, portfolioID)
+     elif stock.get_portfolioID() != portfolioID:
+            
+      stock = Stock(StockData.get_company_name(nameABV), nameABV, IDCreation.generate_ID(), portfolioID, uid, StockData.get_price(nameABV), shares, IDCreation.generate_color_hex())
+      daytrade = dayTradeCheck(portfolioID, stock.id, 1)
+      if daytrade == 3:
+        return -4
+      p.insert_stock(stock)
+      portfolio.add_stock(stock)
+      portfolio.update_stocks(portfolio.get_stocks(), portfolioID)
+      portfolio.update_funds(portfolio.get_funds()-price, portfolioID)
+     else:
+            #p.remove_stock(stock.get_id()) ##remove stock from database
+            #currentShares = stock.get_shares()
+            #stock.set_shares(currentShares + shares)
+            #newAvgSharePrice = ((currentShares * stock.get_avgSharePrice) + (shares * StockData.get_price(nameABV)))/(shares+currentShares)
+            #stock.set_avgSharePrice(newAvgSharePrice)
+            #p.insert_stock(stock)
+            #portfolio.update_stocks(portfolio.get_stocks(), portfolioID)
+            daytrade = dayTradeCheck(portfolioID, stock.id, 1)
+            if daytrade == 3:
+                 return -4
+            currentShares = stock.get_shares()
+            stock.update_stockShares(currentShares + shares)
+            newAvgSharePrice = ((currentShares * stock.get_avgSharePrice()) + (shares * StockData.get_price(nameABV)))/(shares+currentShares)
+            stock.update_stockAvgSharePrice(newAvgSharePrice, stock.id)
+            portfolio.update_funds(portfolio.get_funds()-price, portfolioID)
+     return 1
+
+def sell_stock_trade(uid, stockID,shares):
+        t = db
+        stock = t.search_stock_by_id(stockID)
+        portfolio = t.search_portfolio_by_id(stock.get_portfolioID())
+        if stock==-1 or portfolio==-1:
+            return -1 ## this will indicate no stock or portfolio by that ID found
+        elif stock.get_userID()!=uid:
+            print(stock.get_userID())
+            print(uid)
+            return -4 ## this will indicate stock does not belong to user
+        else:
+            daytrade = dayTradeCheck(stock.get_portfolioID(), stock.id, 0)
+            if daytrade == 3:
+                return -5
+            if shares == stock.get_shares():
+             portfolio.set_funds(portfolio.get_funds()+(stock.get_shares()*StockData.get_price(stock.get_nameABV())))
+             portfolio.update_funds(portfolio.get_funds(), portfolio.get_id())
+             t.remove_stock(stockID)
+             portfolio.remove_stock(stock)
+             portfolio.update_stocks(portfolio.get_stocks(),portfolio.get_id())
+             return 1            
+            elif shares < stock.get_shares():
+                portfolio.set_funds(portfolio.get_funds()+(stock.get_shares()*StockData.get_price(stock.get_nameABV())))
+                portfolio.update_funds(portfolio.get_funds(), portfolio.get_id())
+                stock.set_shares(stock.get_shares()-shares)
+                stock.update_stockShares(stock.get_shares())
+                return 1
+            else:
+                return -2
