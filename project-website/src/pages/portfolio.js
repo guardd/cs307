@@ -52,6 +52,9 @@ const Portfolio = () => {
   const [projectABV, setprojectABV] = useState(null)
   const [projected, setprojected] = useState(false)
   const [projectDataFinal, setprojectDataFinal] = useState(null)
+  const [newsFeed, setnewsFeed] = useState([])
+  const [userHasStocks, setuserHasStocks] = useState(false)
+  
   const csvreport = {
     data: projectData,
     headers: headers,
@@ -185,11 +188,82 @@ function getportfoliodata(portid) {
 
   
 }
+function getNews() {
+        let userInfo = {
+            //"uid": sessionStorage.getItem("id")
+            "uid": "e37697b8-7f74-4ab9-b762-1665ea269931"
+        };
+        fetch('/getNews', {
+            "method": "POST",
+            "headers": { "Content-Type": "application/json" },
+            "body": JSON.stringify(userInfo)
+        }).then(res => res.json()).then(
+            data => {
+                if (data.returncode == "-1" || data.number<3) {
+                    setuserHasStocks(false)
+                }
+                else {
+                    var newslist = []
+                    setuserHasStocks(true)
+                    for (let i = 0; i < data.number; i++) {
+                        newslist.push(data.stocks[i])
+                        newslist.push(data.newstitles[i])
+                        newslist.push(data.newspublishers[i])
+                        newslist.push(data.newsurls[i])
+                    }
+                     
+                    setnewsFeed(newslist)
+                    console.log(data)
+                }
+            },
+        )
+}
 
   return (
     <div class="main">
-    {
-      false &&
+    
+    <div>
+                {loggedIn? 
+                    
+                    <div class="four">
+                        <div className="prediction-container"></div>
+                        <div className="prediction-Form">
+                            <div className="prediction-content">
+                                <h1 className="prediction-title">News Feed</h1>
+                                <div className="prediction-symbol" >
+                                    
+                                    
+                                    {userHasStocks ?
+                                        <div className= "five">
+                                            {newsFeed[0]}<br />
+                                                         <br />
+                                            {newsFeed[1]}<br />
+                                            {newsFeed[2]}<br />
+                                            {newsFeed[3]}<br />
+                                                         <br />
+                                            {newsFeed[4]}<br />
+                                                         <br />
+                                            {newsFeed[5]}<br />
+                                            {newsFeed[6]}<br />
+                                            {newsFeed[7]}<br />
+                                                         <br />
+                                            {newsFeed[8]}<br />
+                                                         <br />
+                                            {newsFeed[9]}<br />
+                                            {newsFeed[10]}<br />
+                                            {newsFeed[11]}<br />
+                                            
+
+                                        </div>:null}
+                                </div>
+                                <button type="submit" className="prediction-button-button"
+                                    onClick={() => getNews()}                            >
+                                    Refresh
+                                </button>
+                            </div>
+                        </div>
+                    </div>:null}
+        </div>
       <div class="one">
       <h1 className="current-title">Current Porfolio</h1>
       <PieChart className= 'pie1'width={400} height={300}>
@@ -206,7 +280,7 @@ function getportfoliodata(portid) {
       <Pie data={predictdeData02} dataKey="amount" nameKey="name" cx="50%" cy="50%" innerRadius={60} outerRadius={80} fill="#fff" label />
       </PieChart>
       </div>
-    } 
+
       {
         
       projected && <div class="two">
