@@ -28,6 +28,7 @@ const PortfolioChange = () => {
     const [selectportFunds, setSelectportFunds] = useState(0);
     const [buyInfoString, setBuyInfoString] = useState("");
     const [sellInfoString, setSellInfoString] = useState("");
+    const [listInfoString, setListInfoString] = useState("");
     const [showBuy, setShowBuy] = useState(false);
     const [showSell, setShowSell] = useState(false);
     const [buyNameABV, setBuyNameABV] = useState(null)
@@ -42,6 +43,25 @@ const PortfolioChange = () => {
     const [datalss, setdatalss] = useState(null);
     const [chosenportId, setchosenportId] = useState(null);
     const [showPort, setShowPort] = useState(false)
+    const [showPercentageChangeList, setShowPercentageChangeList] = useState(false)
+    const [percentage, setPercentage] = useState(null)
+    const [updown, setUpdown] = useState(null)
+    const percentageListResults = []
+    const [percentageListResultsUpdate, setPercentageListResultsUpdate] = useState(null)
+    const [showPercentageChangeListTable, setShowPercentageChangeListTable] = useState(false)
+
+    function getShowPercentageChangeTable(val) {
+      setShowPercentageChangeListTable(val)
+    }
+    function getPercentage(val) {
+      setPercentage(val.target.value)
+    }
+    function getUpdown(val) {
+      setUpdown(val.target.value)
+    }
+    function getShowPercentageChangeList(val) {
+      setShowPercentageChangeList(val)
+    }
     function getStockABVS(val) {
       setStockABVS(val)
     }
@@ -194,7 +214,8 @@ const PortfolioChange = () => {
   }).then(res=>res.json()).then(
     data => {
 
-      getStockABVS(data.stockABVs)
+      //getStockABVS(data.stockABVs)
+      //console.log(stockABVS)
       getStockids(data.stockids)
       getStockAmount(data.stockAmount)
       getStockPrices(data.stockPrices)
@@ -202,8 +223,10 @@ const PortfolioChange = () => {
       setSelectportFunds(data[0].funds)
       console.log(data)
       var stocks = [];
+      var portStockABVs = []
       for (let i = 1; i < data[0].size; i++) {
         //console.log(stockABVS)
+        portStockABVs.push(data[i].stockABVs)
         var stock = {
             abv: data[i].stockABVs,
             id: data[i].stockids,
@@ -221,6 +244,7 @@ const PortfolioChange = () => {
         datals.push(datal)
         
     }
+    setStockABVS(portStockABVs)
     setSelectport(stocks)
     getShowPort(true)
     setdatalss(datals)
@@ -301,6 +325,39 @@ const PortfolioChange = () => {
     //getportfoliodata(portid)
   )
   }
+  function getLists() {
+    let listInfo = {
+      "abvs": stockABVS,
+      "percentage": percentage,
+      "downup": updown
+    };
+    console.log(listInfo)
+    fetch('/getPercentageList', {
+      "method": "POST",
+      "headers": {"Content-Type": "application/json"},
+      "body": JSON.stringify(listInfo)
+  }).then(res=>res.json()).then(
+    data => {
+      if (data.size === -1) {
+        setListInfoString("Percentage not valid")
+      } else if (data.size === -2) {
+        setListInfoString("Down / Up not valid")
+      } else {
+        for (let i = 0; i < data.size; i++) {
+          var result = {
+            id: i,
+            percentage: data.percentages[i],
+            abv: data.abvs[i]
+          }
+          percentageListResults.push(result)
+        }
+        setPercentageListResultsUpdate(percentageListResults)
+        getShowPercentageChangeTable(true)
+        getShowPercentageChangeList(false)
+      }
+    }
+  )
+}
 /*
 <select onchange={choosePortId}>
                 {portOptions.map((option) => {
@@ -351,6 +408,11 @@ const PortfolioChange = () => {
           <button onClick={()=>getShowSell(true)}> sell stock </button>
           :null
         }
+        {
+          showPort?
+          <button onClick={()=>getShowPercentageChangeList(true)}> get percentage change list </button>
+          :null
+        }
          <h1>
          {buyInfoString}
          </h1>
@@ -377,6 +439,19 @@ const PortfolioChange = () => {
           </div>
           :null
         }
+        {
+          showPercentageChangeList?
+          
+          <div>
+          <div>Get list of stocks that are projected to change more than the percentage</div>
+          Percentage:<input type="text" onChange={getPercentage} 
+          placeholder="Enter percentage as an integer, positive or negative"/>
+          Updown:<input type="text" onChange={getUpdown} 
+          placeholder="Enter 0 or 1. 0 if wanting under, 1 if wanting upper "/>
+          <button onClick={()=>getLists()}>Get Lists</button>
+          </div>
+          :null
+        }
         {portfolioChangeMessage}
         <button onClick={()=>getShowNewPort()}> Make new Portfolio </button>
         {
@@ -396,6 +471,30 @@ const PortfolioChange = () => {
                 </div>:null
              }
             </div>:null
+        }
+        {
+          showPercentageChangeListTable?
+          <div>
+            <table>
+            <thead>
+              <tr>
+                <th>Entry #</th>
+                <th>Stock ABV</th>
+                <th>Percentage Change</th>
+              </tr>
+            </thead>
+            <tbody>
+              {percentageListResultsUpdate && percentageListResultsUpdate.map(result =>
+                <tr key={result.id}>
+                  <td>{result.id}</td>
+                  <td>{result.abv}</td>
+                  <td>{result.percentage}</td>
+                </tr>
+              )}
+            </tbody>
+            </table>
+          </div>
+          :null
         }
     </div>
     

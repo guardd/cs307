@@ -17,6 +17,8 @@ import uuid
 import prediction
 from twisted.internet import task, reactor
 import sched, time
+import stockChangeList
+
 app = Flask(__name__)
 print("Flask running")
 db = Transmission()
@@ -656,6 +658,7 @@ def textFriend():
 @app.route('/textGet', methods=['POST'])
 def textGet():
     requestJson = request.get_json()
+    print(requestJson)
     id = requestJson['id']
     friend = db.search_friend_by_id(id)
 
@@ -750,3 +753,32 @@ def sell_stock_trade(uid, stockID,shares):
                 return 1
             else:
                 return -2
+
+@app.route('/getPercentageList', methods=['POST'])
+def getPercentageList():
+    requestJson = request.get_json()
+    abvs = requestJson['abvs']
+    percentage = 0
+    downup = -1
+    try:
+        percentage = int(requestJson['percentage'])
+    except TypeError:
+        return {
+            "size": -1
+        }
+
+    try:
+        downup = int(requestJson['downup'])
+    except TypeError:
+        return {
+            "size": -2
+        }    
+    if not (downup == 0 or downup == 1):
+        return {
+            "size": -2
+        }
+     
+
+    return stockChangeList.percentage_change_list(percentage, downup, abvs)
+
+    
