@@ -6,7 +6,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import Select from 'react-select';
 
 const PortfolioChange = () => {
-
+    const upDownMenu = [{value: 1, label: "up"}, {value: 0, label: "down"}]
     const [userId, setUserid]=useState(null)
     const [loggedIn, setLoggedIn]=useState("false")
     const navigate = useNavigate();
@@ -44,8 +44,8 @@ const PortfolioChange = () => {
     const [chosenportId, setchosenportId] = useState(null);
     const [showPort, setShowPort] = useState(false)
     const [showPercentageChangeList, setShowPercentageChangeList] = useState(false)
-    const [percentage, setPercentage] = useState(null)
-    const [updown, setUpdown] = useState(null)
+    const [percentage, setPercentage] = useState("0")
+    const [updown, setUpdown] = useState(1)
     const percentageListResults = []
     const [percentageListResultsUpdate, setPercentageListResultsUpdate] = useState(null)
     const [showPercentageChangeListTable, setShowPercentageChangeListTable] = useState(false)
@@ -57,7 +57,7 @@ const PortfolioChange = () => {
       setPercentage(val.target.value)
     }
     function getUpdown(val) {
-      setUpdown(val.target.value)
+      setUpdown(val)
     }
     function getShowPercentageChangeList(val) {
       setShowPercentageChangeList(val)
@@ -132,6 +132,10 @@ const PortfolioChange = () => {
       getchosenportName(e.label)
       getchoseportfolio(true)
       console.log(getchosenportId)
+    }
+
+    function chooseUpDown(e) {
+      getUpdown(e.value)
     }
   
     //purpose of this function - to call it in the beginning of page load so we will know if we're logged in with who
@@ -342,6 +346,8 @@ const PortfolioChange = () => {
         setListInfoString("Percentage not valid")
       } else if (data.size === -2) {
         setListInfoString("Down / Up not valid")
+      } else if (data.size === 0) {
+        setListInfoString("No matching stocks")
       } else {
         for (let i = 0; i < data.size; i++) {
           var result = {
@@ -354,6 +360,7 @@ const PortfolioChange = () => {
         setPercentageListResultsUpdate(percentageListResults)
         getShowPercentageChangeTable(true)
         getShowPercentageChangeList(false)
+        setListInfoString("")
       }
     }
   )
@@ -417,6 +424,7 @@ const PortfolioChange = () => {
          {buyInfoString}
          </h1>
          <h1>{sellInfoString}</h1>
+         <h1>{listInfoString}</h1>
         {
           showBuy?
           <div>
@@ -445,9 +453,10 @@ const PortfolioChange = () => {
           <div>
           <div>Get list of stocks that are projected to change more than the percentage</div>
           Percentage:<input type="text" onChange={getPercentage} 
-          placeholder="Enter percentage as an integer, positive or negative"/>
-          Updown:<input type="text" onChange={getUpdown} 
-          placeholder="Enter 0 or 1. 0 if wanting under, 1 if wanting upper "/>
+          value="0"/>
+          Updown:
+          <Select options={upDownMenu} onChange={chooseUpDown} defaultValue={{label: "up", value: 1}}/>
+
           <button onClick={()=>getLists()}>Get Lists</button>
           </div>
           :null

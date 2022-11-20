@@ -129,7 +129,9 @@ def update_stock_info():
                     print(row[0])
                     cur.execute("UPDATE 'StockData' SET LastSale=?, NetChange=?, PercentChange=?, MarketCap=?, Volume=? WHERE Symbol=?", (row[2][1:],row[3],row[4][:-1],row[5],row[8],row[0]))
            connect.commit()          
-           def pull_top_stocks(sortType):
+           
+           
+def pull_top_stocks(sortType):
     connect = sqlite3.connect("mydb.db") ##connects to database
     cur = connect.cursor()
 
@@ -177,8 +179,8 @@ def update_stock_info():
             industries = f.readlines()
 
         topInfo = []
-        for industry in industries
-             cur.execute("SELECT Symbol, Name, MarketCap FROM 'StockData' WHERE Industry=? ORDER BY MarketCap DESC LIMIT 1",(industry,)
+        for industry in industries:
+             cur.execute("SELECT Symbol, Name, MarketCap FROM 'StockData' WHERE Industry=? ORDER BY MarketCap DESC LIMIT 1",(industry,))
              topIndustry = cur.fetchall()
              if topIndustry == None:
                 return -1
