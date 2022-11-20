@@ -94,7 +94,45 @@ def dayTradeCheck(portid, stock, buySell):
         userDaytradeDict.update({stock: [portid, buySell]})
         return 2
 
+@app.route('/getSortStock', methods=['POST'])
+def get_sort_stock():
+  requestJson = request.get_json()
+  sortType = requestJson['sortType']
+  print(sortType)
+  StockData.update_stock_info()
+  sortedStocks = StockData.pull_top_stocks(sortType)
+  if sortedStocks == -1:
+        data={"returncode": "-1" }
+  elif sortedStocks == 0:
+      data={"returncode": "0"}
+  elif sortType == 'Industry':
+      data={"returncode": "1",
+            "topIndustryTable": sortedStocks
+            }
+  else:
+    stockABV = []
+    stockName = []
+    stockSortedBy = []
 
+    for x in range(sortedStocks.__len__()):
+        
+
+            stockABV.append(str(sortedStocks[x][0]))
+            stockName.append(str(sortedStocks[x][1]))
+            stockSortedBy.append(str(sortedStocks[x][2]))
+ 
+
+
+    data = {
+         "retruncode": "1",
+     
+         "stockABV": stockABV,
+         "stockName": stockName,
+         "stockSortedBy": stockSortedBy
+
+    }
+    print(data)
+  return data
 @app.route('/getNews', methods=['POST'])
 def get_news():
   requestJson = request.get_json()
