@@ -141,12 +141,13 @@ def pull_top_stocks(sortType):
         return -1
 
     elif sortType == 'Volume':
-
+      
         cur.execute("SELECT Symbol, Name, Volume FROM 'StockData' ORDER BY Volume DESC LIMIT 10")
         topInfo = cur.fetchall()
+       
         if topInfo == None:
            return -1
-        print(topInfo)
+        print(topInfo[0][0])
         
         return topInfo
     elif sortType == 'Market Cap':
@@ -170,23 +171,39 @@ def pull_top_stocks(sortType):
         topInfo = cur.fetchall()
         if topInfo == None:
            return -1
-        print(topInfo)
+        
         
         return topInfo
     elif sortType == 'Industry':
         industries = None
         with open('Industries.txt') as f:
             industries = f.readlines()
+            
 
         topInfo = []
+        newtopInfo = ''
         for industry in industries:
-             cur.execute("SELECT Symbol, Name, MarketCap FROM 'StockData' WHERE Industry=? ORDER BY MarketCap DESC LIMIT 1",(industry,))
+             newIndustry = industry.replace('\n','')
+             cur.execute("SELECT Symbol, Name, MarketCap, Industry FROM 'StockData' WHERE Industry=? ORDER BY MarketCap DESC LIMIT 1",(newIndustry,))
              topIndustry = cur.fetchall()
              if topIndustry == None:
                 return -1
-             topInfo.append(topIndustry)
-        print(topInfo)
+             elif topIndustry == '[]':
+                 pass
+             else:
+                 for x in range(topIndustry.__len__()):
+                        
+                  
+                    topInfo.append(str(topIndustry[x]))
+                 
         
-        return topInfo
+        newtopInfo = "\n".join(topInfo)
+        regex = re.compile('[^a-zA-Z0-9./\n ]')
+        newtopInfo = regex.sub('',newtopInfo)
+        print(topInfo)
+        print(newtopInfo)
+        #print(newtopInfo)
+        
+        return newtopInfo
     else:
-        return 0  
+        return 0
