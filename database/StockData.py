@@ -129,4 +129,62 @@ def update_stock_info():
                     print(row[0])
                     cur.execute("UPDATE 'StockData' SET LastSale=?, NetChange=?, PercentChange=?, MarketCap=?, Volume=? WHERE Symbol=?", (row[2][1:],row[3],row[4][:-1],row[5],row[8],row[0]))
            connect.commit()          
-               
+           def pull_top_stocks(sortType):
+    connect = sqlite3.connect("mydb.db") ##connects to database
+    cur = connect.cursor()
+
+    
+
+    if sortType == None:
+        return -1
+
+    elif sortType == 'Volume':
+
+        cur.execute("SELECT Symbol, Name, Volume FROM 'StockData' ORDER BY Volume DESC LIMIT 10")
+        topInfo = cur.fetchall()
+        if topInfo == None:
+           return -1
+        print(topInfo)
+        
+        return topInfo
+    elif sortType == 'Market Cap':
+        cur.execute("SELECT Symbol, Name, MarketCap FROM 'StockData' ORDER BY 'MarketCap' DESC LIMIT 10")
+        topInfo = cur.fetchall()
+        if topInfo == None:
+           return -1
+        print(topInfo)
+        
+        return topInfo
+    elif sortType == 'Last Sale':
+        cur.execute("SELECT Symbol, Name, LastSale FROM 'StockData' ORDER BY 'LastSale' DESC LIMIT 10")
+        topInfo = cur.fetchall()
+        if topInfo == None:
+           return -1
+        print(topInfo)
+        
+        return topInfo
+    elif sortType == 'Net Change':
+        cur.execute("SELECT Symbol, Name, NetChange FROM 'StockData' ORDER BY 'NetChange' DESC LIMIT 10")
+        topInfo = cur.fetchall()
+        if topInfo == None:
+           return -1
+        print(topInfo)
+        
+        return topInfo
+    elif sortType == 'Industry':
+        industries = None
+        with open('Industries.txt') as f:
+            industries = f.readlines()
+
+        topInfo = []
+        for industry in industries
+             cur.execute("SELECT Symbol, Name, MarketCap FROM 'StockData' WHERE Industry=? ORDER BY MarketCap DESC LIMIT 1",(industry,)
+             topIndustry = cur.fetchall()
+             if topIndustry == None:
+                return -1
+             topInfo.append(topIndustry)
+        print(topInfo)
+        
+        return topInfo
+    else:
+        return 0  
