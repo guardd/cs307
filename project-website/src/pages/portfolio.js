@@ -54,6 +54,7 @@ const Portfolio = () => {
   const [projectDataFinal, setprojectDataFinal] = useState(null)
   const [newsFeed, setnewsFeed] = useState([])
   const [userHasStocks, setuserHasStocks] = useState(false)
+  const [day, setDate] = useState(null)
   
   const csvreport = {
     data: projectData,
@@ -62,6 +63,9 @@ const Portfolio = () => {
   };
   function getprojectABV(val) {
     setprojectABV(val.target.value)
+  }
+  function getDate(val) {
+    setDate(val.target.value)
   }
   //purpose of this function - to call it in the beginning of page load so we will know if we're logged in with who
   function getSessionStorage() {
@@ -78,7 +82,8 @@ const Portfolio = () => {
     console.log(projectABV)
 
     let predictionInfo = {
-      "projectABV": projectABV
+      "projectABV": projectABV,
+      "days": day
     };
     fetch('/getPredictions', {
       "method": "POST",
@@ -316,6 +321,8 @@ function getNews() {
             <div className="prediction-symbol">
               <input type="text"  
               className="prediction-symbol-input" placeholder="Enter Symbol" onChange={getprojectABV}/>
+              <input type="text"  
+              className="prediction-date-input" placeholder="Enter Number of Historical Days" onChange={getDate}/>
             </div>
             <div className="prediction-button">
               <button onClick= {()=>getPredictions()}> 
