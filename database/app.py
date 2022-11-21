@@ -396,7 +396,8 @@ def userPortfolios():
 def getPredictions():
     requestJson = request.get_json()
     projectABV = requestJson['projectABV']
-    stockdata = prediction.pullStockData(projectABV)
+    days = requestJson['days']
+    stockdata = prediction.pullStockData(projectABV, days)
     data = {}
     i = 0
     for point in stockdata:
