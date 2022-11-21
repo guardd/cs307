@@ -17,8 +17,11 @@ const Trade = () => {
     const [topTenRefresh, settopTenRefresh] = useState(false)
     const [topTenRefreshFail, settopTenRefreshFail] = useState(false)
     const [topTenRates, settopTenRates] = useState([]) 
+    const [chosenSortType, setchosenSortType] = useState(false)
     const navigate = useNavigate();
-    var chosenportId;
+    const [chosenPortID, setchosenPortID] = useState(null)
+    const [isIndustry, setisIndustry] = useState(false)
+    const [isNotIndustry, setisNotIndustry] = useState(false)
     const portOptions = [
         { label: 'Trade Volume', value: '1' },
         { label: 'Market Cap', value: '2' },
@@ -26,10 +29,11 @@ const Trade = () => {
         { label: 'Net Change', value: '4' },
         { label: 'Industry', value: '5'}
     ]
-    var choosePortId = e => {
-        chosenportId = e.value
+    function choosePortId(e) {
+        setchosenPortID(e.label)
+        setchosenSortType(true)
+        console.log(getchosenportId)
     }
-
 
     function getSymbol1(val) {
         setSymbol1(val.target.value)
@@ -139,12 +143,65 @@ const Trade = () => {
         });
 
     }
-    
+    function getSortedStocks(chosenPortID) {
+        let sortType = {
+            "sortType": chosenPortID,
+           
+        };
+        fetch('/getSortStock', {
+            "method": "POST",
+            "headers": { "Content-Type": "application/json" },
+            "body": JSON.stringify(sortType)
+        }).then(res => res.json()).then(
+            data => {
+                if (data.returncode == "-1") {
+                    settopTenRefresh(false)
+                    settopTenRefreshFail(true)
+                    return;
+                }
+
+                else {
+                    settopTenRefresh(true)
+                    settopTenRefreshFail(false)
+                    const array = []
+                    for (const [key, value] of Object.entries(data.rates)) {
+
+                        array.push(key, value)
+
+                    }
+
+                    settopTenRates(array)
+                    console.log(data.rates)
+
+                }
+            }
+        ).catch(error => {
+            console.error('Top Ten Refresh error', error);
+        });
+
+    }
     return (
         
         <div class="main">
             <Select options={portOptions} onChange={choosePortId} />
-
+            {
+                chosenSortType?
+                   <div className="prediction-button">
+                    <button onClick={() => getSortedStocks(chosenPortID)}> Display Stocks </button> 
+                    </div> : null
+            }
+            {
+                isIndustry?
+                    <div className="exchange-rate">
+                        Please enter amount between 1 and 1,000,000,000
+                    </div>:null
+            }
+            {
+                isNotIndustry?
+                    <div className="exchange-rate">
+                        Please enter amount between 1 and 1,000,000,000
+                    </div>:null
+            }
            <div class="one">
            <div className="prediction-container"></div>
            <div className="prediction-Form">
