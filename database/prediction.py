@@ -1,17 +1,17 @@
 import pandas as pd
 import numpy as np
 import yfinance as yf
-#import tensorflow as tf
-#from yahoofinancials import YahooFinancials
+import tensorflow as tf
+from yahoofinancials import YahooFinancials
 import matplotlib.pyplot as plt
 import datetime
-#import plotly_express as px
+import plotly_express as px
 import warnings
-#import seaborn as sns
+import seaborn as sns
 #from statsmodels.tsa.arima.model import ARIMA
 import statsmodels.api as sm
 from sklearn.metrics import mean_squared_error
-#from pandas.plotting import lag_plot
+from pandas.plotting import lag_plot
 
 warnings.filterwarnings('ignore')
 
@@ -34,14 +34,17 @@ def find_prediction(symbol):
     plt.title(symbol + " Cumulative Returns")
     plt.show()
     plt.figure(figsize=(10,10))
-    lag_plot(data_set['Open'], lag=5)
+    lag_plot(data_set['Close'], lag=5)
     plt.title(symbol + ' Autocorrelation plot')
     plt.show()
     '''
+
+
     shape = data_set.shape[0]
     shape_temp = shape-1
     size = int(len(data_set)*0.8)
     train_data, test_data = data_set[0:size], data_set[size:]
+
     '''
     plt.figure(figsize=(12,7))
     plt.title(symbol + ' Prices')
@@ -53,6 +56,7 @@ def find_prediction(symbol):
     plt.legend()
     plt.show()
     '''
+
     train = train_data['Open'].values
     test = test_data['Open'].values
     hist = [x for x in train]
@@ -67,6 +71,7 @@ def find_prediction(symbol):
 
     error = mean_squared_error(test, prediction)
     print('Testing Mean Squared Error: %.3f' % error)
+
     '''
     plt.figure(figsize=(12,7))
     plt.plot(data_set['Open'], 'green', color='blue', label='Training Data')
@@ -79,6 +84,9 @@ def find_prediction(symbol):
     plt.xticks(np.arange(0,shape_temp, 100), data_set['Date'][0:shape_temp:100])
     plt.legend()
     plt.show()
+    '''
+
+    '''
     plt.figure(figsize=(12,7))
     plt.plot(test_data.index, prediction, color='green', marker='o', linestyle='dashed', 
             label='Predicted Price')
@@ -89,9 +97,6 @@ def find_prediction(symbol):
     plt.xticks(np.arange(553,691, 30), data_set['Date'][553:691:30])
     plt.legend()
     plt.show()
-    df = pd.DataFrame(prediction)
-    print(df.tail())
-    print(data_set['Date'][553:691:1])
     '''
     length = list()
     for x in range(len(prediction)):
@@ -104,10 +109,10 @@ def find_prediction(symbol):
     final = np.array((sizedf, df)).T
     return final
 
-def pullStockData(symbol):
-    NUM_DAYS = 1000
+def pullStockData(symbol, days):
+    NUM_DAYS = days
     INTERVAL = "1d"
-    start = (datetime.date.today() - datetime.timedelta( NUM_DAYS ) )
+    start = (datetime.date.today() - datetime.timedelta( int(NUM_DAYS) ) )
     end = datetime.datetime.today()
     data = yf.download(symbol, start=start, end=end, interval=INTERVAL)
     data.to_csv(symbol + '.csv')
@@ -117,33 +122,34 @@ def pullStockData(symbol):
     dates = dates.to_numpy()
     price = price.to_numpy()    
     data_array = np.array((dates,price)).T
+    print(data_array.size)
     return data_array
 
-#find_prediction("tsla")
-#pullStockData("tsla")
-
-def generate_risk(db):
+def generate_risk(symbol):
+    db = find_prediction(symbol)
     db = db.astype(float)
     sd = np.std(db)
     mean = np.mean(db)
     variation = sd/mean
     if (variation > 2):
-        return((10, "sell"))
+        return((10, "SELL"))
     elif (variation > 1.5):
-        return((9, "sell"))
+        return((9, "SELL"))
     elif (variation > 1.3):
-        return((8, "sell"))
+        return((8, "SELL"))
     elif (variation > 1.1):
-        return((7, "sell"))
+        return((7, "SELL"))
     elif (variation > 1):
-        return((6, "hold"))
+        return((6, "HOLD"))
     elif (variation == 1):
-        return((5, "hold"))
+        return((5, "HOLD"))
     elif (variation > 0.75):
-        return((4, "hold"))
+        return((4, "HOLD"))
     elif (variation > 0.5):
-        return((3, "boy"))
+        return((3, "BUY"))
     elif (variation > 0.1):
-        return((2, "buy"))
+        return((2, "BUY"))
     else:
-        return((1, "buy"))
+        return((1, "BUY"))
+
+#find_prediction("CAT")
