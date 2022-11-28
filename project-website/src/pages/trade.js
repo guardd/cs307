@@ -22,6 +22,10 @@ const Trade = () => {
     const [chosenPortID, setchosenPortID] = useState(null)
     const [isIndustry, setisIndustry] = useState(false)
     const [isNotIndustry, setisNotIndustry] = useState(false)
+    const [stockABV, setstockABV] = useState([])
+    const [stockName, setstockName] = useState([])
+    const [stockSortedBy, setstockSortedBy] = useState([])
+    const [industryTable,setindustryTable] = useState(null)
     const portOptions = [
         { label: 'Trade Volume', value: '1' },
         { label: 'Market Cap', value: '2' },
@@ -32,7 +36,7 @@ const Trade = () => {
     function choosePortId(e) {
         setchosenPortID(e.label)
         setchosenSortType(true)
-        console.log(chosenPortID)
+        
     }
 
     function getSymbol1(val) {
@@ -155,24 +159,49 @@ const Trade = () => {
         }).then(res => res.json()).then(
             data => {
                 if (data.returncode == "-1") {
-                    settopTenRefresh(false)
-                    settopTenRefreshFail(true)
+                    setisIndustry(false)
+                    setisNotIndustry(false)
                     return;
                 }
-
-                else {
-                    settopTenRefresh(true)
-                    settopTenRefreshFail(false)
+                else if (data.returncode == "1") {
+                    setisIndustry(true)
+                    setisNotIndustry(false)
+                    setindustryTable(data.topIndustryTable)
+                }
+                else if (data.returncode == "2") {
+                    setisIndustry(false)
+                    setisNotIndustry(true)
                     const array = []
-                    for (const [key, value] of Object.entries(data.rates)) {
+                    for (const [key, value] of Object.entries(data.stockABV)) {
 
                         array.push(key, value)
 
                     }
+                    setstockABV(array)
+                    array1 = []
+                    for (const [key, value] of Object.entries(data.stockName)) {
 
-                    settopTenRates(array)
-                    console.log(data.rates)
+                        array1.push(key, value)
 
+                    }
+                    setstockName(array1)
+                    array2 = []
+                    for (const [key, value] of Object.entries(data.stockSortedBy)) {
+
+                        array2.push(key, value)
+
+                    }
+                    setstockSortedBy(array2)
+                    
+                    return;
+                    
+                    
+
+                }
+                else {
+                    setisIndustry(false)
+                    setisNotIndustry(false)
+                    return;
                 }
             }
         ).catch(error => {
@@ -183,25 +212,50 @@ const Trade = () => {
     return (
         
         <div class="main">
+           <div class="one">
+            <div className="prediction-container"></div>
+            <div className="prediction-Form">
+                <div className="prediction-content">
+                    <h1 className="prediction-title">Filter Stocks</h1>
+                    <div className="prediction-historical">
             <Select options={portOptions} onChange={choosePortId} />
-            {
-                chosenSortType?
-                   <div className="prediction-button">
-                    <button onClick={() => getSortedStocks(chosenPortID)}> Display Stocks </button> 
-                    </div> : null
-            }
+            
             {
                 isIndustry?
-                    <div className="exchange-rate">
-                        Please enter amount between 1 and 1,000,000,000
+                    <div className="industry-table">
+                        StockABV    Stock Name    Market Cap    Industry <br />
+                        <br />
+                        {industryTable}
+                        
                     </div>:null
             }
             {
                 isNotIndustry?
-                    <div className="exchange-rate">
-                        Please enter amount between 1 and 1,000,000,000
+                    <div className="industry-table">
+                                        {stockABV[3]}   {stockName[1]}  {stockSortedBy[1]} <br />
+                                        {stockABV[5]}   {stockName[2]}  {stockSortedBy[2]} <br />
+                                        {stockABV[7]}   {stockName[3]}  {stockSortedBy[3]} <br />
+                                        {stockABV[9]}   {stockName[4]}  {stockSortedBy[4]} <br />
+                                        {stockABV[11]}   {stockName[5]}  {stockSortedBy[5]} <br />
+                                        {stockABV[13]}   {stockName[6]}  {stockSortedBy[6]} <br />
+                                        {stockABV[15]}   {stockName[7]}  {stockSortedBy[7]} <br />
+                                        {stockABV[17]}   {stockName[8]}  {stockSortedBy[8]} <br />
+                                        {stockABV[19]}   {stockName[9]}  {stockSortedBy[9]} <br />
+                                        {stockABV[21]}   {stockName[10]}  {stockSortedBy[10]} <br />
+                        
                     </div>:null
+                            }
+            {
+                chosenSortType?
+                   <div className="prediction-button"> 
+                    <button className="prediction-button-button" onClick={() => getSortedStocks(chosenPortID)}> Display Stocks </button> 
+                    </div> : null
             }
+                    </div>
+                </div>
+
+                </div>
+            </div>
            <div class="one">
            <div className="prediction-container"></div>
            <div className="prediction-Form">
