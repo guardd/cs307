@@ -140,7 +140,7 @@ def pull_top_stocks(sortType):
     if sortType == None:
         return -1
 
-    elif sortType == 'Volume':
+    elif sortType == 'Trade Volume':
       
         cur.execute("SELECT Symbol, Name, Volume FROM 'StockData' ORDER BY Volume DESC LIMIT 10")
         topInfo = cur.fetchall()
@@ -151,7 +151,7 @@ def pull_top_stocks(sortType):
         
         return topInfo
     elif sortType == 'Market Cap':
-        cur.execute("SELECT Symbol, Name, MarketCap FROM 'StockData' ORDER BY 'MarketCap' DESC LIMIT 10")
+        cur.execute("SELECT Symbol, Name, MarketCap FROM 'StockData' ORDER BY MarketCap DESC LIMIT 10")
         topInfo = cur.fetchall()
         if topInfo == None:
            return -1
@@ -159,7 +159,7 @@ def pull_top_stocks(sortType):
         
         return topInfo
     elif sortType == 'Last Sale':
-        cur.execute("SELECT Symbol, Name, LastSale FROM 'StockData' ORDER BY 'LastSale' DESC LIMIT 10")
+        cur.execute("SELECT Symbol, Name, LastSale FROM 'StockData' ORDER BY LastSale DESC LIMIT 10")
         topInfo = cur.fetchall()
         if topInfo == None:
            return -1
@@ -167,7 +167,7 @@ def pull_top_stocks(sortType):
         
         return topInfo
     elif sortType == 'Net Change':
-        cur.execute("SELECT Symbol, Name, NetChange FROM 'StockData' ORDER BY 'NetChange' DESC LIMIT 10")
+        cur.execute("SELECT Symbol, Name, NetChange FROM 'StockData' ORDER BY NetChange DESC LIMIT 10")
         topInfo = cur.fetchall()
         if topInfo == None:
            return -1
@@ -193,12 +193,13 @@ def pull_top_stocks(sortType):
              else:
                  for x in range(topIndustry.__len__()):
                         
-                  
-                    topInfo.append(str(topIndustry[x]))
+                    industryString = str(topIndustry[x])
+                    industryString = industryString.replace(",","\t")
+                    topInfo.append(industryString)
                  
         
         newtopInfo = "\n".join(topInfo)
-        regex = re.compile('[^a-zA-Z0-9./\n ]')
+        regex = re.compile('[^a-zA-Z0-9./\n\t ]')
         newtopInfo = regex.sub('',newtopInfo)
         print(topInfo)
         print(newtopInfo)
