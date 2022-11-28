@@ -125,6 +125,14 @@ output[type=text] {
     color: rgb(34, 34. 34);
     font-weight: 800;
 }
+.industry-table {
+    text-align: left;
+    white-space: pre;
+    margin-bottom: 1em;
+    font-size: 6px;
+    color: rgb(34, 34. 34);
+    font-weight: 800;
+}
 
 .prediction-button-button {
     display: flex;
