@@ -799,16 +799,18 @@ def getPercentageList():
     abvs = requestJson['abvs']
     percentage = 0
     downup = -1
+    if requestJson['percentage'] == "":
+        requestJson['percentage'] = '0' 
     try:
         percentage = int(requestJson['percentage'])
-    except TypeError:
+    except ValueError:
         return {
             "size": -1
         }
 
     try:
         downup = int(requestJson['downup'])
-    except TypeError:
+    except ValueError:
         return {
             "size": -2
         }    

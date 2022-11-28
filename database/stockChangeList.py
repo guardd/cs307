@@ -4,7 +4,7 @@ import yfinance as yf
 def percentage_change(stockABV):
     #currentPrice = StockData.get_price(stockABV)
     currentPrice = yf.Ticker(stockABV).history(period='1d')['Close'][0]
-    predictedPrice = prediction.find_prediction(stockABV)[-1][1]
+    predictedPrice = prediction.find_prediction_hist(stockABV)[-1][1]
     percentage = float((((predictedPrice - currentPrice) / currentPrice)) * 100)
     return percentage
 

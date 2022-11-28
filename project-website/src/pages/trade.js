@@ -32,7 +32,7 @@ const Trade = () => {
     function choosePortId(e) {
         setchosenPortID(e.label)
         setchosenSortType(true)
-        console.log(getchosenportId)
+        console.log(chosenPortID)
     }
 
     function getSymbol1(val) {

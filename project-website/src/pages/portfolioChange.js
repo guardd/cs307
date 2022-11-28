@@ -260,7 +260,7 @@ const PortfolioChange = () => {
     let buyInfo = {
       "uid": sessionStorage.getItem("id"),
       "id": portid,
-      "nameABV": nameABV,
+      "nameABV": nameABV.toUpperCase(),
       "shares": shares
     };
     fetch('/buyStock', {
@@ -295,7 +295,7 @@ const PortfolioChange = () => {
     let sellInfo = {
       "uid": sessionStorage.getItem("id"),
       "id": portid,
-      "nameABV": nameABV,
+      "nameABV": nameABV.toUpperCase(),
       "shares": shares
     };
     fetch('/sellStock', {
@@ -453,7 +453,7 @@ const PortfolioChange = () => {
           <div>
           <div>Get list of stocks that are projected to change more than the percentage</div>
           Percentage:<input type="text" onChange={getPercentage} 
-          value="0"/>
+          placeholder="0"/>
           Updown:
           <Select options={upDownMenu} onChange={chooseUpDown} defaultValue={{label: "up", value: 1}}/>
 
