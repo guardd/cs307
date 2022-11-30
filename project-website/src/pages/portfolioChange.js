@@ -49,7 +49,30 @@ const PortfolioChange = () => {
     const percentageListResults = []
     const [percentageListResultsUpdate, setPercentageListResultsUpdate] = useState(null)
     const [showPercentageChangeListTable, setShowPercentageChangeListTable] = useState(false)
-
+    const [showTax, setShowTax] = useState(false)
+    const [stateABV, setStateABV] = useState(null)
+    const [userTotalValue, setUserTotalValue] = useState(null)
+    const [userTaxPercent, setUserTaxPercent] = useState(null)
+    const [userTaxAmount, setUserTaxAmount] = useState(null)
+    const [showTaxFinal, setShowTaxFinal] = useState(false)
+    function getShowTaxFinal(val) {
+      setShowTaxFinal(val)
+    }
+    function getUserTaxPercent(val) {
+      setUserTaxPercent(val)
+    }
+    function getUserTaxAmount(val) {
+      setUserTaxAmount(val)
+    }
+    function getUserTotalValue(val) {
+      setUserTotalValue(val)
+    }
+    function getShowTax(val) {
+      setShowTax(val)
+    }
+    function getStateABV(val) {
+      setStateABV(val.target.value)
+    }
     function getShowPercentageChangeTable(val) {
       setShowPercentageChangeListTable(val)
     }
@@ -185,6 +208,27 @@ const PortfolioChange = () => {
       }
     )
   }
+
+  function getTax() {
+
+    let userInfo = {
+      "amount": userTotalValue,
+      "state": stateABV
+    };
+
+    fetch('/getTax', {
+      "method": "POST",
+      "headers": {"Content-Type": "application/json"},
+      "body": JSON.stringify(userInfo)
+  }).then(res=>res.json()).then(
+    data => {
+      console.log(data)
+      getUserTaxAmount(data.taxAmount)
+      getUserTaxPercent(data.taxPercentage)
+      getShowTaxFinal(true)
+    }
+  )
+  }
   function makeNewPortfolio(name, funds) {
     let portInfo = {
       "name": name,
@@ -225,6 +269,7 @@ const PortfolioChange = () => {
       getStockPrices(data.stockPrices)
       getStockWeight(data.stockWeight)
       setSelectportFunds(data[0].funds)
+      setUserTotalValue(data[0].total)
       console.log(data)
       var stocks = [];
       var portStockABVs = []
@@ -420,6 +465,11 @@ const PortfolioChange = () => {
           <button onClick={()=>getShowPercentageChangeList(true)}> get percentage change list </button>
           :null
         }
+        {
+          showPort?
+          <button onClick={()=>getShowTax(true)}> get Tax Info </button>
+          :null
+        }
          <h1>
          {buyInfoString}
          </h1>
@@ -502,6 +552,23 @@ const PortfolioChange = () => {
               )}
             </tbody>
             </table>
+          </div>
+          :null
+        }
+        {
+          showTax?
+          <div>
+          State ABV:<input type="text" onChange={getStateABV} 
+          placeholder="Enter State Abbreviation"/>
+          <button onClick={()=>getTax()}>Get Tax</button>
+          </div>
+          :null
+        }
+        {
+          showTaxFinal?
+          <div>
+          <h1>Tax Percentage: {userTaxPercent}</h1>
+          <h1>Tax Amount: {userTaxAmount}</h1>
           </div>
           :null
         }
