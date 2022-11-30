@@ -506,6 +506,7 @@ def findTaxRate(state, amount):
     else:
         return 'Invalid State'
     
+    
 def calculateValue(state, amount):
     rate = findTaxRate(state, amount)
     if (rate == 'Invalid State'):
