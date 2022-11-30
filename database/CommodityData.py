@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 import pandas as pd
 class CommodityData:
     def __init__(self):
-        self.access_key = 'z4ppaflt7d2crmc876715ksn77srvkx4za64rzdb782ckdvz8h9qcdqa7472'
+        self.access_key = 'k6rmo9npffotqu7i5gby041a9ael1l067o06i4jyhl4s81j5wth4b6vhfsqy'
         self.connect = sqlite3.connect("mydb.db") ##connects to database
         self.cur = self.connect.cursor()
 
