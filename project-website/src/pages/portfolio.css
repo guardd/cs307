@@ -22,20 +22,19 @@
   width: 50%;
   height: 100%;
 }
-
 .four {
-    justify-content: right;
-    text-align: left;
-    display: flex;
-    width: 25%;
-    height: 100%;
+  justify-content: right;
+  text-align: left;
+  display: flex;
+  width: 25%;
+  height: 100%;
 }
 .five {
-    justify-content: center;
-    text-align: left;
-    
-    width: 500px;
-    height: 500px;
+  justify-content: center;
+  text-align: left;
+  
+  width: 500px;
+  height: 500px;
 }
 .current-title {
     height: auto;
@@ -76,7 +75,7 @@
  }
  
 
-.prediction-container {
+.prediction-container, .com-container {
     background: #e8b0e2;
    font-weight: 400;
    justify-content: center;
@@ -87,7 +86,7 @@
    height: 100%;
    gap: 20px;
  }
- .prediction-Form {
+ .prediction-Form, .com-Form {
      width: 500px;
      box-shadow: rgb(0 0 0 / 16%) 1px 1px 10px;
      padding-top: 30px;
@@ -95,12 +94,12 @@
      border-radius: 8px;
      background: #fafafa;
  }
- .prediction-content {
+ .prediction-content, .com-content {
    padding-left: 12%;
    padding-right: 12%;
  }
 
- .prediction-title {
+ .prediction-title, .com-title {
      text-align: center;
      margin-bottom: 1em;
      font-size: 24px;
@@ -116,7 +115,7 @@
    justify-content: center;
    display: flex;
 }
- .prediction-button, .prediction-historical, .prediction-symbol, .prediction-interval {
+ .prediction-button, .prediction-historical, .prediction-symbol, .prediction-interval, .com-symbol {
    display: flex;
    justify-content: center;
  }
