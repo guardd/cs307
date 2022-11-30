@@ -218,8 +218,8 @@ function getportfoliodata(portid) {
 }
 function getNews() {
         let userInfo = {
-            //"uid": sessionStorage.getItem("id")
-            "uid": "e37697b8-7f74-4ab9-b762-1665ea269931"
+            "uid": sessionStorage.getItem("id")
+            //"uid": "e37697b8-7f74-4ab9-b762-1665ea269931"
         };
         fetch('/getNews', {
             "method": "POST",
