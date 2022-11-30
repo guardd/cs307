@@ -3,6 +3,7 @@ from User import User
 from Portfolio import Portfolio
 from Property import Property
 from Stock import Stock
+import tax
 from flask import Flask, request, jsonify
 from Email import Email
 from notifications import Notifications
@@ -461,18 +462,21 @@ def getPortfolioData():
     stocks = port.stocks
     data = {}
     i = 1
+    total = port.funds
     for stockid in stocks:
         stock = db.search_stock_by_id(stockid)
+        weight = StockData.get_price(stock.nameABV) * stock.shares
+        total = total + weight
         obj = {"stockABVs": stock.nameABV,
         "stockids": stock.id,
           "stockAmount": stock.shares,
           "stockColor": stock.color,
            "stockPrices": StockData.get_price(stock.nameABV),
-            "stockWeight": StockData.get_price(stock.nameABV) * stock.shares}
+            "stockWeight": weight}
         #print(StockData.get_price(stock.nameABV) * stock.shares)
         data[i] = obj 
         i = i + 1
-    data[0] = {"size": i, "funds": port.funds}
+    data[0] = {"size": i, "funds": port.funds, "total": total}
     return data
 
 @app.route('/buyStock', methods=['POST'])
@@ -824,3 +828,14 @@ def getPercentageList():
     return stockChangeList.percentage_change_list(percentage, downup, abvs)
 
     
+@app.route('/getTax', methods=['POST'])
+def getTax():
+    requestJson = request.get_json()
+    amount = requestJson['amount']
+    state = requestJson['state']
+    print(amount)
+    print(state)
+    return {
+        "taxPercentage" : tax.findTaxRate(state, amount),
+        "taxAmount": tax.calculateValue(state, amount)
+    }
