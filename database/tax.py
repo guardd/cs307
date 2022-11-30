@@ -501,6 +501,8 @@ def findTaxRate(state, amount):
             return '6.27%'
         if (amount >= 244271):
             return '7.65%'
+    elif (state == "TX" or state == "WY" or state == "WA" or state == "TN" or state == "NV" or state == "SD" or state == "FL" or state == "AL"):
+        return "0%"
     else:
         return 'Invalid State'
     
