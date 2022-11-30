@@ -52,6 +52,7 @@ const Portfolio = () => {
   const result2 = []
   const [projectData, setprojectData] = useState(null)
   const [projectABV, setprojectABV] = useState(null)
+  const [day, setDays] = useState(null)
   const [projected, setprojected] = useState(false)
   const [projectDataFinal, setprojectDataFinal] = useState(null)
   const [newsFeed, setnewsFeed] = useState([])
@@ -67,8 +68,8 @@ const Portfolio = () => {
   function getprojectABV(val) {
     setprojectABV(val.target.value)
   }
-  function getDate(val) {
-    setDate(val.target.value)
+  function getDays(val) {
+    setDays(val.target.value)
   }
   //purpose of this function - to call it in the beginning of page load so we will know if we're logged in with who
   function getSessionStorage() {
@@ -83,6 +84,7 @@ const Portfolio = () => {
   function getPredictions() {
     console.log("functionCalled")
     console.log(projectABV)
+    console.log(day)
 
     let predictionInfo = {
       "projectABV": projectABV,
@@ -95,7 +97,7 @@ const Portfolio = () => {
   }).then(res=>res.json()).then(
     data => {
       //console.log(data);
-      for (let i = 0; i < 692; i++) {
+      for (let i = 1; i < data[0]; i++) {
         let d = {date: data[i].date,
                 close: data[i].close};
         //console.log(d)
@@ -109,10 +111,28 @@ const Portfolio = () => {
     
     
   )
+  getReccomendations()
   getPredictionsFinal()
-  
   }
-  
+  function getReccomendations() {
+    console.log("functionCalled")
+    console.log(projectABV)
+
+    let predictionInfo = {
+      "projectABV": projectABV
+    };
+    fetch('/getReccomendations', {
+      "method": "POST",
+      "headers": {"Content-Type": "application/json"},
+      "body": JSON.stringify(predictionInfo)
+  }).then(res=>res.json()).then(
+    obj => {
+      console.log(obj)
+      setRec(obj.recomendation)
+      setScore(obj.risk_score)
+    }
+  )
+  }
   function getPredictionsFinal() {
     console.log("functionCalled")
     console.log(projectABV)
@@ -329,7 +349,7 @@ function getNews() {
               <input type="text"  
               className="prediction-symbol-input" placeholder="Enter Symbol" onChange={getprojectABV}/>
               <input type="text"  
-              className="prediction-date-input" placeholder="Enter Number of Historical Days" onChange={getDate}/>
+              className="prediction-date-input" placeholder="Enter Number of Historical Days" onChange={getDays}/>
             </div>
             <div className="prediction-button">
               <button onClick= {()=>getPredictions()}> 
@@ -341,6 +361,7 @@ function getNews() {
       </div>
       <div>
       <button onClick={()=>navigate('/portfoliochange')}> Edit portfolio </button>
+      
       </div>
 
 
