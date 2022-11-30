@@ -67,6 +67,7 @@ const Portfolio = () => {
     headers: headers,
     filename: 'stock.csv'
   };
+  const [error, setError] = useState(false)
   const [comData, setComData] = useState(null)
   const [comSymbol, setComSymbol] = useState(null)
   const [comProjected, setComProjected] = useState(false)
@@ -152,33 +153,40 @@ const Portfolio = () => {
 
 
   function getPredictions() {
-    console.log("functionCalled")
-    console.log(projectABV)
-    console.log(day)
+    if (typeof days != 'number') {
+      setError(true)
 
-    let predictionInfo = {
-      "projectABV": projectABV,
-      "days": day
-    };
-    fetch('/getPredictions', {
-      "method": "POST",
-      "headers": {"Content-Type": "application/json"},
-      "body": JSON.stringify(predictionInfo)
-  }).then(res=>res.json()).then(
-    data => {
-      //console.log(data);
-      for (let i = 1; i < data[0]; i++) {
-        let d = {date: data[i].date,
-                close: data[i].close};
-        //console.log(d)
-        result.push(d)
-      }
-      console.log(result)
-      //console.log(stockData)
-      setprojectData(result)
-      setprojected(true)
     }
+    else {
+      setError(false)
+      console.log("functionCalled")
+      console.log(projectABV)
+      console.log(day)
+
+      let predictionInfo = {
+        "projectABV": projectABV,
+        "days": day
+      };
+      fetch('/getPredictions', {
+        "method": "POST",
+        "headers": {"Content-Type": "application/json"},
+        "body": JSON.stringify(predictionInfo)
+    }).then(res=>res.json()).then(
+      data => {
+        console.log(data);
+        for (let i = 1; i < data[0]; i++) {
+          let d = {date: data[i].date,
+                  close: data[i].close};
+          //console.log(d)
+          result.push(d)
+        }
+        console.log(result)
+        //console.log(stockData)
+        setprojectData(result)
+        setprojected(true)
+      }
   )
+}
   }
 
   function getReccomendations() {
@@ -461,7 +469,11 @@ function getNews() {
             </div>
           </div>
         </div>
-
+        {
+                error && <div>
+                  <Alert severity="error">Enter a Valid Number </Alert>
+                </div>
+              }
         <div className="com-container"></div>
         <div className="com-Form">
           <div className="com-content">
