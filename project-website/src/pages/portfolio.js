@@ -5,6 +5,8 @@ import { PieChart, Pie, Legend, LineChart, CartesianGrid, XAxis, YAxis, Tooltip,
 import {useEffect, useState} from "react";
 import { Navigate, renderMatches, useNavigate } from "react-router-dom";
 import { CSVLink } from "react-csv";
+import Alert from '@mui/material/Alert';
+import Stack from '@mui/material/Stack';
 const headers = [
   { label: "Date", key: "date" },
   { label: "Close", key: "close" }
@@ -55,7 +57,8 @@ const Portfolio = () => {
   const [newsFeed, setnewsFeed] = useState([])
   const [userHasStocks, setuserHasStocks] = useState(false)
   const [day, setDate] = useState(null)
-  
+  const [rec, setRec] = useState(null)
+  const [score, setScore] = useState(null)
   const csvreport = {
     data: projectData,
     headers: headers,
@@ -310,6 +313,10 @@ function getNews() {
         <Line type="monotone" dataKey="close" stroke="#8884d8" />
       </LineChart>
       <CSVLink {...csvreport}>Export to CSV</CSVLink>
+      <Stack sx={{ width: '100%' }} spacing={2}>
+      <Alert severity="info">Reccomendation:{rec} </Alert>
+      <Alert severity="info">Risk Score:{score} </Alert>
+      </Stack>
       </div>
       }
 
