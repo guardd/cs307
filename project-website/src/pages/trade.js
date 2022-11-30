@@ -18,6 +18,7 @@ const Trade = () => {
     const [topTenRefreshFail, settopTenRefreshFail] = useState(false)
     const [topTenRates, settopTenRates] = useState([]) 
     const [chosenSortType, setchosenSortType] = useState(false)
+    const [chosenSortType2, setchosenSortType2] = useState(false)
     const navigate = useNavigate();
     const [chosenPortID, setchosenPortID] = useState(null)
     const [isIndustry, setisIndustry] = useState(false)
@@ -25,7 +26,9 @@ const Trade = () => {
     const [stockABV, setstockABV] = useState([])
     const [stockName, setstockName] = useState([])
     const [stockSortedBy, setstockSortedBy] = useState([])
-    const [industryTable,setindustryTable] = useState(null)
+    const [industryTable, setindustryTable] = useState(null)
+    const [chosenOrder, setchosenOrder] = useState(null)
+    
     const portOptions = [
         { label: 'Trade Volume', value: '1' },
         { label: 'Market Cap', value: '2' },
@@ -33,10 +36,19 @@ const Trade = () => {
         { label: 'Net Change', value: '4' },
         { label: 'Industry', value: '5'}
     ]
+    const portOptions2 = [
+        { label: 'asc', value: '1' },
+        { label: 'desc', value: '2' }
+    ]
     function choosePortId(e) {
         setchosenPortID(e.label)
         setchosenSortType(true)
         
+    }
+    function chooseOrderID(e) {
+        setchosenOrder(e.label)
+        setchosenSortType2(true)
+
     }
 
     function getSymbol1(val) {
@@ -147,10 +159,10 @@ const Trade = () => {
         });
 
     }
-    function getSortedStocks(chosenPortID) {
+    function getSortedStocks(chosenPortID,chosenOrder) {
         let sortType = {
             "sortType": chosenPortID,
-           
+            "ascdesc": chosenOrder
         };
         fetch('/getSortStock', {
             "method": "POST",
@@ -178,14 +190,14 @@ const Trade = () => {
 
                     }
                     setstockABV(array)
-                    array1 = []
+                    const array1 = []
                     for (const [key, value] of Object.entries(data.stockName)) {
 
                         array1.push(key, value)
 
                     }
                     setstockName(array1)
-                    array2 = []
+                    const array2 = []
                     for (const [key, value] of Object.entries(data.stockSortedBy)) {
 
                         array2.push(key, value)
@@ -212,7 +224,7 @@ const Trade = () => {
     return (
         
         <div class="main">
-           <div class="one">
+            <div class="one">
             <div className="prediction-container"></div>
             <div className="prediction-Form">
                 <div className="prediction-content">
@@ -232,30 +244,34 @@ const Trade = () => {
             {
                 isNotIndustry?
                     <div className="industry-table">
-                                        {stockABV[3]}   {stockName[1]}  {stockSortedBy[1]} <br />
-                                        {stockABV[5]}   {stockName[2]}  {stockSortedBy[2]} <br />
-                                        {stockABV[7]}   {stockName[3]}  {stockSortedBy[3]} <br />
-                                        {stockABV[9]}   {stockName[4]}  {stockSortedBy[4]} <br />
-                                        {stockABV[11]}   {stockName[5]}  {stockSortedBy[5]} <br />
-                                        {stockABV[13]}   {stockName[6]}  {stockSortedBy[6]} <br />
-                                        {stockABV[15]}   {stockName[7]}  {stockSortedBy[7]} <br />
-                                        {stockABV[17]}   {stockName[8]}  {stockSortedBy[8]} <br />
-                                        {stockABV[19]}   {stockName[9]}  {stockSortedBy[9]} <br />
-                                        {stockABV[21]}   {stockName[10]}  {stockSortedBy[10]} <br />
+                                        {stockABV[3]}   {stockName[3]}  {stockSortedBy[3]} <br />
+                                        {stockABV[5]}   {stockName[5]}  {stockSortedBy[5]} <br />
+                                        {stockABV[7]}   {stockName[7]}  {stockSortedBy[7]} <br />
+                                        {stockABV[9]}   {stockName[9]}  {stockSortedBy[9]} <br />
+                                        {stockABV[11]}   {stockName[11]}  {stockSortedBy[11]} <br />
+                                        {stockABV[13]}   {stockName[13]}  {stockSortedBy[13]} <br />
+                                        {stockABV[15]}   {stockName[15]}  {stockSortedBy[15]} <br />
+                                        {stockABV[17]}   {stockName[17]}  {stockSortedBy[17]} <br />
+                                        {stockABV[19]}   {stockName[19]}  {stockSortedBy[19]} <br />
+                                        {stockABV[21]}   {stockName[21]}  {stockSortedBy[21]} <br />
                         
                     </div>:null
                             }
             {
                 chosenSortType?
-                   <div className="prediction-button"> 
-                    <button className="prediction-button-button" onClick={() => getSortedStocks(chosenPortID)}> Display Stocks </button> 
-                    </div> : null
+                    <h1>
+                    <Select options={portOptions2} onChange={chooseOrderID} />        
+                                        <div className="prediction-button">
+                                            <button className="prediction-button-button" onClick={() => getSortedStocks(chosenPortID, chosenOrder)}> Display Stocks </button> 
+                    </div>
+                    </h1>: null
             }
                     </div>
                 </div>
 
                 </div>
             </div>
+
            <div class="one">
            <div className="prediction-container"></div>
            <div className="prediction-Form">
