@@ -573,7 +573,6 @@ const PortfolioChange = () => {
           :null
         }
     </div>
-    
   )
 }
 
