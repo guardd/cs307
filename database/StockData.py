@@ -135,11 +135,9 @@ def pull_top_stocks(sortType):
     connect = sqlite3.connect("mydb.db") ##connects to database
     cur = connect.cursor()
 
-    
-
     if sortType == None:
         return -1
-
+    
     elif sortType == 'Trade Volume':
       
         cur.execute("SELECT Symbol, Name, Volume FROM 'StockData' ORDER BY Volume DESC LIMIT 10")
@@ -207,4 +205,97 @@ def pull_top_stocks(sortType):
         
         return newtopInfo
     else:
+        return 0
+def pull_top_stocks_desc(sortType):
+    connect = sqlite3.connect("mydb.db") ##connects to database
+    cur = connect.cursor()
+
+    if sortType == None:
+        return -1
+    
+    elif sortType == 'Trade Volume':
+      
+        cur.execute("SELECT Symbol, Name, Volume FROM 'StockData' WHERE Volume > 200 ORDER BY Volume ASC LIMIT 10")
+        topInfo = cur.fetchall()
+       
+        if topInfo == None:
+           return -1
+        print(topInfo[0][0])
+        
+        return topInfo
+    elif sortType == 'Market Cap':
+        cur.execute("SELECT Symbol, Name, MarketCap FROM 'StockData' WHERE MarketCap > 0 ORDER BY MarketCap ASC LIMIT 10")
+        topInfo = cur.fetchall()
+        if topInfo == None:
+           return -1
+        print(topInfo)
+        
+        return topInfo
+    elif sortType == 'Last Sale':
+        cur.execute("SELECT Symbol, Name, LastSale FROM 'StockData' ORDER BY LastSale ASC LIMIT 10")
+        topInfo = cur.fetchall()
+        if topInfo == None:
+           return -1
+        print(topInfo)
+        
+        return topInfo
+    elif sortType == 'Net Change':
+        cur.execute("SELECT Symbol, Name, NetChange FROM 'StockData' ORDER BY NetChange ASC LIMIT 10")
+        topInfo = cur.fetchall()
+        if topInfo == None:
+           return -1
+        
+        
+        return topInfo
+    elif sortType == 'Industry':
+        industries = None
+        with open('Industries.txt') as f:
+            industries = f.readlines()
+            
+
+        topInfo = []
+        newtopInfo = ''
+        for industry in industries:
+             newIndustry = industry.replace('\n','')
+             cur.execute("SELECT Symbol, Name, MarketCap, Industry FROM 'StockData' WHERE Industry=? AND MarketCap > 0 ORDER BY MarketCap ASC LIMIT 1",(newIndustry,))
+             topIndustry = cur.fetchall()
+             if topIndustry == None:
+                return -1
+             elif topIndustry == '[]':
+                 pass
+             else:
+                 for x in range(topIndustry.__len__()):
+                        
+                    industryString = str(topIndustry[x])
+                    industryString = industryString.replace(",","\t")
+                    topInfo.append(industryString)
+                 
+        
+        newtopInfo = "\n".join(topInfo)
+        regex = re.compile('[^a-zA-Z0-9./\n\t ]')
+        newtopInfo = regex.sub('',newtopInfo)
+        print(topInfo)
+        print(newtopInfo)
+        #print(newtopInfo)
+        
+        return newtopInfo
+    else:
+        return 0
+ 
+
+def pull_company_data(nameABV):
+  ticker = yf.Ticker(nameABV)
+  financials = ticker.financials
+  balanceSheet = ticker.balancesheet
+  earnings = ticker.earnings
+  cashflow = ticker.cashflow
+  quartly_earnings=ticker._earnings_history
+  
+  print(financials)
+  print(balanceSheet)
+  print(earnings)
+  print(cashflow)
+  print(quartly_earnings)
+  return 0
+def pull_financial_markers():
         return 0
