@@ -501,9 +501,14 @@ def findTaxRate(state, amount):
             return '6.27%'
         if (amount >= 244271):
             return '7.65%'
-
+    else {
+        return 'Invalid State'
+    }
 def calculateValue(state, amount):
     rate = findTaxRate(state, amount)
+    if (rate == 'Invalid State'):
+        return 'Invalid State'
     rate = rate[:-1]
     rateValue = int(rate)
-    return (amount * rateValue/100)
+    amount = (amount * rateValue/100)
+    return str(amount)
