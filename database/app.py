@@ -99,10 +99,17 @@ def dayTradeCheck(portid, stock, buySell):
 def get_sort_stock():
   requestJson = request.get_json()
   sortType = requestJson['sortType']
+  ascdesc = requestJson['ascdesc']
   
   print(sortType)
+  print(ascdesc)
   StockData.update_stock_info()
-  sortedStocks = StockData.pull_top_stocks(sortType)
+  if ascdesc == 'asc':
+    sortedStocks = StockData.pull_top_stocks(sortType)
+  elif ascdesc == 'desc':
+    sortedStocks = StockData.pull_top_stocks_desc(sortType)
+  else:
+      return -1
   if sortedStocks == -1:
         data={"returncode": "-1" }
   elif sortedStocks == 0:
