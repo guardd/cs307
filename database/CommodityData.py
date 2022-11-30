@@ -1,8 +1,11 @@
+from ctypes import pythonapi
 import json
 from pickle import FALSE
 import sqlite3
 import requests
 import csv
+from datetime import datetime, timedelta
+import pandas as pd
 class CommodityData:
     def __init__(self):
         self.access_key = 'z4ppaflt7d2crmc876715ksn77srvkx4za64rzdb782ckdvz8h9qcdqa7472'
@@ -96,3 +99,32 @@ class CommodityData:
                response['data']['rates'][key] = f'${newValue:.2f}'
             print(response['data']['rates'])
             return response['data']['rates']
+    def get_commodity_historical(self, symbol):
+        endpoint = 'timeseries'
+        base_currency = 'usd'
+
+        date1 = datetime.today()
+        date2 = date1 - timedelta(300)
+        date1 = str(datetime.strftime(date1,'%Y-%m-%d'))
+        date2 = str(datetime.strftime(date2,'%Y-%m-%d'))
+
+        print(date1)
+        print(date2)
+
+        resp = requests.get('https://commodities-api.com/api/'+endpoint+'?access_key='+self.access_key+'&start_date='+date2+'&end_date='+date1+'&base='+base_currency+'&symbols='+symbol)
+        if resp.status_code != 200:
+         # This means something went wrong.
+           return -1
+        else:
+            dataTable = []
+           
+            response = resp.json()
+            for key, value in response['data']['rates'].items():
+                newValue= 1/value[symbol]
+                newPair = []
+                newPair.append(key)
+                newPair.append(newValue)
+                dataTable.append(newPair)
+
+            print (dataTable)
+            return  pd.DataFrame(dataTable,columns = ['date','price'])
