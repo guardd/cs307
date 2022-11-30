@@ -18,7 +18,9 @@ warnings.filterwarnings('ignore')
 
 def get_commodity(symbol):
     CD = CommodityData()
-    data_set = CD.get_commodity_historical(symbol)
+    #data_set = CD.get_commodity_historical(symbol)
+    data_set = pd.read_csv("/Users/dguard/Desktop/cs307/XAU.csv")
+    print(data_set)
     dates = data_set['date']
     price = data_set['price']
     dates = dates.to_numpy()
@@ -27,12 +29,16 @@ def get_commodity(symbol):
     #print(data_array)
     return data_array
 
+
 def commodity_prediction(symbol):
     CD = CommodityData()
-    data_set = CD.get_commodity_historical(symbol)
-    data_set[['price']].plot()
+    #data_set = CD.get_commodity_historical(symbol)
+    data_set = pd.read_csv("/Users/dguard/Desktop/cs307/XAU.csv")
 
     '''
+    data_set[['price']].plot()
+
+    
     plt.title(symbol)
     plt.show()
     
@@ -220,6 +226,7 @@ def pullStockData(symbol, days):
     data = yf.download(symbol, start=start, end=end, interval=INTERVAL)
     data.to_csv(symbol + '.csv')
     data_set = pd.read_csv(symbol + '.csv')
+    print(data_set)
     dates = data_set['Date']
     price = data_set['Open']
     dates = dates.to_numpy()
@@ -255,6 +262,3 @@ def generate_risk(symbol):
     else:
         return((1, "BUY"))
 
-#find_prediction("CAT")
-
-#get_commodity("XAU")
