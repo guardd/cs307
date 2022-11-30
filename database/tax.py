@@ -1,28 +1,28 @@
 def findTaxRate(state, amount):
     if (state == "CO"):
         return '4.55%'
-    else if (state == "IL"):
+    elif (state == "IL"):
         return '4.955%'
-    else if (state == "IN"):
+    elif (state == "IN"):
         return '3.23%'
-    else if (state == "IL"):
+    elif (state == "IL"):
         return '4.955%'
-    else if (state == "KY"):
+    elif (state == "KY"):
         return '5%'
-    else if (state == "MA"):
+    elif (state == "MA"):
         return '5%'
-    else if (state == "MI"):
+    elif (state == "MI"):
         return '4.25%'
-    else if (state == "NH"):
+    elif (state == "NH"):
         return '5%'
-    else if (state == "NC"):
+    elif (state == "NC"):
         return '4.99%'
-    else if (state == "PA"):
+    elif (state == "PA"):
         return '3.07%'
-    else if (state == "UT"):
+    elif (state == "UT"):
         return '4.95%'
 
-    else if (state == "AL"):
+    elif (state == "AL"):
         if (amount > 0 and amount < 500):
             return '2%'
         if (amount >= 500 and amount < 3000):
@@ -30,7 +30,7 @@ def findTaxRate(state, amount):
         if (amount > 3000)
             return '5%'
 
-    else if (state == "AZ"):
+    elif (state == "AZ"):
         if (amount > 0 and amount < 26500):
             return '2.59%'
         if (amount >= 26501 and amount < 53000):
@@ -40,7 +40,7 @@ def findTaxRate(state, amount):
         if (amount >= 159000)
             return '4.50%'
 
-    else if (state == "AK"):
+    elif (state == "AK"):
         if (amount > 0 and amount < 5000):
             return '0%'
         if (amount >= 5000 and amount <= 9999):
@@ -54,7 +54,7 @@ def findTaxRate(state, amount):
         if (amount >= 39700)
             return '5.9%'
         
-    else if (state == "CA"):
+    elif (state == "CA"):
         if (amount > 0 and amount < 9325):
             return '1%'
         if (amount >= 9326 and amount <= 22107):
@@ -74,7 +74,7 @@ def findTaxRate(state, amount):
         if (amount >= 625370)
             return '12.3%'
 
-    else if (state == "CT"):
+    elif (state == "CT"):
         if (amount > 0 and amount < 10000):
             return '3%'
         if (amount >= 10001 and amount <= 50000):
@@ -90,7 +90,7 @@ def findTaxRate(state, amount):
         if (amount >= 500001)
             return '6.99%'
 
-    else if (state == "DE"):
+    elif (state == "DE"):
         if (amount > 0 and amount < 2000):
             return '0%'
         if (amount >= 2000 and amount <= 5000):
@@ -106,7 +106,7 @@ def findTaxRate(state, amount):
         if (amount >= 60000)
             return '6.6%'
 
-    else if (state == "DC"):
+    elif (state == "DC"):
         if (amount > 0 and amount < 10000):
             return '4%'
         if (amount >= 10000 and amount <= 40000):
@@ -122,7 +122,7 @@ def findTaxRate(state, amount):
         if (amount >= 1000000)
             return '10.75%'
 
-    else if (state == "GA"):
+    elif (state == "GA"):
         if (amount > 0 and amount < 750):
             return '1%'
         if (amount >= 751 and amount <= 2250):
@@ -136,7 +136,7 @@ def findTaxRate(state, amount):
         if (amount > 7001):
             return '5.75%'
 
-    else if (state == "HI"):
+    elif (state == "HI"):
         if (amount > 0 and amount < 2400):
             return '1.4%'
         if (amount >= 2400 and amount <= 4800):
@@ -162,7 +162,7 @@ def findTaxRate(state, amount):
         if (amount > 200000):
             return '11%'
 
-    else if (state == "ID"):
+    elif (state == "ID"):
         if (amount > 0 and amount < 1588):
             return '1%'
         if (amount >= 1589 and amount <= 4763):
@@ -174,7 +174,7 @@ def findTaxRate(state, amount):
         if (amount > 7940):
             return '6.5%'
 
-    else if (state == "IA"):
+    elif (state == "IA"):
         if (amount > 0 and amount < 1539):
             return '0.36%'
         if (amount >= 1540 and amount <= 3078):
@@ -194,7 +194,7 @@ def findTaxRate(state, amount):
         if (amount > 69256):
             return '8.98%'
     
-    else if (state == "IA"):
+    elif (state == "IA"):
         if (amount > 0 and amount < 1539):
             return '0.36%'
         if (amount >= 1540 and amount <= 3078):
@@ -214,7 +214,7 @@ def findTaxRate(state, amount):
         if (amount > 69256):
             return '8.98%'
 
-    else if (state == "KS"):
+    elif (state == "KS"):
         if (amount > 0 and amount < 15000):
             return '3.1%'
         if (amount >= 15001 and amount <= 30000):
@@ -222,7 +222,7 @@ def findTaxRate(state, amount):
         if (amount > 30001):
             return '5.70%'
 
-    else if (state == "KS"):
+    elif (state == "KS"):
         if (amount > 0 and amount < 15000):
             return '3.1%'
         if (amount >= 15001 and amount <= 30000):
@@ -230,7 +230,7 @@ def findTaxRate(state, amount):
         if (amount > 30001):
             return '5.70%'
 
-    else if (state == "LA"):
+    elif (state == "LA"):
         if (amount > 0 and amount < 12500):
             return '2%'
         if (amount >= 12501 and amount <= 50000):
@@ -238,7 +238,7 @@ def findTaxRate(state, amount):
         if (amount > 50001):
             return '6%'
 
-    else if (state == "ME"):
+    elif (state == "ME"):
         if (amount > 0 and amount < 22999):
             return '5.8%'
         if (amount >= 23000 and amount <= 54449):
@@ -246,7 +246,7 @@ def findTaxRate(state, amount):
         if (amount > 54450):
             return '7.15%'
     
-    else if (state == "MD"):
+    elif (state == "MD"):
         if (amount > 0 and amount < 1000):
             return '2%'
         if (amount >= 1001 and amount <= 2000):
@@ -264,7 +264,7 @@ def findTaxRate(state, amount):
         if (amount > 250001):
             return '5.75%'
 
-    else if (state == "MN"):
+    elif (state == "MN"):
         if (amount > 0 and amount < 27230):
             return '5.35%'
         if (amount >= 27321 and amount <= 89440):
@@ -274,7 +274,7 @@ def findTaxRate(state, amount):
         if (amount > 166041):
             return '9.85%'
     
-    else if (state == "MS"):
+    elif (state == "MS"):
         if (amount > 0 and amount < 3000):
             return '0%'
         if (amount >= 3001 and amount <= 5000):
@@ -284,7 +284,7 @@ def findTaxRate(state, amount):
         if (amount > 10000):
             return '5%'
 
-    else if (state == "MO"):
+    elif (state == "MO"):
         if (amount > 0 and amount < 99):
             return '0%'
         if (amount >= 100 and amount <= 1000):
@@ -308,7 +308,7 @@ def findTaxRate(state, amount):
         if (amount > 9001):
             return '6%'
 
-    else if (state == "MT"):
+    elif (state == "MT"):
         if (amount > 0 and amount < 2800):
             return '1%'
         if (amount >= 2801 and amount <= 5000):
@@ -324,7 +324,7 @@ def findTaxRate(state, amount):
         if (amount >= 17101):
             return '6.95%'
 
-    else if (state == "NE"):
+    elif (state == "NE"):
         if (amount > 0 and amount < 3050):
             return '2.46%'
         if (amount >= 3051 and amount <= 18280):
@@ -334,7 +334,7 @@ def findTaxRate(state, amount):
         if (amount >= 29461):
             return '6.84%'
 
-    else if (state == "NJ"):
+    elif (state == "NJ"):
         if (amount > 0 and amount < 20000):
             return '1.4%'
         if (amount >= 20001 and amount <= 35000):
@@ -350,7 +350,7 @@ def findTaxRate(state, amount):
         if (amount >= 5000001):
             return '10.75%'
 
-    else if (state == "NM"):
+    elif (state == "NM"):
         if (amount > 0 and amount < 5500):
             return '1.7%'
         if (amount >= 5501 and amount <= 11000):
@@ -360,7 +360,7 @@ def findTaxRate(state, amount):
         if (amount >= 16001):
             return '4.9%'
 
-    else if (state == "NY"):
+    elif (state == "NY"):
         if (amount > 0 and amount < 8500):
             return '4%'
         if (amount >= 8501 and amount <= 11700):
@@ -378,7 +378,7 @@ def findTaxRate(state, amount):
         if (amount >= 1077550):
             return '8.82%'
 
-    else if (state == "ND"):
+    elif (state == "ND"):
         if (amount > 0 and amount < 40125):
             return '1.1%'
         if (amount >= 40126 and amount <= 97150):
@@ -390,7 +390,7 @@ def findTaxRate(state, amount):
         if (amount >= 440601):
             return '2.9%'
 
-    else if (state == "OH"):
+    elif (state == "OH"):
         if (amount > 0 and amount < 5200):
             return '0.495%'
         if (amount >= 5201 and amount <= 10400):
@@ -410,7 +410,7 @@ def findTaxRate(state, amount):
         if (amount >= 208501):
             return '4.997%'
 
-    else if (state == "OK"):
+    elif (state == "OK"):
         if (amount > 0 and amount < 1000):
             return '0.5%'
         if (amount >= 1001 and amount <= 2500):
@@ -426,7 +426,7 @@ def findTaxRate(state, amount):
         if (amount >= 8701):
             return '5.25%'
 
-    else if (state == "OR"):
+    elif (state == "OR"):
         if (amount > 0 and amount < 3350):
             return '5%'
         if (amount >= 3351 and amount <= 8400):
@@ -436,7 +436,7 @@ def findTaxRate(state, amount):
         if (amount >= 125001):
             return '9.9%'
 
-    else if (state == "RI"):
+    elif (state == "RI"):
         if (amount > 0 and amount < 60550):
             return '3.75%'
         if (amount >= 60551 and amount <= 137650):
@@ -444,7 +444,7 @@ def findTaxRate(state, amount):
         if (amount >= 137651):
             return '5.99%'
 
-    else if (state == "SC"):
+    elif (state == "SC"):
         if (amount > 0 and amount < 2970):
             return '0%'
         if (amount >= 2971 and amount <= 5940):
@@ -458,7 +458,7 @@ def findTaxRate(state, amount):
         if (amount >= 14861):
             return '7%'
 
-    else if (state == "VT"):
+    elif (state == "VT"):
         if (amount > 0 and amount < 37450):
             return '3.55%'
         if (amount >= 37451 and amount <= 90750):
@@ -470,7 +470,7 @@ def findTaxRate(state, amount):
         if (amount >= 411501):
             return '8.95%'
 
-    else if (state == "VA"):
+    elif (state == "VA"):
         if (amount > 0 and amount < 3000):
             return '2%'
         if (amount >= 3001 and amount <= 5000):
@@ -480,7 +480,7 @@ def findTaxRate(state, amount):
         if (amount >= 17001):
             return '5.75%'
 
-    else if (state == "WV"):
+    elif (state == "WV"):
         if (amount > 0 and amount < 10000):
             return '3%'
         if (amount >= 10001 and amount <= 25000):
@@ -492,7 +492,7 @@ def findTaxRate(state, amount):
         if (amount >= 60001):
             return '6.5%'
 
-    else if (state == "WI"):
+    elif (state == "WI"):
         if (amount > 0 and amount < 11090):
             return '4%'
         if (amount >= 11091 and amount <= 22190):
