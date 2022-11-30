@@ -50,14 +50,16 @@ const Portfolio = () => {
   var stockWeight = []
   const result = []
   const result2 = []
+  const result3 = []
+  const result4 = []
   const [projectData, setprojectData] = useState(null)
   const [projectABV, setprojectABV] = useState(null)
   const [day, setDays] = useState(null)
   const [projected, setprojected] = useState(false)
+  const [comDataFinal, setComDataFinal] = useState(null)
   const [projectDataFinal, setprojectDataFinal] = useState(null)
   const [newsFeed, setnewsFeed] = useState([])
   const [userHasStocks, setuserHasStocks] = useState(false)
-  const [day, setDate] = useState(null)
   const [rec, setRec] = useState(null)
   const [score, setScore] = useState(null)
   const csvreport = {
@@ -65,6 +67,14 @@ const Portfolio = () => {
     headers: headers,
     filename: 'stock.csv'
   };
+  const [comData, setComData] = useState(null)
+  const [comSymbol, setComSymbol] = useState(null)
+  const [comProjected, setComProjected] = useState(false)
+  const [comProjected2, setComprojected2] = useState(false)
+  const [stockProject, setStockProject] = useState(false)
+  function getComSymbol(val) {
+    setComSymbol(val.target.value)
+  }
   function getprojectABV(val) {
     setprojectABV(val.target.value)
   }
@@ -81,6 +91,66 @@ const Portfolio = () => {
     }
     console.log(loggedIn)
   }
+
+  function getComPrediction() {
+    console.log("functionCalled")
+    console.log(comSymbol)
+
+    let comInfo = {
+      "symbol": comSymbol
+    };
+    fetch('/getComPrediction', {
+      "method": "POST",
+      "headers": {"Content-Type": "application/json"},
+      "body": JSON.stringify(comInfo)
+  }).then(res=>res.json()).then(
+    data => {
+      //console.log(data);
+      for (let i = 1; i < data[0]; i++) {
+        let d = {date: data[i].date,
+                price: data[i].price};
+        //console.log(d)
+        result3.push(d)
+      }
+      console.log(result3)
+      //console.log(stockData)
+      setComData(result3)
+      setComProjected(true)
+    }
+  )
+  ///getComPredictionFinal()
+  }
+
+  function getComPredictionFinal() {
+    console.log("functionCalled")
+    console.log(comSymbol)
+
+    let comInfo = {
+      "symbol": comSymbol
+    };
+    fetch('/getComPredictionFinal', {
+      "method": "POST",
+      "headers": {"Content-Type": "application/json"},
+      "body": JSON.stringify(comInfo)
+  }).then(res=>res.json()).then(
+    data => {
+      //console.log(data);
+      for (let i = 0; i < 59; i++) {
+        let d = {date: data[i].date,
+                price: data[i].price};
+        //console.log(d)
+        result4.push(d)
+      }
+      console.log(result4)
+      //console.log(stockData)
+      setComDataFinal(result4)
+      setComprojected2(true)
+    }
+  )
+  }
+
+
+
   function getPredictions() {
     console.log("functionCalled")
     console.log(projectABV)
@@ -108,14 +178,11 @@ const Portfolio = () => {
       setprojectData(result)
       setprojected(true)
     }
-    
-    
   )
-  getReccomendations()
-  getPredictionsFinal()
   }
+
   function getReccomendations() {
-    console.log("functionCalled")
+    console.log("recCalled")
     console.log(projectABV)
 
     let predictionInfo = {
@@ -156,10 +223,10 @@ const Portfolio = () => {
       console.log(result2)
       //console.log(stockData)
       setprojectDataFinal(result2)
+      setStockProject(true)
     }
-    
-    
   )
+  getReccomendations()
   }
 
 
@@ -311,8 +378,8 @@ function getNews() {
 
       {
         
-      projected && <div class="two">
-      <h1 className="stock-title">Current Stock</h1>
+      projected && <div class="two1">
+      <h1 className="prediction-title">Current Stock</h1>
       <LineChart width={400} height={250} data={projectData}
         margin={{ top: 70, right: 10, left: 0, bottom: 5 }}>
         <CartesianGrid strokeDasharray="3 3" />
@@ -322,7 +389,11 @@ function getNews() {
         <Legend />
         <Line type="monotone" dataKey="close" stroke="#8884d8" />
       </LineChart>
-      <h1 className="project-title">Projected Stock</h1>
+      <CSVLink {...csvreport}>Export to CSV</CSVLink>
+      </div>
+}
+{
+  stockProject && <div><h1 className="prediction-title">Projected Stock</h1>
       <LineChart className= 'graph' width={400} height={250} data={projectDataFinal}
         margin={{ top: 70, right: 10, left: 0, bottom: 5 }}>
         <CartesianGrid strokeDasharray="3 3" />
@@ -332,19 +403,48 @@ function getNews() {
         <Legend />
         <Line type="monotone" dataKey="close" stroke="#8884d8" />
       </LineChart>
-      <CSVLink {...csvreport}>Export to CSV</CSVLink>
       <Stack sx={{ width: '100%' }} spacing={2}>
       <Alert severity="info">Reccomendation:{rec} </Alert>
       <Alert severity="info">Risk Score:{score} </Alert>
       </Stack>
       </div>
-      }
+}
+      
+{
+      comProjected && <div class="two-com">
+      <h1 className="com-title">Current Commodity</h1>
+      <LineChart width={400} height={250} data={comData}
+        margin={{ top: 70, right: 10, left: 0, bottom: 5 }}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name" />
+        <YAxis />
+        <Tooltip />
+        <Legend />
+        <Line type="monotone" dataKey="price" stroke="#940909" />
+      </LineChart>
+      </div>
+}
+{
+  comProjected2 && <div> <h1 className="com-title">Projected Commodity</h1>
+  <LineChart className= 'graph' width={400} height={250} data={comDataFinal}
+    margin={{ top: 70, right: 10, left: 0, bottom: 5 }}>
+    <CartesianGrid strokeDasharray="3 3" />
+    <XAxis dataKey="name" />
+    <YAxis />
+    <Tooltip />
+    <Legend />
+    <Line type="monotone" dataKey="price" stroke="#940909" />
+  </LineChart>
+  </div>
+}
+      
+
 
       <div class="three">
         <div className="prediction-container"></div>
         <div className="prediction-Form">
           <div className="prediction-content">
-            <h1 className="prediction-title">Make a Prediction</h1>
+            <h1 className="prediction-title">Make a Stock Prediction</h1>
             <div className="prediction-symbol">
               <input type="text"  
               className="prediction-symbol-input" placeholder="Enter Symbol" onChange={getprojectABV}/>
@@ -355,13 +455,35 @@ function getNews() {
               <button onClick= {()=>getPredictions()}> 
               Submit
               </button>
+              <button onClick= {()=>getPredictionsFinal()}> 
+              Predict
+              </button>
             </div>
           </div>
         </div>
+
+        <div className="com-container"></div>
+        <div className="com-Form">
+          <div className="com-content">
+            <h1 className="com-title">Make a Commodity Prediction</h1>
+            <div className="com-symbol">
+              <input type="text"  
+              className="com-symbol-input" placeholder="Enter Symbol" onChange={getComSymbol}/>
+            </div>
+            <div className="com-button">
+              <button onClick= {()=>{ getComPrediction() }}> 
+              Submit
+              </button>
+              <button onClick= {()=>{ getComPredictionFinal() }}> 
+              Predict
+              </button>
+            </div>
+          </div>
+        </div>
+
       </div>
       <div>
       <button onClick={()=>navigate('/portfoliochange')}> Edit portfolio </button>
-      
       </div>
 
 
