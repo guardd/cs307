@@ -23,7 +23,7 @@ import stockChangeList
 app = Flask(__name__)
 print("Flask running")
 db = Transmission()
-hostEmail = Email()
+#hostEmail = Email()
 userSignupDict = {}
 userDaytradeDict = {}
 userDaytradeCountDict = {}
@@ -401,6 +401,21 @@ def userPortfolios():
     data["portids"] = portids
     return data
 
+@app.route('/getComPrediction', methods=['POST'])
+def getComPrediction():
+    requestJson = request.get_json()
+    symbol = requestJson['symbol']
+    stockdata = prediction.get_commodity(symbol)
+    data = {}
+    i = 1
+    for point in stockdata:
+        obj = {"date": point[0], "price": point[1]}
+        data[i] = obj
+        i = i + 1
+    print(data)
+    data[0] = i-1
+    return data
+
 @app.route('/getPredictions', methods=['POST'])
 def getPredictions():
     requestJson = request.get_json()
@@ -408,7 +423,7 @@ def getPredictions():
     days = requestJson['days']
     stockdata = prediction.pullStockData(projectABV, days)
     data = {}
-    i = 0
+    i = 1
     for point in stockdata:
         
         
@@ -416,6 +431,8 @@ def getPredictions():
         data[i] = obj
        
         i = i + 1
+    print(data)
+    data[0] = i-1
     return data
 
 @app.route('/getPredictionsFinal', methods=['POST'])
@@ -429,10 +446,28 @@ def getPredictionsFinal():
         obj = {"date": point[0], "close": point[1]}
         data[i] = obj      
         i = i + 1
-    print(prediction.generate_risk(stockdata))
     return data
 
+@app.route('/getComPredictionFinal', methods=['POST'])
+def getComPredictionsFinal():
+    requestJson = request.get_json()
+    symbol = requestJson['symbol']
+    stockdata = prediction.commodity_prediction(symbol)
+    data = {}
+    i = 0
+    for point in stockdata:      
+        obj = {"date": point[0], "price": point[1]}
+        data[i] = obj      
+        i = i + 1
+    return data
 
+@app.route('/getReccomendations', methods=['POST'])
+def getReccomendations():
+    requestJson = request.get_json()
+    db = requestJson['projectABV']
+    data = prediction.generate_risk(db)
+    obj = {"risk_score": data[0], "recomendation": data[1]}
+    return obj
 
 @app.route('/makeNewPortfolio', methods=['POST'])
 def makeNewPortfolio():
