@@ -125,6 +125,14 @@ output[type=text] {
     color: rgb(34, 34. 34);
     font-weight: 800;
 }
+.financial-markers {
+    text-align: left;
+    
+    margin-bottom: 1em;
+    font-size: 12px;
+    color: rgb(34, 34. 34);
+    font-weight: 800;
+}
 .industry-table {
     text-align: left;
     white-space: pre;
