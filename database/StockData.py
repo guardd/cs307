@@ -1,3 +1,4 @@
+from tkinter.tix import INTEGER
 import yfinance as yf
 import Portfolio
 import Stock
@@ -6,6 +7,8 @@ import json
 import sqlite3
 import nasdaqscrape
 import re
+import pandas as pd
+from datetime import datetime
 ##class StockData:
    ## def __init__(self, nameABV, userID, portfolioID, stockID):
     
@@ -283,19 +286,86 @@ def pull_top_stocks_desc(sortType):
         return 0
  
 
-def pull_company_data(nameABV):
-  ticker = yf.Ticker(nameABV)
+def pull_company_data(nameABV, dateRange):
+  try:
+   ticker = yf.Ticker(nameABV)
+  except:
+   return -1
+    
+
+  dateRange = int(dateRange)
+ 
+  
+  financials = pd.DataFrame.to_html(ticker.financials.iloc[:, :dateRange])
+  balanceSheet = pd.DataFrame.to_html(ticker.balancesheet.iloc[:, :dateRange])
+  earnings = pd.DataFrame.to_html(ticker.earnings.iloc[:, :dateRange])
+  cashflow = pd.DataFrame.to_html(ticker.cashflow.iloc[:, :dateRange])
+  connect = sqlite3.connect("mydb.db") ##connects to database
+  conn = connect.cursor()
+  companyName = ticker.info['shortName']
+  dateTime = datetime.now()
+  ticker.financials.to_sql(f'{companyName}-{dateTime}', connect, if_exists='replace', index=False)
+  connect.commit()
+  #pd.read_sql('select * from new_table_name', conn)
+  
+  companyData={ 
+      'financials': financials,
+      'balanceSheet':balanceSheet,
+      'earnings':earnings,
+      'cashflow':cashflow
+                
+      }
+  #print(companyData)
+  return companyData
+def pull_financial_markers(nameABV):
+  try:
+   ticker = yf.Ticker(nameABV)
+  except:
+   return -1
   financials = ticker.financials
   balanceSheet = ticker.balancesheet
   earnings = ticker.earnings
   cashflow = ticker.cashflow
-  quartly_earnings=ticker._earnings_history
   
-  print(financials)
-  print(balanceSheet)
-  print(earnings)
-  print(cashflow)
-  print(quartly_earnings)
-  return 0
-def pull_financial_markers():
-        return 0
+  
+  columnName = financials.columns[0]
+  columnName2 = balanceSheet.columns[0]
+  columnName3 = cashflow.columns[0]
+  try:
+    accountingProfit = (financials[columnName]['Total Revenue']) -  ((financials[columnName]['Total Operating Expenses']) +(financials[columnName]['Income Tax Expense']))#total revenue - (Cost of goods sold + operating expenses + taxes)
+    accountingProfit = f'{accountingProfit:.2f}'
+  except:
+    accountingProfit = 'N/A'
+  try:
+    returnOnEquity = (financials[columnName]['Net Income']/balanceSheet[columnName2]['Total Stockholder Equity']) #net income/ Average Owners Equity
+    returnOnEquity = f'{returnOnEquity:.2f}'
+  except:
+    returnOnEquity = 'N/A'
+  try:
+    debtToEquityRatio = balanceSheet[columnName2]['Long Term Debt']/balanceSheet[columnName2]['Total Stockholder Equity'] #debt/equity
+    debtToEquityRatio = f'{debtToEquityRatio:.2f}'
+  except:
+      debtToEquityRatio = 'N/A'
+  currentRatio = balanceSheet[columnName2]['Total Assets']/balanceSheet[columnName2]['Total Liab'] #current assets/ current liabilities
+  try:
+    burnRate = 1/(financials[columnName]['Total Revenue']/financials[columnName]['Total Operating Expenses'])  #total cost/toal revenue
+    burnRate = f'{burnRate:.2f}'
+  except:
+    burnRate = 'N/A'
+  try:
+    ROI = (financials[columnName]['Gross Profit']/(financials[columnName]['Total Operating Expenses']))*100
+    ROI = f'{ROI:.2f}%'
+  except:
+    ROI = 'N/A'
+  
+  
+  data = {
+      'accountingProfit':accountingProfit,
+      'returnOnEquity':returnOnEquity,
+      'debtToEquityRatio':debtToEquityRatio,
+      'currentRatio':currentRatio,
+      'burnRate':burnRate,
+      'ROI':ROI
+      }
+  print(data)
+  return data
