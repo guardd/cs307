@@ -29,6 +29,8 @@ def get_price_nasdaq(nameABV):
     return price
 def get_company_name(nameABV):
    ticker = yf.Ticker(nameABV)
+   if ticker.info['regularMarketPrice'] == None:
+       return -1
    return ticker.info['shortName']
 
 def get_news(userID):
@@ -289,9 +291,11 @@ def pull_top_stocks_desc(sortType):
 def pull_company_data(nameABV, dateRange):
   try:
    ticker = yf.Ticker(nameABV)
+   if ticker.info['regularMarketPrice'] == None:
+       return -1
   except:
    return -1
-    
+  
 
   dateRange = int(dateRange)
  
@@ -320,8 +324,11 @@ def pull_company_data(nameABV, dateRange):
 def pull_financial_markers(nameABV):
   try:
    ticker = yf.Ticker(nameABV)
+   
   except:
    return -1
+  if ticker.info['regularMarketPrice'] == None:
+       return -1
   financials = ticker.financials
   balanceSheet = ticker.balancesheet
   earnings = ticker.earnings
