@@ -226,6 +226,7 @@ const PortfolioChange = () => {
       getUserTaxAmount(data.taxAmount)
       getUserTaxPercent(data.taxPercentage)
       getShowTaxFinal(true)
+      getShowTax(false)
     }
   )
   }
@@ -539,7 +540,7 @@ const PortfolioChange = () => {
               <tr>
                 <th>Entry #</th>
                 <th>Stock ABV</th>
-                <th>Percentage Change</th>
+                <th>Percentage Change after 5 to 10 days</th>
               </tr>
             </thead>
             <tbody>
