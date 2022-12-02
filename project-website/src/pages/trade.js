@@ -35,6 +35,7 @@ const Trade = () => {
     const [financialMarkers, setfinancialMarkers] = useState([])
     const [dateRange, setdateRange] = useState(null)
     const [showFinancialMarkers, setshowFinancialMarkers] = useState(false)
+    const [tableFailString, setTableFailString] = useState(null)
     const portOptions = [
         { label: 'Trade Volume', value: '1' },
         { label: 'Market Cap', value: '2' },
@@ -241,7 +242,8 @@ const Trade = () => {
       //      return;
         //}
         setshowFinancialMarkers(false)
-        if (dateRange<1||dateRange>4) {
+        if (dateRange < 1 || dateRange > 4) {
+            setTableFailString("Please enter a valid dateRange between 1 and 4.")
             return;
         }
         
@@ -257,6 +259,7 @@ const Trade = () => {
             data => {
                 if (data.returncode == "-1") {
                     setdisplayCompanyTable(false)
+                    setTableFailString("Bad Stock Symbol")
                     return;
                 }
                
@@ -273,6 +276,7 @@ const Trade = () => {
                     }
 
                     setfinancialMarkers(array1)
+                    setTableFailString("Enter valid stock symbol and range between 1 and 4<")
                     return;
                 }
             }
@@ -418,13 +422,13 @@ const Trade = () => {
 
                                     
                                 </div> 
-                                    <button type="Show More" className="prediction-button-button"
+                                    <button type="Submit" className="prediction-button-button"
                                         onClick={() => setshowFinancialMarkers(true)}                            >
-                                        Submit
+                                        Show More
                                     </button>
                                     
 
-                                </h2> : null}
+                                </h2> : <div>{tableFailString}</div>}
 
                             {showFinancialMarkers ?
                             <div className="financial-markers">
@@ -437,6 +441,7 @@ const Trade = () => {
                                 {financialMarkers[4]}: {financialMarkers[5]}<br />
                                 <br />
                                 {financialMarkers[6]}: {financialMarkers[7]} <br />
+                                <br />
 
                                 {financialMarkers[8]}: {financialMarkers[9]}<br />
                                 <br />
