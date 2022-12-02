@@ -28,7 +28,14 @@ const Trade = () => {
     const [stockSortedBy, setstockSortedBy] = useState([])
     const [industryTable, setindustryTable] = useState(null)
     const [chosenOrder, setchosenOrder] = useState(null)
-    
+    const [stockSymbol, setstockSymbol] = useState(null)
+    const [displayCompanyTable, setdisplayCompanyTable] = useState(false)
+    const [financialTable, setfinancialTable] = useState(null)
+    const [companyName, setcompanyName] = useState(null)
+    const [financialMarkers, setfinancialMarkers] = useState([])
+    const [dateRange, setdateRange] = useState(null)
+    const [showFinancialMarkers, setshowFinancialMarkers] = useState(false)
+    const [tableFailString, setTableFailString] = useState(null)
     const portOptions = [
         { label: 'Trade Volume', value: '1' },
         { label: 'Market Cap', value: '2' },
@@ -59,12 +66,21 @@ const Trade = () => {
         setSymbol2(val.target.value)
         console.warn(val.target.value)
     }
+    function getstockSymbol(val) {
+        setstockSymbol(val.target.value)
+        console.warn(val.target.value)
+    }
     function getBase(val) {
         setBase(val.target.value)
         console.warn(val.target.value)
     }
     function getAmount(val) {
         setAmount(val.target.value)
+        console.warn(val.target.value)
+    }
+
+    function getdateRange(val) {
+        setdateRange(val.target.value)
         console.warn(val.target.value)
     }
    
@@ -221,6 +237,54 @@ const Trade = () => {
         });
 
     }
+    function pull_company_data(stockSymbol, dateRange) {
+       // if (!Number.isInteger(dateRange)) {
+      //      return;
+        //}
+        setshowFinancialMarkers(false)
+        if (dateRange < 1 || dateRange > 4) {
+            setTableFailString("Please enter a valid dateRange between 1 and 4.")
+            return;
+        }
+        
+        let stockABV = {
+            "stockABV": stockSymbol,
+            "dateRange": dateRange
+        };
+        fetch('/getCompanyData', {
+            "method": "POST",
+            "headers": { "Content-Type": "application/json" },
+            "body": JSON.stringify(stockABV)
+        }).then(res => res.json()).then(
+            data => {
+                if (data.returncode == "-1") {
+                    setdisplayCompanyTable(false)
+                    setTableFailString("Bad Stock Symbol")
+                    return;
+                }
+               
+                else {
+                    setdisplayCompanyTable(true)
+                    setcompanyName(data.companyName)
+                    setfinancialTable(data.companyData.financials)
+
+                    const array1 = []
+                    for (const [key, value] of Object.entries(data.financialMarkers)) {
+
+                        array1.push(key, value)
+
+                    }
+
+                    setfinancialMarkers(array1)
+                    setTableFailString("Enter valid stock symbol and range between 1 and 4<")
+                    return;
+                }
+            }
+        ).catch(error => {
+            console.error('Top Ten Refresh error', error);
+        });
+
+    }
     return (
         
         <div class="main">
@@ -327,6 +391,69 @@ const Trade = () => {
                     </h1>
                         </div>
                  </div>
+            </div>
+            <div class="one">
+                <div className="table-container"></div>
+                <div className="prediction-Form">
+                    <div className="prediction-content">
+                        <h1 className="prediction-title">Company Table</h1>
+                        <div className="prediction-symbol">
+                            <input type="text" onChange={getstockSymbol}
+                                className="prediction-symbol-input" placeholder="Enter Valid Stock Symbol" />
+                        </div>
+                        <div className="prediction-symbol">
+                            <input type="text" onChange={getdateRange}
+                                className="prediction-symbol-input" placeholder="Enter Table Range" />
+                        </div>
+                        
+                       
+                        <div className="prediction-button">
+                            <button type="submit" className="prediction-button-button"
+                                onClick={() => pull_company_data(stockSymbol,dateRange)}                            >
+                                Submit
+                            </button>
+                        </div>
+
+                        <h1>
+                            {displayCompanyTable ?
+                            <h2>
+                                {companyName}
+                                <div className="exchange-rate" dangerouslySetInnerHTML={{ __html: financialTable }} >
+
+                                    
+                                </div> 
+                                    <button type="Submit" className="prediction-button-button"
+                                        onClick={() => setshowFinancialMarkers(true)}                            >
+                                        Show More
+                                    </button>
+                                    
+
+                                </h2> : <div>{tableFailString}</div>}
+
+                            {showFinancialMarkers ?
+                            <div className="financial-markers">
+                                Common Financial Markers: <br />
+                                <br />
+                                {financialMarkers[0]}: {financialMarkers[1]}<br />
+                                <br />
+                                {financialMarkers[2]}: {financialMarkers[3]}<br />
+                                <br />
+                                {financialMarkers[4]}: {financialMarkers[5]}<br />
+                                <br />
+                                {financialMarkers[6]}: {financialMarkers[7]} <br />
+                                <br />
+
+                                {financialMarkers[8]}: {financialMarkers[9]}<br />
+                                <br />
+                                {financialMarkers[10]}: {financialMarkers[11]}
+
+
+                                </div>: null}
+
+
+                        </h1>
+                    </div>
+                </div>
             </div>
             
             <div class="two">

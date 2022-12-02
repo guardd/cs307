@@ -15,11 +15,11 @@ def percentage_change_list(percentage, downup, stockABVs):
     for abv in stockABVs:
         change = percentage_change(abv)
         if (downup > 0):
-            if (change > downup):
+            if (change > percentage):
                 abvlist.append(abv)
                 abvPercentageList.append(change)
         else: 
-            if (change < downup):
+            if (change < percentage):
                 abvlist.append(abv)
                 abvPercentageList.append(change)
     data = {}

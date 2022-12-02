@@ -94,7 +94,35 @@ def dayTradeCheck(portid, stock, buySell):
     else:
         userDaytradeDict.update({stock: [portid, buySell]})
         return 2
+@app.route('/getCompanyData', methods=['POST'])
+def get_company_data():
+  requestJson = request.get_json()
+  stockABV = requestJson['stockABV']
+  dateRange = requestJson['dateRange']
+  
+  print(stockABV)
+  print(dateRange)
+  
+  companyData=StockData.pull_company_data(stockABV, dateRange)
+  companyName = StockData.get_company_name(stockABV)
+  financialMarkers = StockData.pull_financial_markers(stockABV)
+  if companyData == -1 or financialMarkers == -1:
+        data={"returncode": "-1" }
+ 
+  else:
+    
 
+
+    data = {
+         "returncode": "0",
+     
+         "companyName": companyName,
+         "companyData": companyData,
+         "financialMarkers": financialMarkers
+
+    }
+    print(data)
+  return data
 @app.route('/getSortStock', methods=['POST'])
 def get_sort_stock():
   requestJson = request.get_json()
@@ -832,7 +860,7 @@ def sell_stock_trade(uid, stockID,shares):
              portfolio.update_stocks(portfolio.get_stocks(),portfolio.get_id())
              return 1            
             elif shares < stock.get_shares():
-                portfolio.set_funds(portfolio.get_funds()+(stock.get_shares()*StockData.get_price(stock.get_nameABV())))
+                portfolio.set_funds(portfolio.get_funds()+(shares*StockData.get_price(stock.get_nameABV())))
                 portfolio.update_funds(portfolio.get_funds(), portfolio.get_id())
                 stock.set_shares(stock.get_shares()-shares)
                 stock.update_stockShares(stock.get_shares())
@@ -846,6 +874,8 @@ def getPercentageList():
     abvs = requestJson['abvs']
     percentage = 0
     downup = -1
+    print(requestJson['percentage'])
+    print(requestJson['downup'])
     if requestJson['percentage'] == "":
         requestJson['percentage'] = '0' 
     try:

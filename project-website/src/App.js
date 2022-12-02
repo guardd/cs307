@@ -10,6 +10,7 @@ import SignUp from './pages/signup';
 import Profile from './pages/profile'
 import Trade from './pages/trade'
 import PortfolioChange from './pages/portfolioChange';
+import Friend from './pages/friend';
 function App() {
   return (
     <Router>
@@ -23,6 +24,7 @@ function App() {
         <Route exact path="/signup" exact element={<SignUp />} />
         <Route exact path="/profile" exact element={<Profile />} />
         <Route exact path="/trade" exact element={<Trade />} />
+        <Route exact path="/friend" exact element={<Friend />} />
       </Routes>
     </Router>
   );

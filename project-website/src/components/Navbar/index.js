@@ -16,8 +16,11 @@ const Navbar = () => {
                     <NavLink to="./signup" activeStyle>
                         Sign Up
                     </NavLink>
-                    <NavLink to="./portfolio" activeStyle>
+                    <NavLink to="./portfolioChange" activeStyle>
                         Portfolio
+                    </NavLink>
+                    <NavLink to="./portfolio" activeStyle>
+                        Prediction
                     </NavLink>
                     <NavLink to="./profile" activeStyle>
                         Profile
@@ -27,6 +30,9 @@ const Navbar = () => {
                     </NavLink>
                     <NavLink to="./trade" activeStyle>
                         Trade
+                    </NavLink>
+                    <NavLink to="./friend" activeStyle>
+                        Friends
                     </NavLink>
                 </NavMenu>
             </Nav>

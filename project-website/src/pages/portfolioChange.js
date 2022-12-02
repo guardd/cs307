@@ -100,6 +100,12 @@ const PortfolioChange = () => {
     function getStockWeight(val) {
       setStockWeight(val)
     }
+    function showPerThing() {
+      getShowPercentageChangeList(true)
+      getShowPercentageChangeTable(false)
+      getPercentage("0")
+      getUpdown("1")
+    }
     function getBuyNameABV(val) {
       setBuyNameABV(val.target.value)
     }
@@ -226,6 +232,7 @@ const PortfolioChange = () => {
       getUserTaxAmount(data.taxAmount)
       getUserTaxPercent(data.taxPercentage)
       getShowTaxFinal(true)
+      getShowTax(false)
     }
   )
   }
@@ -404,7 +411,7 @@ const PortfolioChange = () => {
         }
         setPercentageListResultsUpdate(percentageListResults)
         getShowPercentageChangeTable(true)
-        getShowPercentageChangeList(false)
+        //getShowPercentageChangeList(false)
         setListInfoString("")
       }
     }
@@ -460,9 +467,10 @@ const PortfolioChange = () => {
           <button onClick={()=>getShowSell(true)}> sell stock </button>
           :null
         }
+        
         {
           showPort?
-          <button onClick={()=>getShowPercentageChangeList(true)}> get percentage change list </button>
+          <button onClick={()=>showPerThing()}> get percentage change list </button>
           :null
         }
         {
@@ -539,12 +547,12 @@ const PortfolioChange = () => {
               <tr>
                 <th>Entry #</th>
                 <th>Stock ABV</th>
-                <th>Percentage Change</th>
+                <th>Percentage Change after 5 to 10 days</th>
               </tr>
             </thead>
             <tbody>
               {percentageListResultsUpdate && percentageListResultsUpdate.map(result =>
-                <tr key={result.id}>
+                <tr key={result.abv}>
                   <td>{result.id}</td>
                   <td>{result.abv}</td>
                   <td>{result.percentage}</td>

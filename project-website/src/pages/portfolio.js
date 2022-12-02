@@ -1,6 +1,6 @@
 import React from "react";
 import {render} from "react-dom";
-import './portfolio.css';
+//import './portfolio.css';
 import { PieChart, Pie, Legend, LineChart, CartesianGrid, XAxis, YAxis, Tooltip, Line} from 'recharts';
 import {useEffect, useState} from "react";
 import { Navigate, renderMatches, useNavigate } from "react-router-dom";
@@ -67,6 +67,7 @@ const Portfolio = () => {
     headers: headers,
     filename: 'stock.csv'
   };
+  const [error, setError] = useState(false)
   const [comData, setComData] = useState(null)
   const [comSymbol, setComSymbol] = useState(null)
   const [comProjected, setComProjected] = useState(false)
@@ -152,33 +153,42 @@ const Portfolio = () => {
 
 
   function getPredictions() {
-    console.log("functionCalled")
-    console.log(projectABV)
-    console.log(day)
-
-    let predictionInfo = {
-      "projectABV": projectABV,
-      "days": day
-    };
-    fetch('/getPredictions', {
-      "method": "POST",
-      "headers": {"Content-Type": "application/json"},
-      "body": JSON.stringify(predictionInfo)
-  }).then(res=>res.json()).then(
-    data => {
-      //console.log(data);
-      for (let i = 1; i < data[0]; i++) {
-        let d = {date: data[i].date,
-                close: data[i].close};
-        //console.log(d)
-        result.push(d)
-      }
-      console.log(result)
-      //console.log(stockData)
-      setprojectData(result)
-      setprojected(true)
+    let temp = parseInt(day,10)
+    if (isNaN(temp)) {
+      console.log(temp)
+      setError(true)
     }
-  )
+    else {
+      console.log(temp)
+      setError(false)
+      console.log("functionCalled")
+      console.log(projectABV)
+      console.log(day)
+
+      let predictionInfo = {
+        "projectABV": projectABV,
+        "days": day
+      };
+      fetch('/getPredictions', {
+        "method": "POST",
+        "headers": {"Content-Type": "application/json"},
+        "body": JSON.stringify(predictionInfo)
+      }).then(res=>res.json()).then(
+        data => {
+          console.log(data);
+          for (let i = 1; i < data[0]; i++) {
+            let d = {date: data[i].date,
+                    close: data[i].close};
+            //console.log(d)
+            result.push(d)
+          }
+          console.log(result)
+          //console.log(stockData)
+          setprojectData(result)
+          setprojected(true)
+        }
+      )
+    }
   }
 
   function getReccomendations() {
@@ -359,22 +369,7 @@ function getNews() {
                         </div>
                     </div>:null}
         </div>
-      <div class="one">
-      <h1 className="current-title">Current Porfolio</h1>
-      <PieChart className= 'pie1'width={400} height={300}>
-      <Legend layout="vertical" verticalAlign="middle" align="right" />
-      <Pie data={data01} dataKey="amount" nameKey="name" cx="50%" cy="50%" outerRadius={50} fill="#fff">
-      </Pie>
-      <Pie data={data02} dataKey="amount" nameKey="name" cx="50%" cy="50%" innerRadius={60} outerRadius={80} fill="#fff" label />
-      </PieChart>
-      <h1 className="projected-title">Projected Portfolio</h1>
-      <PieChart width={400} height={300}>
-      <Legend layout="vertical" verticalAlign="middle" align="right" />
-      <Pie data={predictedData01} dataKey="amount" nameKey="name" cx="50%" cy="50%" outerRadius={50} fill="#fff">
-      </Pie>
-      <Pie data={predictdeData02} dataKey="amount" nameKey="name" cx="50%" cy="50%" innerRadius={60} outerRadius={80} fill="#fff" label />
-      </PieChart>
-      </div>
+    
 
       {
         
@@ -461,7 +456,11 @@ function getNews() {
             </div>
           </div>
         </div>
-
+        {
+                error && <div>
+                  <Alert severity="error">Enter a Valid Number </Alert>
+                </div>
+              }
         <div className="com-container"></div>
         <div className="com-Form">
           <div className="com-content">
