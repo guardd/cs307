@@ -590,7 +590,7 @@ def sellStock():
     #        sid = each
 
     #trade = Trade()
-    ret = sell_stock_trade(uid,sid, int(shares))
+    ret = sell_stock_trade(uid,sid, int(shares), id)
     data = {
         "returncode": str(ret)
     }
@@ -838,7 +838,7 @@ def buy_stock_trade(uid, nameABV, portfolioID, shares):
             portfolio.update_funds(portfolio.get_funds()-price, portfolioID)
      return 1
 
-def sell_stock_trade(uid, stockID,shares):
+def sell_stock_trade(uid, stockID,shares, portID):
         t = db
         stock = t.search_stock_by_id(stockID)
         portfolio = t.search_portfolio_by_id(stock.get_portfolioID())
@@ -849,7 +849,7 @@ def sell_stock_trade(uid, stockID,shares):
             print(uid)
             return -4 ## this will indicate stock does not belong to user
         else:
-            daytrade = dayTradeCheck(stock.get_portfolioID(), stock.id, 0)
+            daytrade = dayTradeCheck(portID, stock.id, 0)
             if daytrade == 3:
                 return -5
             if shares == stock.get_shares():

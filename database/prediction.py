@@ -85,6 +85,7 @@ def commodity_prediction(symbol):
 
     error = mean_squared_error(test, prediction)
     print('Testing Mean Squared Error: %.3f' % error)
+
     '''
     plt.figure(figsize=(12,7))
     plt.plot(data_set['price'], 'green', color='blue', label='Training Data')
@@ -98,6 +99,9 @@ def commodity_prediction(symbol):
     plt.legend()
     plt.show()
 
+    
+    '''
+    '''
     plt.figure(figsize=(12,7))
     plt.plot(test_data.index, prediction, color='green', marker='o', linestyle='dashed', 
             label='Predicted Price')
@@ -109,6 +113,7 @@ def commodity_prediction(symbol):
     plt.legend()
     plt.show()
     '''
+
     length = list()
     for x in range(len(prediction)):
         length.append(str(x))
@@ -263,6 +268,7 @@ def generate_risk(symbol):
         return((1, "BUY"))
 
 def find_prediction_hist(symbol):
+
     warnings.filterwarnings('ignore')
     NUM_DAYS = 1000
     INTERVAL = "1d"
@@ -350,3 +356,5 @@ def find_prediction_hist(symbol):
     df = df.to_numpy().ravel()
     final = np.array((sizedf, df)).T
     return final
+
+#commodity_prediction("XAU")
